@@ -5,10 +5,11 @@ using System;
 
 namespace GeometeryWars
 {
-    public class Player : MonoBehaviour
+    public class PlayerController : MonoBehaviour
     {
         [Header("Components")]
-        public ObjectPool bulletPool;
+        public Poolable bullet;
+        private ObjectPool bulletPool;
         [Space]
         public bool canMove = true;
         public float speed = 1.0f;
@@ -25,6 +26,7 @@ namespace GeometeryWars
             healthCurrent = healthMax;
             fireSpeed = 1f / fireRate;
             //set default shoot
+            bulletPool = new ObjectPool(bullet);
             fire = SingleBullet;
         }
 

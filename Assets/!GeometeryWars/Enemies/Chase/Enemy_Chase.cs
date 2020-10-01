@@ -12,8 +12,8 @@ namespace GeometeryWars
         public float speedSteer = 45f;
 
         private Vector3 directionToTarget;
-        private Vector3 nextVelocity;
-        private float nextRotation;
+        private Vector3 velocity;
+        private float rotation;
 
         protected override void OnEnable()
         {
@@ -28,16 +28,16 @@ namespace GeometeryWars
         void Update()
         {
             Vector3 directionToTarget = target.position - transform.position;
-            nextVelocity = directionToTarget.normalized * speedThrust;
-            nextRotation = Mathf.Atan2(-directionToTarget.x, directionToTarget.y) * Mathf.Rad2Deg;
+            velocity = directionToTarget.normalized * speedThrust;
+            rotation = Mathf.Atan2(-directionToTarget.x, directionToTarget.y) * Mathf.Rad2Deg;
         }
 
         private void FixedUpdate()
         {
             if(isActive)
             {
-                transform.position += nextVelocity * Time.fixedDeltaTime;
-                transform.rotation = Quaternion.AngleAxis(nextRotation, Vector3.forward);
+                transform.position += velocity * Time.fixedDeltaTime;
+                transform.rotation = Quaternion.AngleAxis(rotation, Vector3.forward);
             }            
         }
     }

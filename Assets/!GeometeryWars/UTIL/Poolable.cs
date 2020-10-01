@@ -8,8 +8,13 @@ public class Poolable : MonoBehaviour
 {
     public ObjectPool pool { get; set; }
 
+    private bool isPool = true;
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        pool.Return(gameObject);
+        if(isPool)
+        {
+            isPool = false;
+            pool.Return(gameObject);
+        }
     }
 }

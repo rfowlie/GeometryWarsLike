@@ -6,13 +6,15 @@ namespace GeometeryWars
 {
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private Player player;
+        [SerializeField] private PlayerController player;
         [SerializeField] private Grid grid;
-
-        [SerializeField] private ObjectPool pickUpPool;
+        [SerializeField] private Poolable pickUp;
+        private ObjectPool pickUpPool;
 
         private void Start()
         {
+            pickUpPool = new ObjectPool(pickUp);
+
             //temp spawn pickups
             for (int i = 0; i < 2; i++)
             {

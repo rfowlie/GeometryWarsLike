@@ -164,20 +164,22 @@ namespace GeometeryWars
             return temp + transform.position;
         }
 
-        public Vector3[] GetCircleOfPoints(Vector2 center, int amount = 1, float radius = 1f, float rotation = 0f)
+        public Vector3[] GetCircleOfPoints(Vector2 center, int amount = 1, float radius = 1f, float rotOffset = 0f)
         {
-            center.x = Mathf.Clamp(center.x, 0.01f + radius, 0.99f);
-            center.y = Mathf.Clamp(center.y, 0.01f + radius, 0.99f);
-            
+            //clamp to 0 and 1
+            center.x = Mathf.Clamp(center.x, 0.01f, 0.99f);
+            center.y = Mathf.Clamp(center.y, 0.01f, 0.99f);
+
+            //get center point
             Vector3 c = GetPointFromLengthWidth(center.x, center.y);
-            float angle = amount == 1 ? 0 : 360f / amount;
-            Vector3[] points = new Vector3[amount];
-            for (int i = 0; i < amount; i++)
+
+            //get points in shape
+            Vector3[] points = ShapeCreator.Circle(amount, radius, Vector3.forward, Vector3.up, rotOffset);
+            for (int i = 0; i < points.Length; i++)
             {
-                Quaternion rot = Quaternion.AngleAxis(angle * i + rotation, Vector3.forward);
-                Vector3 pos = c + (rot * Vector3.up) * radius;
-                //check if point in grid, otherwise set to center
-                points[i] = CalcPointInGrid(pos) ? pos : c;                
+                //if center point plus point offset is out of grid set point to center
+                //which is already checked to be in grid
+                points[i] = CalcPointInGrid(points[i] + c) ? points[i] + c : c;
             }
 
             return points;
@@ -185,19 +187,20 @@ namespace GeometeryWars
 
         public Vector3[] GetLineOfPoints(Vector2 start, Vector2 end, int amount)
         {
+            //clamp
             start.x = Mathf.Clamp(start.x, 0.01f, 0.99f);
             start.y = Mathf.Clamp(start.y, 0.01f, 0.99f);
-            end.x = Mathf.Clamp(start.x, 0.01f, 0.99f);
-            end.y = Mathf.Clamp(start.y, 0.01f, 0.99f);
+            end.x = Mathf.Clamp(end.x, 0.01f, 0.99f);
+            end.y = Mathf.Clamp(end.y, 0.01f, 0.99f);
+            //get world points
             Vector3 s = GetPointFromLengthWidth(start.x, start.y);
-            Vector3 e = GetPointFromLengthWidth(start.x, start.y);
-            Vector3 dir = (end - start).normalized;
-            float distance = (end - start).magnitude / (float)(amount - 1);
-
-            Vector3[] points = new Vector3[amount];
-            for (int i = 0; i < amount; i++)
+            Vector3 e = GetPointFromLengthWidth(end.x, end.y);
+            //determine world dir and distance
+            Vector3[] points = ShapeCreator.Line(amount, (e - s).normalized, (e - s).magnitude);
+            //add start position to values
+            for (int i = 0; i < points.Length; i++)
             {
-                points[i] = (distance * i) * dir + s;
+                points[i] += s;
             }
 
             return points;

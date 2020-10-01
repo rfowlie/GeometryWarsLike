@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 4937881686788953894}
   - component: {fileID: 4937881686788953897}
   m_Layer: 10
-  m_Name: EChase
+  m_Name: Chase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &4937881686788953897
 MonoBehaviour:
@@ -171,9 +171,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 987840bedb43e884ba3b46dd7a25862a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActive: 0
+  timeWait: 1
+  value: 100
   target: {fileID: 0}
-  speedThrust: 2
-  speedSteer: 45
+  speedThrust: 3
+  speedSteer: 30
 --- !u!1 &4937881686831035036
 GameObject:
   m_ObjectHideFlags: 0
