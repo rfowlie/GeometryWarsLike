@@ -2,31 +2,54 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet_Surface : Poolable
+namespace GeometeryWars
 {
-    [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
-    public float speed = 5f;
-    public float lifetime = 3f;
-    private float count = 0f;
-
-    private void Update()
+    public class Bullet_Surface : Poolable
     {
-        count += Time.deltaTime;
-        if(lifetime < count)
+        [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
+        public float speed = 5f;
+        public float lifetime = 3f;
+        private float count = 0f;
+
+        private void Update()
         {
-            count = 0f;
+            count += Time.deltaTime;
+            if (lifetime < count)
+            {
+                count = 0f;
+                pool.Return(gameObject);
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            RaycastHit hit;
+            //calc next position for bullet
+            Vector3 nextPos = transform.position + transform.forward * speed * Time.fixedDeltaTime;
+            //determine if colliding with something
+            if (Physics.Raycast(transform.position, transform.forward * speed * Time.fixedDeltaTime))
+            {
+                //colliding with something
+                transform.position = nextPos;
+            }
+            else if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity))
+            {
+                transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                transform.position = hit.point + hit.normal * distanceFromSurface;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            AEnemy temp = other.GetComponent<AEnemy>();
+            if (temp != null)
+            {
+                temp.pool.Return(other.gameObject);
+            }
+
             pool.Return(gameObject);
         }
     }
-
-    private void FixedUpdate()
-    {
-        RaycastHit hit;
-        Vector3 nextPos = transform.position + transform.forward * speed * Time.fixedDeltaTime;
-        if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity))
-        {
-            transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            transform.position = hit.point + hit.normal * distanceFromSurface;
-        }
-    }
 }
+
+

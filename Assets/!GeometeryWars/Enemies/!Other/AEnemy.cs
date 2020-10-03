@@ -7,6 +7,7 @@ namespace GeometeryWars
 {
     public abstract class AEnemy : Poolable
     {
+        public LayerMask map;
         public bool isActive = false;
         public float timeWait = 1f;
 

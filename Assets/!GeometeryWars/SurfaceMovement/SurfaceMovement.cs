@@ -16,6 +16,8 @@ public class SurfaceMovement : MonoBehaviour
     [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
     public float speed = 1f;
     public Vector3 velocity;
+    private Vector3 aim;
+    private Vector3 local;
 
 
     private void Start()
@@ -30,9 +32,9 @@ public class SurfaceMovement : MonoBehaviour
         velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
 
         //get mouse position compare to center of screen to aquire rotation direction, apply to player body
-        Vector3 aim = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
-        Vector3 local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
-        body.rotation = Quaternion.FromToRotation(body.forward, local) * body.rotation;
+        aim = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
+        
 
         //TEMP FIRE BULLETS
         if (Input.GetMouseButtonUp(0))
@@ -57,5 +59,8 @@ public class SurfaceMovement : MonoBehaviour
                 transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
             }
         }
+
+        //rotate body to face mouse
+        body.rotation = Quaternion.FromToRotation(body.forward, local) * body.rotation;
     }
 }
