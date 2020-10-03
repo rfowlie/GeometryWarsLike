@@ -12,16 +12,20 @@ public static class ShapeCreator
         //create 3 lines and adjust
         Vector3 centroid = Vector3.zero;
         Vector3[] temp;
-        temp = Line(amountOfPoints, Vector3.up + Vector3.right, radius);
+
+        //rotate 60 degrees
+        temp = Line(amountOfPoints, Quaternion.AngleAxis(-30, Vector3.forward) * Vector3.up, radius);
         points.AddRange(temp);
         centroid += temp[0];
-        temp = Line(amountOfPoints, Vector3.down + Vector3.right, radius);
+
+        temp = Line(amountOfPoints, Quaternion.AngleAxis(-150, Vector3.forward) * Vector3.up, radius);
         for (int i = 0; i < temp.Length; i++)
         {
-            temp[i] += (Vector3.up + Vector3.right).normalized * radius;
+            temp[i] += Quaternion.AngleAxis(-30, Vector3.forward) * Vector3.up * radius;
         }
         points.AddRange(temp);
         centroid += temp[0];
+
         temp = Line(amountOfPoints, Vector3.left, radius);
         for (int i = 0; i < temp.Length; i++)
         {
@@ -30,14 +34,20 @@ public static class ShapeCreator
         points.AddRange(temp);
         centroid += temp[0];
 
+
         //find centroid
         centroid /= 3f;
+
+        //determine rotation
+        spawnAxis = Quaternion.AngleAxis(angleOffset, rotationAxis) * spawnAxis;
+        Quaternion rot = Quaternion.LookRotation(rotationAxis, spawnAxis);
 
         //final adjust to center all points
         temp = points.ToArray();
         for (int i = 0; i < temp.Length; i++)
         {
             temp[i] += -centroid;
+            temp[i] = rot * temp[i];
         }
 
         return temp;
@@ -70,11 +80,16 @@ public static class ShapeCreator
         }
         points.AddRange(temp);
 
+        //determine rotation
+        spawnAxis = Quaternion.AngleAxis(angleOffset, rotationAxis) * spawnAxis;
+        Quaternion rot = Quaternion.LookRotation(rotationAxis, spawnAxis);
+
         //final adjust to center all points
         temp = points.ToArray();
         for (int i = 0; i < temp.Length; i++)
         {
             temp[i] += (Vector3.left + Vector3.down) * radius / 2f;
+            temp[i] = rot * temp[i];
         }
 
         return temp;

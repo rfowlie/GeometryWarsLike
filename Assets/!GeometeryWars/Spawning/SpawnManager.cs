@@ -21,10 +21,10 @@ namespace GeometeryWars
                 pools[i] = new ObjectPool(enemies[i]);
             }
 
-            spawnTimes.Enqueue(1f);
-            spawnTimes.Enqueue(3f);
-            spawnTimes.Enqueue(5f);
-            spawnTimes.Enqueue(8f);
+            //spawnTimes.Enqueue(1f);
+            //spawnTimes.Enqueue(3f);
+            //spawnTimes.Enqueue(5f);
+            //spawnTimes.Enqueue(8f);
         }
 
         Queue<float> spawnTimes = new Queue<float>();

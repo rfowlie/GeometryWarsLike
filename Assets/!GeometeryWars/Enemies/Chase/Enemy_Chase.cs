@@ -8,11 +8,7 @@ namespace GeometeryWars
     public class Enemy_Chase : AEnemy
     {
         [SerializeField] private Transform target;
-        public float speedThrust = 1f;
-        public float speedSteer = 45f;
-
-        private Vector3 directionToTarget;
-        private Vector3 velocity;
+        public float speedSteer = 45f;        
         private float rotation;
 
         protected override void OnEnable()

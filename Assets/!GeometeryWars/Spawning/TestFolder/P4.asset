@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80f5a8bec7684b4dba5a4d63210dea0, type: 3}
+  m_Name: P4
+  m_EditorClassIdentifier: 
+  iD: P4
+  points:
+  - {x: 3.8734152, y: -0.2732957, z: 10.291843}
+  - {x: 6.438699, y: 4.0663223, z: 7.937767}
+  - {x: 6.8908057, y: 7.707868, z: 3.7557395}
+  - {x: 5.1085863, y: 9.675592, z: -1.1336819}
+  - {x: 1.5695921, y: 9.442244, z: -5.4203744}
+  - {x: -2.7779074, y: 7.070346, z: -7.955716}
+  - {x: -6.7690067, y: 3.1954489, z: -8.060378}
+  - {x: -9.33429, y: -1.1441666, z: -5.7063003}
+  - {x: -9.786396, y: -4.7857127, z: -1.5242736}
+  - {x: -8.004181, y: -6.7534375, z: 3.365144}
+  - {x: -4.4651885, y: -6.5200887, z: 7.6518345}
+  - {x: -0.11768265, y: -4.148191, z: 10.1871805}

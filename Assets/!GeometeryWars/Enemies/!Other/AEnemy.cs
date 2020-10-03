@@ -10,6 +10,9 @@ namespace GeometeryWars
         public bool isActive = false;
         public float timeWait = 1f;
 
+        public float speedThrust = 1f;
+        protected Vector3 velocity = Vector3.zero;
+
         IEnumerator Wait()
         {
             yield return new WaitForSeconds(timeWait);
