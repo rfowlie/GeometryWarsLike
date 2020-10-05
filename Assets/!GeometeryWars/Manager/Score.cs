@@ -12,11 +12,11 @@ namespace GeometeryWars
 
         private void OnEnable()
         {
-            AEnemy.SCORE += Adjust;
+            AEnemy.DEATH += Adjust;
         }
         private void OnDisable()
         {
-            AEnemy.SCORE -= Adjust;
+            AEnemy.DEATH -= Adjust;
         }
 
         private void Start()

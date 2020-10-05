@@ -17,7 +17,7 @@ namespace GeometeryWars
             if (lifetime < count)
             {
                 count = 0f;
-                pool.Return(gameObject);
+                ReturnToPool(gameObject);
             }
         }
 
@@ -41,13 +41,7 @@ namespace GeometeryWars
 
         private void OnTriggerEnter(Collider other)
         {
-            AEnemy temp = other.GetComponent<AEnemy>();
-            if (temp != null)
-            {
-                temp.pool.Return(other.gameObject);
-            }
-
-            pool.Return(gameObject);
+            ReturnToPool(gameObject);
         }
     }
 }

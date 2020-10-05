@@ -64,10 +64,8 @@ namespace GeometeryWars
             Debug.DrawLine(transform.position, transform.position + rb.velocity, Color.red, 5f);
         }
 
-        protected override void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter(Collision collision)
         {
-            base.OnCollisionEnter(collision);
-
             Debug.Log($"Collision Name {collision.gameObject.name}");
             if (LayerMaskEX.IsInLayerMask(collision.gameObject.layer, reflectOff))
             {
@@ -76,7 +74,7 @@ namespace GeometeryWars
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position - velocity, velocity, out hit, 5f, reflectOff))
                 {
-                    rb.velocity = Vector3.Reflect(velocity, hit.normal) * speedThrust * Time.fixedDeltaTime;                    
+                    rb.velocity = Vector3.Reflect(velocity, hit.normal) * speedThrust * Time.fixedDeltaTime;
                     Debug.DrawLine(hit.point, hit.point + hit.normal, Color.cyan, 5f);
                     Debug.DrawLine(hit.point, hit.point + rb.velocity.normalized, Color.red, 5f);
                 }

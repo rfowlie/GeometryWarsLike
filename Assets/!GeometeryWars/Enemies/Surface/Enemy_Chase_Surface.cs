@@ -37,8 +37,53 @@ namespace GeometeryWars
 
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log("TriggerEnterWorks");
-            //gameObject.SetActive(false);
+            ReturnToPool(gameObject);
+        }
+    }
+}
+
+
+
+
+
+
+public abstract class MoveType
+{
+    //each must movement Type must define how this works
+    public abstract void Move();
+}
+public class SurfaceChase : MoveType
+{
+    public SurfaceChase(Transform transform, Transform target, float speedThrust)
+    {
+        this.transform = transform;
+        this.target = target;
+        this.speedThrust = speedThrust;
+    }
+
+    //required vars
+    Transform transform;
+    Transform target;
+    float speedThrust;
+    LayerMask map;
+
+    //hold calculations
+    Vector3 position;
+    Quaternion rotation;
+
+    public override void Move()
+    {
+        RaycastHit hit;
+        //Vector3 nextPos = transform.position + velocity * speedThrust * Time.fixedDeltaTime;
+        Vector3 nextPos = transform.forward * speedThrust * Time.fixedDeltaTime;
+        //Debug.DrawLine(transform.position, transform.position + transform.forward * 2f, Color.cyan);
+        if (Physics.Raycast(transform.position + nextPos, -transform.up, out hit, float.PositiveInfinity, map))
+        {            
+            position = hit.point + hit.normal;
+
+            Vector3 selfToTarget = (target.position - transform.position).normalized;
+            rotation = Quaternion.FromToRotation(transform.forward, selfToTarget) * transform.rotation;
+            rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         }
     }
 }
