@@ -9,43 +9,74 @@ namespace GeometeryWars
     //change direction upon collision with barrier
     public class Enemy_Wander : AEnemy
     {
-        public float speed = 1f;
-        public Vector3 velocity = Vector3.zero;
-        public LayerMask barrier;
+        public Rigidbody rb;
+        public LayerMask reflectOff;
 
         // Start is called before the first frame update
         void Start()
         {
+            rb = GetComponent<Rigidbody>();
+
             //start in random direction with a little movement in any axis
             float x = Random.Range(0.1f, 1f) * 2f - 1f;
             float y = Random.Range(0.1f, 1f) * 2f - 1f;
-            velocity = new Vector3(x, y, 0f);
-            velocity = velocity.normalized;
+            rb.velocity = new Vector3(x, y, 0f).normalized;
+            Debug.Log("Ready");
+        }
+
+        private void Update()
+        {
+            //RaycastHit hit;
+            //if (Physics.SphereCast(transform.position, 1f, velocity, out hit, 0.3f, reflectOff))
+            //{
+            //    if (hit.collider.gameObject.tag == "Barrier")
+            //    {
+            //        velocity = Vector3.Reflect(velocity, hit.normal);
+            //    }
+            //    else
+            //    {
+            //        velocity = hit.normal;
+            //    }
+
+            //    Debug.DrawLine(hit.point, hit.point + hit.normal, Color.cyan, 5f);
+            //    //transform.position = hit.point + velocity * Time.fixedDeltaTime;
+            //    Debug.DrawLine(hit.point, hit.point + velocity, Color.red, 5f);
+
+            //    //get it away from barrier...
+            //    transform.position += velocity * speedThrust * Time.deltaTime;
+            //}
         }
 
         private void FixedUpdate()
         {
-            if(isActive)
-            {
-                transform.position += velocity * speed * Time.fixedDeltaTime;
-            }
+            //if(isActive)
+            //{      
+            //    transform.position += velocity * speedThrust * Time.fixedDeltaTime;
+            //}
         }
 
-        protected override void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider other)
         {
-            base.OnCollisionEnter(collision);
+            //get direction of object to this
+            Vector3 normal = transform.position - other.transform.position;
+            rb.velocity = Vector3.Reflect(velocity, normal);
+            Debug.DrawLine(other.transform.position, transform.position, Color.cyan, 5f);
+            Debug.DrawLine(transform.position, transform.position + rb.velocity, Color.red, 5f);
+        }
 
-            if (collision.gameObject.tag == "Barrier")
+        private void OnCollisionEnter(Collision collision)
+        {
+            Debug.Log($"Collision Name {collision.gameObject.name}");
+            if (LayerMaskEX.IsInLayerMask(collision.gameObject.layer, reflectOff))
             {
-                //change velocity
+                Debug.Log("Reflect");
                 //shoot raycast in velocity direction from transform
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position - velocity, velocity, out hit, 5f, barrier))
+                if (Physics.Raycast(transform.position - velocity, velocity, out hit, 5f, reflectOff))
                 {
-                    velocity = Vector3.Reflect(velocity, hit.normal);
-
-                    //get it away from barrier...
-                    transform.position += velocity * speed * Time.deltaTime;
+                    rb.velocity = Vector3.Reflect(velocity, hit.normal) * speedThrust * Time.fixedDeltaTime;
+                    Debug.DrawLine(hit.point, hit.point + hit.normal, Color.cyan, 5f);
+                    Debug.DrawLine(hit.point, hit.point + rb.velocity.normalized, Color.red, 5f);
                 }
             }
         }

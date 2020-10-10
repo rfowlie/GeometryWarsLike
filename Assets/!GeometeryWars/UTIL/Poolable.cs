@@ -6,15 +6,17 @@ using UnityEngine;
 //object pool will set itself as pool for this object
 public class Poolable : MonoBehaviour
 {
-    public ObjectPool pool { get; set; }
+    private ObjectPool pool;
 
-    private bool isPool = true;
-    protected virtual void OnCollisionEnter(Collision collision)
+    //ensure only ObjectPool can call this method
+    public void SetPool<T>(T pool) where T : ObjectPool
     {
-        if(isPool)
-        {
-            isPool = false;
-            pool.Return(gameObject);
-        }
+        this.pool = pool;
+    }
+
+    //don't allow things deriving from poolable to access any other Object Pool Functions
+    public void ReturnToPool(GameObject self)
+    {
+        pool.Return(self);
     }
 }

@@ -8,9 +8,11 @@ namespace GeometeryWars
         public float count = 0f;
 
         //hold array of patterns for spawning enemies
+        public Transform map;
         [SerializeField] private Grid grid;
         [SerializeField] private Poolable[] enemies;
         private ObjectPool[] pools;
+        [SerializeField] private SO_SpawnPattern pattern;
 
         private void Start()
         {
@@ -21,10 +23,10 @@ namespace GeometeryWars
                 pools[i] = new ObjectPool(enemies[i]);
             }
 
-            spawnTimes.Enqueue(1f);
-            spawnTimes.Enqueue(3f);
-            spawnTimes.Enqueue(5f);
-            spawnTimes.Enqueue(8f);
+            //spawnTimes.Enqueue(1f);
+            //spawnTimes.Enqueue(3f);
+            //spawnTimes.Enqueue(5f);
+            //spawnTimes.Enqueue(8f);
         }
 
         Queue<float> spawnTimes = new Queue<float>();
@@ -35,14 +37,13 @@ namespace GeometeryWars
             {
                 spawnTimes.Dequeue();
 
-                //decided object order
-                int[] keys = { 0, 1, 0, 1, 0, 1, 0 };
-                        
-                Vector3[] c = grid.GetCircleOfPoints(new Vector2(0.2f, 0.2f), keys.Length, 3f);
-                Vector3[] l = grid.GetLineOfPoints(new Vector2(0.3f, 0.8f), new Vector2(0.9f, 0.1f), keys.Length);
-
-                Spawn(keys, c);
-                Spawn(keys, l);
+                for (int i = 0; i < pattern.points.Length; i++)
+                {
+                    GameObject temp = pools[0].Get();
+                    temp.transform.position = pattern.points[i];
+                    //point transform down towards map
+                    temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+                }
             }
         }
 

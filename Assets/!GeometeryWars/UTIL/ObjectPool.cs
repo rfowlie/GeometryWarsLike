@@ -56,7 +56,7 @@ public class ObjectPool
     {
         GameObject obj = GameObject.Instantiate(poolObject);
         obj.name = poolObject.name + " " + objectCount++.ToString();
-        obj.GetComponent<Poolable>().pool = this;
+        obj.GetComponent<Poolable>().SetPool(this);
         return obj;
     }
 }

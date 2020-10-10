@@ -7,9 +7,16 @@ namespace GeometeryWars
 {
     public abstract class AEnemy : Poolable
     {
+        //the map layer so raycasting for movement is correct
+        public LayerMask map;
+        //add slight delay to unit being active
         public bool isActive = false;
         public float timeWait = 1f;
 
+        public float speedThrust = 1f;
+        protected Vector3 velocity = Vector3.zero;
+
+        //for now a way to prevent enemies from moving right away
         IEnumerator Wait()
         {
             yield return new WaitForSeconds(timeWait);
@@ -24,18 +31,8 @@ namespace GeometeryWars
 
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
-        //need for points???
-        //public static event Action<GameObject> DEATH;
-        public static event Action<int> SCORE;
 
-        protected override void OnCollisionEnter(Collision collision)
-        {
-            if (collision.gameObject.tag == "Bullet")
-            {
-                //update score
-                SCORE(value);
-                pool.Return(gameObject);
-            }
-        }
+        //notify that this has been removed from play
+        public static event Action<int> DEATH;        
     }
 }

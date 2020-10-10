@@ -13,8 +13,7 @@ namespace GeometeryWars
         [Space]
         public bool canMove = true;
         public float speed = 1.0f;
-        private float h = 0f;
-        private float v = 0f;
+        private Vector3 velocity;
         private float angle = 0f;
 
         [Tooltip("Number of bullets per second")]
@@ -32,10 +31,9 @@ namespace GeometeryWars
 
         private void Update()
         {
-            //movement
-            h = Input.GetAxis("Horizontal");
-            v = Input.GetAxis("Vertical");
-                       
+            //movement            
+            velocity = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")).normalized;
+
             //rotation
             Vector3 dir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
             angle = Mathf.Atan2(-dir.x, dir.y) * Mathf.Rad2Deg;
@@ -58,13 +56,9 @@ namespace GeometeryWars
             //move
             if (canMove)
             {
-                if (h != 0)
+                if (velocity != Vector3.zero)
                 {
-                    transform.position += Vector3.right * h * speed * Time.fixedDeltaTime;
-                }
-                if (v != 0)
-                {
-                    transform.position += Vector3.up * v * speed * Time.fixedDeltaTime;
+                    transform.position += velocity * speed * Time.fixedDeltaTime;
                 }
             }
 
@@ -102,7 +96,8 @@ namespace GeometeryWars
 
         private void TripleBullet()
         {
-            GameObject temp = bulletPool.Get();
+            GameObject temp;
+            temp = bulletPool.Get();
             temp.transform.position = transform.position + transform.up;
             temp.transform.rotation = transform.rotation;
 
@@ -153,6 +148,7 @@ namespace GeometeryWars
         }
 
         //FOR NOW
+        //INSTEAD SHOULD JUST USE OBSERVER PATTERN
         public float pickUpTime = 10f;
         private float pickUpCount = 0f;
         Coroutine cPickUp = null;

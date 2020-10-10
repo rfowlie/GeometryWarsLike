@@ -23,11 +23,11 @@ public class Bullet : Poolable
 
     private void OnCollisionStay(Collision collision)
     {
-        pool.Return(gameObject);
+        ReturnToPool(gameObject);
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        pool.Return(gameObject);
+        ReturnToPool(gameObject);
     }
 }
