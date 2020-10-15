@@ -1,64 +1,94 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace GeometeryWars
 {
     public class SpawnManager : MonoBehaviour
     {
-        public float count = 0f;
-
-        //hold array of patterns for spawning enemies
+        [Header("Components")]
         public Transform map;
-        [SerializeField] private Grid grid;
-        [SerializeField] private Poolable[] enemies;
+        [Space]
+        
+        [Header("Variables")]
+        public SO_LevelPattern levelPatterns;
         private ObjectPool[] pools;
-        [SerializeField] private SO_SpawnPattern pattern;
+        public int levelIndex = 0;
+        public float levelCount = 60f;
+        public float spawnCount = 0f;
+
+        public bool isPlay = false;
 
         private void Start()
         {
             //create pools
-            pools = new ObjectPool[enemies.Length];
+            pools = new ObjectPool[levelPatterns.enemyTypes.Length];
             for (int i = 0; i < pools.Length; i++)
             {
-                pools[i] = new ObjectPool(enemies[i]);
+                pools[i] = new ObjectPool(levelPatterns.enemyTypes[i]);
             }
 
-            //spawnTimes.Enqueue(1f);
-            //spawnTimes.Enqueue(3f);
-            //spawnTimes.Enqueue(5f);
-            //spawnTimes.Enqueue(8f);
+            //start
+            levelIndex = 0;
+            c = StartCoroutine(SpawnDelay(levelPatterns.startDelay));
+            isPlay = true;
         }
 
-        Queue<float> spawnTimes = new Queue<float>();
+
         private void Update()
         {
-            count += Time.deltaTime;
-            if(spawnTimes.Count > 0 && count > spawnTimes.Peek())
+            if(isPlay)
             {
-                spawnTimes.Dequeue();
-
-                for (int i = 0; i < pattern.points.Length; i++)
-                {
-                    GameObject temp = pools[0].Get();
-                    temp.transform.position = pattern.points[i];
-                    //point transform down towards map
-                    temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
-                }
+                isPlay = Run();
             }
         }
 
-        //SPAWN PATTERNS
-        public void Spawn(int[] indexs, Vector3[] points)
+        bool isSpawn = false;
+        Coroutine c = null;
+        IEnumerator SpawnDelay(float delay)
         {
-            //ensure array sizes
-            int count = indexs.Length < points.Length ? indexs.Length : points.Length;
-            for (int i = 0; i < count; i++)
+            Debug.Log("<color=green>Start Delay</color>");
+            isSpawn = false;
+            yield return new WaitForSeconds(delay);
+            isSpawn = true;
+            Debug.Log("<color=red>End Delay</color>");
+        }
+
+        private bool Run()
+        {
+            //update counters
+            levelCount -= Time.deltaTime;
+
+            if(isSpawn)
             {
-                GameObject temp = pools[indexs[i]].Get();
-                temp.transform.position = points[i];
-            }
+                spawnCount += Time.deltaTime;
+
+                //check time against current index
+                if (levelPatterns.spawnTimes[levelIndex] < spawnCount)
+                {
+                    //spawn pattern
+                    for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
+                    {
+                        GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
+                        temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
+
+                        //point transform down towards map
+                        temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+                    }
+
+                    //prime next pattern, activate delay
+                    levelIndex++;
+                    if (levelIndex == levelPatterns.patterns.Length)
+                    {
+                        levelIndex = 0;
+                        spawnCount = 0f;
+                        c = StartCoroutine(SpawnDelay(levelPatterns.endDelay));
+                    }
+                }
+            }     
+
+            return levelCount > 0f;
         }
     }
 }
-
-

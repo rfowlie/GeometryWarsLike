@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 //Common Array operations
 public class ArrayEX : ArrayList
@@ -9,19 +10,14 @@ public class ArrayEX : ArrayList
     public static T[] ResizeArray<T>(int count, T[] arr)
     {
         T[] temp = new T[count];
-
         int length = temp.Length > arr.Length ? arr.Length : temp.Length;
-
-        for (int i = 0; i < length; i++)
-        {
-            temp[i] = arr[i];
-        }
-
+        Array.Copy(arr, temp, length);        
         return temp;
     }
 
-    //custom classes new to be instantiated
-    public static T[] ResizeArrayCustomClass<T>(int count, T[] arr) where T : new()
+
+    //doesn't leave any values in the array null, unlike array above which changes size but leaves extra slots null
+    public static T[] ResizeArrayNoNull<T>(int count, T[] arr) where T : new()
     {
         T[] temp = new T[count];
         for (int i = 0; i < temp.Length; i++)
@@ -30,12 +26,7 @@ public class ArrayEX : ArrayList
         }
 
         int length = temp.Length > arr.Length ? arr.Length : temp.Length;
-
-        for (int i = 0; i < length; i++)
-        {
-            temp[i] = arr[i];
-        }
-
+        Array.Copy(arr, temp, length);
         return temp;
     }
 
@@ -47,22 +38,21 @@ public class ArrayEX : ArrayList
         T[] newArr = new T[arr.Length - indexToRemove.Length];
 
         //replace all elements into smaller array, skipping indexs listed in remove list
-        for (int i = 0, o = 0; i < arr.Length; i++)
+        for (int i = 0, o = 0; o < arr.Length; i++, o++)
         {
             //check that index value isn't the same as one to remove
-            for (int check = 0; check < indexToRemove.Length; check++)
+            for (int j = 0; j < indexToRemove.Length; j++)
             {
-                if(i == indexToRemove[check])
+                if(o == indexToRemove[j])
                 {
                     //move to next element and restart check
-                    i++;
-                    check = -1;
+                    o++;
+                    j = 0;
                 }
             }
 
             //if this index isn't one to remove, add to new arr
-            newArr[o] = arr[i];
-            o++;
+            Array.Copy(arr, o, newArr, i, 1);            
         }
 
         return newArr;
