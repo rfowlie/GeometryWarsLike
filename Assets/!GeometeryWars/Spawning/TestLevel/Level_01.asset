@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startDelay: 0
   endDelay: 3
-  enemyTypes:
-  - {fileID: 1097906414491954187, guid: e9a82c576d3dd1147b651923a946dcf3, type: 3}
-  - {fileID: 4659450228159320402, guid: db0a4194f697d394da131b271eb0f2ee, type: 3}
+  enemyPrefabs:
+  - {fileID: 4659450228159320405, guid: db0a4194f697d394da131b271eb0f2ee, type: 3}
+  - {fileID: 1097906414491954186, guid: e9a82c576d3dd1147b651923a946dcf3, type: 3}
+  - {fileID: 7729936662617949936, guid: 2c6ba2df7d5444c46ac1499843f36c61, type: 3}
+  - {fileID: 4659450228159320405, guid: 622fa4c135bf0fe408278d1a05aa26e2, type: 3}
   patterns:
   - {fileID: 11400000, guid: 1d6c8806f03784447bec375f56bd1613, type: 2}
   - {fileID: 11400000, guid: 62f691a38a3f988418b16a7a32f70007, type: 2}
@@ -24,7 +26,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7e50339b9d60ef24cb8ce42fd188f101, type: 2}
   - {fileID: 11400000, guid: 9d68d3aadd199c7489a70a1cc9fa8e49, type: 2}
   arraySize: 5
-  enemyTypeIndex: 0100000000000000010000000100000000000000
+  enemyTypeIndex: 0300000000000000020000000100000000000000
   patternIndex: 0400000001000000020000000300000000000000
   spawnTimes:
   - 0

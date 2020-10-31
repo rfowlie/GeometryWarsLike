@@ -15,7 +15,7 @@ namespace GeometeryWars
         public SO_LevelPattern levelPatterns;
         private ObjectPool[] pools;
         public int levelIndex = 0;
-        public float levelCount = 60f;
+        public float levelTimer = 60f;
         public float spawnCount = 0f;
 
         public bool isPlay = false;
@@ -23,10 +23,13 @@ namespace GeometeryWars
         private void Start()
         {
             //create pools
-            pools = new ObjectPool[levelPatterns.enemyTypes.Length];
+            pools = new ObjectPool[levelPatterns.enemyPrefabs.Length];
             for (int i = 0; i < pools.Length; i++)
             {
-                pools[i] = new ObjectPool(levelPatterns.enemyTypes[i]);
+                if (levelPatterns.enemyPrefabs[i].GetComponent<Poolable>() != null)
+                {
+                    pools[i] = new ObjectPool(levelPatterns.enemyPrefabs[i].GetComponent<Poolable>());
+                }
             }
 
             //start
@@ -48,17 +51,17 @@ namespace GeometeryWars
         Coroutine c = null;
         IEnumerator SpawnDelay(float delay)
         {
-            Debug.Log("<color=green>Start Delay</color>");
+            //Debug.Log("<color=green>Start Delay</color>");
             isSpawn = false;
             yield return new WaitForSeconds(delay);
             isSpawn = true;
-            Debug.Log("<color=red>End Delay</color>");
+            //Debug.Log("<color=red>End Delay</color>");
         }
 
         private bool Run()
         {
             //update counters
-            levelCount -= Time.deltaTime;
+            levelTimer -= Time.deltaTime;
 
             if(isSpawn)
             {
@@ -81,9 +84,10 @@ namespace GeometeryWars
                 }
             }     
 
-            return levelCount > 0f;
+            return levelTimer > 0f;
         }
 
+        //spawn units on different thread so no lags
         IEnumerator SpawnUnits(int levelIndex)
         {
             //spawn pattern

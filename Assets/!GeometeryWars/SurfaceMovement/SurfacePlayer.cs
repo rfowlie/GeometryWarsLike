@@ -1,10 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 //keep this object a certain distance from the plane...
-public class SurfaceMovement : MonoBehaviour
+public class SurfacePlayer : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Transform body;
@@ -18,7 +18,24 @@ public class SurfaceMovement : MonoBehaviour
     public Vector3 velocity;
     private Vector3 aim;
     private Vector3 local;
+    [SerializeField] private LayerMask mapLayer;
 
+
+    public static event Action DEATH;
+    [SerializeField] private int lives = 3;
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Enemy")
+        {
+            Debug.Log("<color=blue>Lost Life</color>");
+            lives--;
+            if(lives <= 0)
+            {
+                //game over...
+                DEATH();
+            }
+        }
+    }
 
     private void Start()
     {
@@ -37,23 +54,26 @@ public class SurfaceMovement : MonoBehaviour
         
 
         //TEMP FIRE BULLETS
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            GameObject temp = bulletPool.Get();
-            temp.transform.position = body.position + body.forward;
-            temp.transform.rotation = body.rotation;
+            isFire = true;
+            c = StartCoroutine(Fire());
+        }
+        if(Input.GetMouseButtonUp(0))
+        {
+            isFire = false;
+            c = null;
         }
     }
 
-    
     private void FixedUpdate()
     {
         //keep object on surface of world
-        if(velocity != Vector3.zero)
+        if (velocity != Vector3.zero)
         {
             RaycastHit hit;
             Vector3 nextPos = transform.position + velocity * speed * Time.fixedDeltaTime;
-            if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity))
+            if (Physics.Raycast(nextPos, -transform.up, out hit, distanceFromSurface + 2f, mapLayer))
             {
                 transform.position = hit.point + hit.normal * distanceFromSurface;
                 transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
@@ -62,5 +82,29 @@ public class SurfaceMovement : MonoBehaviour
 
         //rotate body to face mouse
         body.rotation = Quaternion.FromToRotation(body.forward, local) * body.rotation;
+    }
+
+
+    Coroutine c = null;
+    [SerializeField] private bool isFire = false;
+    [Range(0.01f, 1f)]
+    [SerializeField] private float fireRate = 0.1f;
+
+    IEnumerator Fire()
+    {
+        float count = 0f;
+        while(isFire)
+        {
+            count += Time.deltaTime;
+            if(count > fireRate)
+            {
+                count -= fireRate;
+                GameObject bullet = bulletPool.Get();
+                bullet.transform.position = body.position + body.forward;
+                bullet.transform.rotation = body.rotation;
+            }
+
+            yield return null;
+        }
     }
 }
