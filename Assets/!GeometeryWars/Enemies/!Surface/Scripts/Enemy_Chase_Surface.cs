@@ -15,6 +15,9 @@ namespace GeometeryWars
             {
                 target = GameObject.FindGameObjectWithTag("Player").transform;
             }
+
+            //face random direction
+            transform.rotation = Quaternion.AngleAxis(Random.Range(0f, 360f), transform.up) * transform.rotation;
         }        
 
         private void FixedUpdate()
@@ -34,11 +37,6 @@ namespace GeometeryWars
                 }
             }
         }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            ReturnToPool(gameObject);
-        }
     }
 }
 
@@ -46,6 +44,9 @@ namespace GeometeryWars
 
 
 
+//MAYBE FOR LATER DOWN THE LINE
+//ALLOW FOR UNITS TO SWAP OUT THERE MOVEMENT TYPE
+//OR HAVE MULTIPLE MOVEMENT TYPES THAT THEY ALTERNATE BETWEEN
 
 public abstract class MoveType
 {

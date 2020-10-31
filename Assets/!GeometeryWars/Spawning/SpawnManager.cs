@@ -68,14 +68,7 @@ namespace GeometeryWars
                 if (levelPatterns.spawnTimes[levelIndex] < spawnCount)
                 {
                     //spawn pattern
-                    for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
-                    {
-                        GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
-                        temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
-
-                        //point transform down towards map
-                        temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
-                    }
+                    StartCoroutine(SpawnUnits(levelIndex));
 
                     //prime next pattern, activate delay
                     levelIndex++;
@@ -89,6 +82,20 @@ namespace GeometeryWars
             }     
 
             return levelCount > 0f;
+        }
+
+        IEnumerator SpawnUnits(int levelIndex)
+        {
+            //spawn pattern
+            for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
+            {
+                GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
+                temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
+
+                //point transform down towards map
+                temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+                yield return null;
+            }
         }
     }
 }
