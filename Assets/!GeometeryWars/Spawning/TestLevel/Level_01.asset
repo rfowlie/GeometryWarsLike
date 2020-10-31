@@ -22,11 +22,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 62f691a38a3f988418b16a7a32f70007, type: 2}
   - {fileID: 11400000, guid: d3a874b6644e98f4dbfd063e23a8fb79, type: 2}
   - {fileID: 11400000, guid: 7e50339b9d60ef24cb8ce42fd188f101, type: 2}
-  arraySize: 4
-  enemyTypeIndex: 00000000000000000100000001000000
-  patternIndex: 00000000010000000200000003000000
+  - {fileID: 11400000, guid: 9d68d3aadd199c7489a70a1cc9fa8e49, type: 2}
+  arraySize: 5
+  enemyTypeIndex: 0100000000000000010000000100000000000000
+  patternIndex: 0400000001000000020000000300000000000000
   spawnTimes:
   - 0
   - 0
   - 5
   - 5
+  - 0

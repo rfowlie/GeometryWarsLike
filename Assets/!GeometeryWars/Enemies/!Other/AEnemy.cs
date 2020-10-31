@@ -29,6 +29,11 @@ namespace GeometeryWars
             StartCoroutine(Wait());
         }
 
+        protected virtual void OnTriggerEnter(Collider other)
+        {
+            ReturnToPool(gameObject);
+        }
+
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
 

@@ -44,11 +44,6 @@ namespace GeometeryWars
                 }
             }
         }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            ReturnToPool(gameObject);
-        }
     }
 }
 
