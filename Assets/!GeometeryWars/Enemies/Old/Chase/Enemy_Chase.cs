@@ -36,6 +36,11 @@ namespace GeometeryWars
                 transform.rotation = Quaternion.AngleAxis(rotation, Vector3.forward);
             }            
         }
+
+        protected override void SetMovement()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
 

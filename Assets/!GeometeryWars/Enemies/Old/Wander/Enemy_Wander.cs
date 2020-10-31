@@ -80,6 +80,11 @@ namespace GeometeryWars
                 }
             }
         }
+
+        protected override void SetMovement()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
 

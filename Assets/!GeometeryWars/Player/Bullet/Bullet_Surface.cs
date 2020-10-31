@@ -32,7 +32,7 @@ namespace GeometeryWars
                 //colliding with something
                 transform.position = nextPos;
             }
-            else if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity))
+            else if (Physics.Raycast(nextPos, -transform.up, out hit, distanceFromSurface + 2f))
             {
                 transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
                 transform.position = hit.point + hit.normal * distanceFromSurface;

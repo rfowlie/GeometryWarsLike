@@ -176,8 +176,8 @@ GameObject:
   - component: {fileID: 4659450228159320403}
   - component: {fileID: 4659450228159320402}
   m_Layer: 10
-  m_Name: Wander_Surface
-  m_TagString: Untagged
+  m_Name: Surface_Wander
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -238,10 +238,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d48df03591f5ed479703584c7eb4961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map:
+  mapLayer:
     serializedVersion: 2
     m_Bits: 8192
   isActive: 0
   timeWait: 1
-  speedThrust: 1
-  value: 100
+  speedThrust: 0.75
+  target: {fileID: 0}
+  value: 50

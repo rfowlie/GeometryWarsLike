@@ -32,7 +32,7 @@ namespace GeometeryWars
         [Space]
         [Space]
         [Header("Info")]
-        public AEnemy[] enemyTypes;
+        public GameObject[] enemyPrefabs;
         public SO_SpawnPattern[] patterns;
         [Space]
         [Space]
