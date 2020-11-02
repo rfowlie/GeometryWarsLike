@@ -13,6 +13,8 @@ namespace GeometeryWars
         public bool isActive = false;
         public float timeWait = 1f;
         public float speedThrust = 1f;
+        public float obstacleDistance = 3f;
+        public LayerMask obstacleLayer;
         protected Vector3 velocity = Vector3.zero;
         public Transform target;
         protected EnemyMovement currentMovement;
@@ -27,23 +29,11 @@ namespace GeometeryWars
         //GAMELOOP
         protected void Start()
         {
-            SetMovement();
-        }
-        
-        protected virtual void FixedUpdate()
-        {
-            if (isActive)
-            {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position + currentMovement.RayDirection(), -transform.up, out hit, float.PositiveInfinity, mapLayer))
-                {
-                    //move
-                    transform.position = currentMovement.NextPosition(hit);
+            GameVariables gv = FindObjectOfType<GameVariables>();
+            mapLayer = gv.mapLayer;
+            obstacleLayer = gv.obstacleLayer;
 
-                    //rotation
-                    transform.rotation = currentMovement.NextRotation(hit);
-                }
-            }
+            SetMovement();
         }
         
         protected virtual void OnEnable()
@@ -59,6 +49,36 @@ namespace GeometeryWars
             isActive = false;
             StartCoroutine(Wait());
         }
+
+        protected virtual void FixedUpdate()
+        {
+            if (isActive)
+            {
+                //Calc next pos and then check for obstacle collision
+                RaycastHit hitNext;
+                Vector3 nextPos = transform.position + currentMovement.RayDirection();
+                if (Physics.SphereCast(transform.position, 1f, transform.forward, out hitNext, obstacleDistance, obstacleLayer))
+                {
+                    //obstacle hit...                    
+                    Vector3 p = Vector3.Project(transform.position - hitNext.point, hitNext.normal);
+                    p = ((hitNext.point - transform.position) + p).normalized;
+                    //Debug.DrawRay(transform.position, p * 3f, Color.black, 1f);
+                    nextPos = transform.position + p * speedThrust * Time.fixedDeltaTime;
+                }
+
+
+                RaycastHit hit;
+                if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity, mapLayer))
+                {
+                    //move
+                    transform.position = currentMovement.NextPosition(hit);                    
+                }
+
+                //rotation
+                transform.rotation = currentMovement.NextRotation(hit);
+            }
+        }
+        
 
         protected virtual void OnTriggerEnter(Collider other)
         {
