@@ -61,13 +61,16 @@ public class SurfacePlayer : MonoBehaviour
         bulletPool = new ObjectPool(bullet);
     }
 
+    
+    private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+
     private void Update()
     {
         //movement
         velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
 
         //get mouse position compare to center of screen to aquire rotation direction, apply to player body
-        aim = Input.mousePosition - new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
+        aim = Input.mousePosition - screenSize;
         local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
         
 

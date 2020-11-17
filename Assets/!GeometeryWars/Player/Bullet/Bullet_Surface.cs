@@ -10,6 +10,14 @@ namespace GeometeryWars
         public float speed = 5f;
         public float lifetime = 3f;
         private float count = 0f;
+        private LayerMask mapLayer;
+
+        private void Start()
+        {
+            //eh...
+            GameVariables gv = FindObjectOfType<GameVariables>();
+            mapLayer = gv.mapLayer;
+        }
 
         private void Update()
         {
@@ -25,17 +33,16 @@ namespace GeometeryWars
         {
             RaycastHit hit;
             //calc next position for bullet
-            Vector3 nextPos = transform.position + transform.forward * speed * Time.fixedDeltaTime;
-            //determine if colliding with something
-            if (Physics.Raycast(transform.position, transform.forward * speed * Time.fixedDeltaTime))
-            {
-                //colliding with something
-                transform.position = nextPos;
-            }
-            else if (Physics.Raycast(nextPos, -transform.up, out hit, distanceFromSurface + 2f))
+            Vector3 nextPos = transform.position + transform.forward * speed * Time.fixedDeltaTime;            
+            if (Physics.Raycast(nextPos, -transform.up, out hit, distanceFromSurface + 2f, mapLayer))
             {
                 transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
                 transform.position = hit.point + hit.normal * distanceFromSurface;
+            }
+            //if bullet glitches remove it...
+            else
+            {
+                ReturnToPool(gameObject);
             }
         }
 
