@@ -44,7 +44,7 @@ public class SurfacePlayer : MonoBehaviour
     private void Start()
     {
         //get game map from global variables
-        GameVariables gv = FindObjectOfType<GameVariables>();
+        GlobalVariables gv = FindObjectOfType<GlobalVariables>();
         map = gv.map;
         mapLayer = gv.mapLayer;
         obstacleLayer = gv.obstacleLayer;

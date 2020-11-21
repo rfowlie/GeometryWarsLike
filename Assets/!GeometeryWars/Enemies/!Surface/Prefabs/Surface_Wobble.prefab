@@ -78,14 +78,19 @@ MonoBehaviour:
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
+  body: {fileID: 0}
   isActive: 0
   timeWait: 1
-  speedThrust: 2
+  speedThrust: 2.5
+  obstacleDistance: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   target: {fileID: 0}
   value: 100
   wobbleDirection: {x: 1, y: 0, z: 0}
-  wobbleSpeed: 6
-  wobbleStrength: 2
+  wobbleSpeed: 7
+  wobbleStrength: 2.4
 --- !u!1 &7729936662781031952
 GameObject:
   m_ObjectHideFlags: 0

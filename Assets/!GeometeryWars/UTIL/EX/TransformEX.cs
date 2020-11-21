@@ -5,30 +5,36 @@ using UnityEngine;
 //common transform operations
 public class TransformEX
 {
-    //find the root parent transform
-    public static Transform FindRootParent(Transform child)
+    //find the foot parent transform
+    public static Transform GetRoot(Transform child)
     {
         Transform temp = child;
-        if(child.parent)
+        while (child.parent)
         {
-            temp = FindRootParent(child.parent);
+            temp = child.parent;
         }
 
         return temp;
     }
 
+    //gets all componenet references in hierarchy it belongs too
+    public static T[] GetAllOfComponentInHierarchy<T>(Transform transform)
+    {
+        return GetAllOfComponentInChidren<T>(GetRoot(transform));
+    }
 
-    //create list and then send it to the recursive statement
-    public static T[] FindComponentsInHierarchy<T>(Transform parent)
+    
+    //gets all component references in children
+    public static T[] GetAllOfComponentInChidren<T>(Transform transform)
     {
         List<T> masterList = new List<T>();
 
-        masterList = InsidePart<T>(parent, masterList);
+        masterList = DepthFirstSearch(transform, masterList);
 
         return masterList.ToArray();
     }
 
-    private static List<T> InsidePart<T>(Transform parent, List<T> list)
+    private static List<T> DepthFirstSearch<T>(Transform parent, List<T> list)
     {
         //check if has children
         for (int i = 0; i < parent.childCount; i++)
@@ -37,7 +43,7 @@ public class TransformEX
             Transform child = parent.GetChild(i);
             if (child.childCount > 0)
             {
-                InsidePart<T>(child, list);
+                DepthFirstSearch(child, list);
             }
         }
 

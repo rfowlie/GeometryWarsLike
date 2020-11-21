@@ -15,7 +15,7 @@ namespace GeometeryWars
         private void Start()
         {
             //eh...
-            GameVariables gv = FindObjectOfType<GameVariables>();
+            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
             mapLayer = gv.mapLayer;
         }
 

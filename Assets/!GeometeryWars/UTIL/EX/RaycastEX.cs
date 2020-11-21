@@ -3,89 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-//Common raycast operations
 public class RaycastEX
 {
-    //returns true/false hit
-    //simple raycast from target in direction by distance colliding with everthing opposite to layermask
-    public static bool CollisionCheck(Transform target, Vector3 direction, float distance, LayerMask ignoreLayer)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(target.position, direction, out hit, distance, ~ignoreLayer))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    
-    //returns raycast hit from a generic raycast in direction by distance from target
-    public static RaycastHit RaycastCheck(Transform target, Vector3 direction, float distance, LayerMask ignoreLayer)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(target.position, direction, out hit, distance, ~ignoreLayer))
-        {
-            return hit;
-        }
-
-        return hit;
-    }
-
-    //same as above without layermask
-    public static RaycastHit RaycastCheck(Transform target, Vector3 direction, float distance)
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(target.position, direction, out hit, distance))
-        {
-            return hit;
-        }
-
-        return hit;
-    }
-
-    //returns a vector3 representing the minimum distance from the collision based on the check info
-    //public static Vector3 RaycastInfoCheck(Vector3 position, RaycastInfo_SO check)
-    //{
-    //    if (Physics.Raycast(position + check.rayStart, check.rayDirection, out check.hit,
-    //                        check.rayDistance, ~check.ignoreLayer, QueryTriggerInteraction.Ignore))
-    //    {
-    //        //return the distance from the collision point plus min distance
-    //        return check.hit.point - (check.rayDirection * check.minDistance);
-    //    }
-    //    else
-    //    {
-    //        return position + (check.rayDirection * check.rayDistance);
-    //    }
-    //}
-    //public static Vector3 SpherecastInfoCheck(Vector3 position, float radius, RaycastInfo_SO check)
-    //{
-    //    if (Physics.SphereCast(position + check.rayStart, radius, check.rayDirection, out check.hit,
-    //                        check.rayDistance, ~check.ignoreLayer, QueryTriggerInteraction.Ignore))
-    //    {
-    //        //return the distance from the collision point plus min distance
-    //        return check.hit.point - (check.rayDirection * check.minDistance);
-    //    }
-    //    else
-    //    {
-    //        return position + (check.rayDirection * check.rayDistance);
-    //    }
-    //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //OLD
     //generic raycast method that gets are hit information
     private static RaycastHit[] Search(GameObject obj, int numbRays, float viewRange, float viewDis)
@@ -116,12 +35,6 @@ public class RaycastEX
 
         //return array for space purposes
         return hits.ToArray();
-    }
-
-    //returns the PRIVATE search results
-    public static RaycastHit[] AllCollisions(GameObject obj, int numbRays, float viewRange, float viewDis)
-    {
-        return Search(obj, numbRays, viewRange, viewDis);
     }
 
 

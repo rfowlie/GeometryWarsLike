@@ -78,9 +78,14 @@ MonoBehaviour:
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
+  body: {fileID: 0}
   isActive: 0
   timeWait: 1
   speedThrust: 2
+  obstacleDistance: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   target: {fileID: 0}
   value: 100
 --- !u!1 &1097906414934577110
@@ -143,7 +148,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 472fbfbd62a1ceb4d90b7972d59fe92a, type: 2}
+  - {fileID: 2100000, guid: f62dea5ad54b7914cb20bf0a72cfa736, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
