@@ -9,6 +9,7 @@ namespace GeometeryWars
     {
         //the map layer so raycasting for movement is correct
         public LayerMask mapLayer;
+        public Transform body;
         //add slight delay to unit being active
         public bool isActive = false;
         public float timeWait = 1f;
@@ -27,9 +28,9 @@ namespace GeometeryWars
         public static event Action<int> DEATH;
 
         //GAMELOOP
-        protected void Start()
+        protected virtual void Start()
         {
-            GameVariables gv = FindObjectOfType<GameVariables>();
+            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
             mapLayer = gv.mapLayer;
             obstacleLayer = gv.obstacleLayer;
 
@@ -43,11 +44,29 @@ namespace GeometeryWars
             {
                 target = GameObject.FindGameObjectWithTag("Player").transform;
             }
+
+            //get child triggers
+            ChildTrigger[] ct = GetComponentsInChildren<ChildTrigger>();
+            foreach(ChildTrigger c in ct)
+            {
+                Debug.Log("Child Trigger Assigned");
+                c.TRIGGER += ReturnSelf;
+            }
+
             //face random direction
             transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), transform.up) * transform.rotation;
             //start movement delay
             isActive = false;
             StartCoroutine(Wait());
+        }
+
+        private void OnDisable()
+        {
+            ChildTrigger[] ct = GetComponentsInChildren<ChildTrigger>();
+            foreach (ChildTrigger c in ct)
+            {                
+                c.TRIGGER -= ReturnSelf;
+            }
         }
 
         protected virtual void FixedUpdate()
@@ -81,6 +100,11 @@ namespace GeometeryWars
         
 
         protected virtual void OnTriggerEnter(Collider other)
+        {
+            ReturnToPool(gameObject);
+        }
+
+        private void ReturnSelf()
         {
             ReturnToPool(gameObject);
         }
@@ -124,9 +148,9 @@ namespace GeometeryWars
     }
 
     //basic movement, no rotation just move forward
-    public class MoveForward : EnemyMovement
+    public class wander : EnemyMovement
     {
-        public MoveForward(AEnemy e) : base(e)
+        public wander(AEnemy e) : base(e)
         {
         }
     }
@@ -190,6 +214,9 @@ namespace GeometeryWars
         public override Vector3 RayDirection()
         {
             Vector3 wobble = e.transform.TransformDirection(wobbleDirection) * Mathf.Sin((seedTime + Time.time) * wobbleSpeed) * wobbleStrength;
+            //TEST FOR OTHER WOBBLE TYPES
+            //Vector3 wobble2 = e.transform.TransformDirection(Vector3.forward) * Mathf.Sin((seedTime + Time.time) * (wobbleSpeed * 2)) * (wobbleStrength * 0.75f);
+            //Vector3 total = (wobble + wobble2);
             return (wobble + e.transform.forward) * e.speedThrust * Time.fixedDeltaTime;
         }
 

@@ -8,7 +8,7 @@ namespace GeometeryWars
     {
         protected override void SetMovement()
         {
-            currentMovement = new MoveForward(this);
+            currentMovement = new wander(this);
         }
     }
 }

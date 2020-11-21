@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//list of global variables for the game
-public class GameVariables : MonoBehaviour
+//Store global variables for game...
+public class GlobalVariables : Singleton<GlobalVariables>
 {
     public Transform map;
     public LayerMask mapLayer;

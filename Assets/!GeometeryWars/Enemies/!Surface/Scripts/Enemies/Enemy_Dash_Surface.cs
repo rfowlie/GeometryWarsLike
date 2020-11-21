@@ -31,7 +31,7 @@ namespace GeometeryWars
             {
                 count = 0f;
                 isDash = !isDash;
-                if(isDash) { currentMovement = new MoveForward(this); }
+                if(isDash) { currentMovement = new wander(this); }
                 else { currentMovement = new RotateToTarget(this); }
             }
         }

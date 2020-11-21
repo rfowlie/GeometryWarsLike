@@ -131,7 +131,7 @@ namespace GeometeryWars
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (LayerMaskEX.IsInLayerMask(collision.gameObject.layer, canDamage))
+            if (LayerMaskEX.IsInLayerMask(collision.gameObject, canDamage))
             {
                 Damage();
             }

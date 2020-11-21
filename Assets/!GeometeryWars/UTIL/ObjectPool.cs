@@ -8,49 +8,33 @@ using System;
 public class ObjectPool
 {
     //Constructor
-    public ObjectPool(Poolable poolObject)
+    public ObjectPool(Poolable poolObject, string poolName = "")
     {
         this.poolObject = poolObject.gameObject;
+        this.poolName = poolName;
     }
 
     //use later for getting different pools through code...
-    [SerializeField] private string poolName = string.Empty;
-    [SerializeField] private GameObject poolObject = null;
-    //private List<GameObject> active = new List<GameObject>();
-    //public int ActiveCount() { return active.Count; }
+    private string poolName = string.Empty;
+    public string Name() { return poolName; }
+    private GameObject poolObject = null;
     private Queue<GameObject> deactive = new Queue<GameObject>();
     public int DeactiveCount() { return deactive.Count; }
 
+    //return available deactive objs else create a new one
     public GameObject Get()
     {
         GameObject obj = deactive.Count > 0 ? deactive.Dequeue() : Create();
-        //active.Add(obj);
         obj.SetActive(true);
         return obj;
     }
     public void Return(GameObject obj)
-    {
-        //if (!active.Contains(obj))
-        //{
-        //    Debug.LogError("Object to be removed not in active pool");
-        //    return;
-        //}
-        //active.Remove(obj);
+    {        
         deactive.Enqueue(obj);
         obj.SetActive(false);
     }
-    
-    //public void ReturnAll()
-    //{
-    //    foreach(var obj in active)
-    //    {
-    //        deactive.Enqueue(obj);
-    //        obj.SetActive(false);
-    //    }
 
-    //    active.Clear();
-    //}
-
+    //keep track of total objs created in pool
     public int objectCount = 0;
     private GameObject Create()
     {

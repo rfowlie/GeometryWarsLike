@@ -14,7 +14,7 @@ public class Poolable : MonoBehaviour
         this.pool = pool;
     }
 
-    //don't allow things deriving from poolable to access any other Object Pool Functions
+    //allow outside things to notify poolable Object to return to its pool
     public void ReturnToPool(GameObject self)
     {
         pool.Return(self);
