@@ -266,7 +266,7 @@ MonoBehaviour:
   value: 90
   isJump: 0
   jumpTime: 0
-  jumpForce: 10
+  jumpForce: 5
   gravity: 10
   delayMin: 1
   delayMax: 3
