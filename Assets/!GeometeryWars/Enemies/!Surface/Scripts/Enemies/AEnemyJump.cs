@@ -5,9 +5,7 @@ using UnityEngine;
 namespace GeometeryWars
 {
     public abstract class AEnemyJump : AEnemy
-    {
-        public EnemyMovement defaultMovement;
-        public EnemyMovement jumpMovement;
+    {        
         private bool isJump = false;
         private float jumpTime = 0f;
         public float jumpForce = 10f;
@@ -19,8 +17,7 @@ namespace GeometeryWars
         private void SetJump()
         {
             jumpTime = 0f;
-            isJump = true;
-            currentMovement = jumpMovement;
+            isJump = true;            
         }
         protected override void Start()
         {
@@ -44,8 +41,7 @@ namespace GeometeryWars
                 {
                     jumpPosition = 0f;
                     isJump = false;
-                    c = null;
-                    currentMovement = defaultMovement;
+                    c = null;                    
                     c = StartCoroutine(CoroutineEX.RandomDelayFunc(SetJump, delayMin, delayMax));
                 }
 

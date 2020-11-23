@@ -5,109 +5,66 @@ using System;
 
 namespace GeometeryWars
 {
-    public abstract class EnemyMovement
+    //needed for wobble direction method
+    public struct WobbleInfo
     {
-        public EnemyMovement(AEnemy e)
+        public WobbleInfo(Vector3 direction, float speed = 1f, float intensity = 1f)
         {
-            this.e = e;
+            this.direction = direction;
+            this.speed = speed;
+            this.intensity = intensity;
         }
 
-        protected AEnemy e;
-
-        public virtual Vector3 RayDirection()
-        {
-            return e.transform.forward * e.speedThrust * Time.fixedDeltaTime;
-        }
-        public virtual Vector3 NextPosition(RaycastHit hit)
-        {
-            return hit.point + hit.normal;
-        }
-        public virtual Quaternion NextRotation(RaycastHit hit)
-        {
-            return Quaternion.FromToRotation(e.transform.up, hit.normal) * e.transform.rotation;
-        }
+        public Vector3 direction;
+        public float speed;
+        public float intensity;
     }
 
-    //basic movement, no rotation just move forward
-    public class wander : EnemyMovement
+
+    //static methods that hold enemy movement methods
+    public static class EMovement
     {
-        public wander(AEnemy e) : base(e)
+        //directions
+        public static class Direction
         {
+            public static Vector3 Forward(Transform t, float speed)
+            {
+                return t.forward * speed * Time.deltaTime;
+            }
+            //using sin combine random directions and intensities to create a unique wobble
+            public static Vector3 Wobble(Transform transform, params WobbleInfo[] wobbles)
+            {
+                Vector3 total = Vector3.zero;
+                for(int i = 0; i < wobbles.Length; i++)
+                {
+                    total += transform.TransformDirection(wobbles[i].direction) * Mathf.Sin(Time.time * wobbles[i].speed) * wobbles[i].intensity;
+                }
+
+                return total * Time.deltaTime;
+            }
         }
-    }
-
-    //rotate to face target
-    public class RotateToTarget : EnemyMovement
-    {
-        public RotateToTarget(AEnemy e) : base(e)
+        //rotations
+        public static class Rotation
         {
-        }
-
-        public override Vector3 RayDirection()
-        {
-            return Vector3.zero;
-        }
-
-        public override Quaternion NextRotation(RaycastHit hit)
-        {
-            Vector3 selfToTarget = (e.target.position - e.transform.position).normalized;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.forward, selfToTarget) * e.transform.rotation;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.up, hit.normal) * e.transform.rotation;
-            return e.transform.rotation;
-        }
-    }
-
-    //rotate to face, move in faced direction
-    public class Chase : EnemyMovement
-    {
-        public Chase(AEnemy e) : base(e)
-        {
-        }
-
-        public override Quaternion NextRotation(RaycastHit hit)
-        {
-            Vector3 selfToTarget = (e.target.position - e.transform.position).normalized;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.forward, selfToTarget) * e.transform.rotation;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.up, hit.normal) * e.transform.rotation;
-            return e.transform.rotation;
-        }
-    }
-
-    //chase but with horizontal offset in movement
-    public class Wobble : EnemyMovement
-    {
-        public Wobble(AEnemy e, Vector3 wobbleDirection, float wobbleSpeed, float wobbleStrength) : base(e)
-        {
-            this.wobbleDirection = wobbleDirection;
-            this.wobbleSpeed = wobbleSpeed;
-            this.wobbleStrength = wobbleStrength;
-
-            //generate random seed time so not all wobbles look exactly alike
-            seedTime = UnityEngine.Random.Range(0f, DateTime.Now.Millisecond);
-        }
-
-        private Vector3 wobbleDirection;
-        private float wobbleSpeed, wobbleStrength;
-
-        private float seedTime = 0f;
-
-        //incorporate wobble offset
-        public override Vector3 RayDirection()
-        {
-            Vector3 wobble = e.transform.TransformDirection(wobbleDirection) * Mathf.Sin((seedTime + Time.time) * wobbleSpeed) * wobbleStrength;
-            //TEST FOR OTHER WOBBLE TYPES
-            //Vector3 wobble2 = e.transform.TransformDirection(Vector3.forward) * Mathf.Sin((seedTime + Time.time) * (wobbleSpeed * 2)) * (wobbleStrength * 0.75f);
-            //Vector3 total = (wobble + wobble2);
-            return (wobble + e.transform.forward) * e.speedThrust * Time.fixedDeltaTime;
-        }
-
-        //rotate to face target
-        public override Quaternion NextRotation(RaycastHit hit)
-        {
-            Vector3 selfToTarget = (e.target.position - e.transform.position).normalized;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.forward, selfToTarget) * e.transform.rotation;
-            e.transform.rotation = Quaternion.FromToRotation(e.transform.up, hit.normal) * e.transform.rotation;
-            return e.transform.rotation;
+            public static Quaternion Forward(Transform t, RaycastHit hit)
+            {
+                return Quaternion.FromToRotation(t.up, hit.normal) * t.rotation;
+            }
+            public static Quaternion FaceTarget(Transform transform, Transform target, RaycastHit hit)
+            {
+                Vector3 selfToTarget = (target.position - transform.position).normalized;
+                transform.rotation = Quaternion.FromToRotation(transform.forward, selfToTarget) * transform.rotation;
+                transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                return transform.rotation;
+            }
+            public static Quaternion AnticipatePosition(Transform transform, Transform target, float intensity, RaycastHit hit)
+            {
+                Vector3 velocity = target.GetComponent<SurfacePlayer>().velocity * intensity;
+                Vector3 selfToTarget = ((target.position + velocity) - transform.position).normalized;
+                transform.rotation = Quaternion.FromToRotation(transform.forward, selfToTarget) * transform.rotation;
+                transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                return transform.rotation;
+            }
         }
     }
 }
