@@ -241,8 +241,13 @@ MonoBehaviour:
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
+  body: {fileID: 4659450227638753047}
   isActive: 0
   timeWait: 1
   speedThrust: 0.75
+  obstacleDistance: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   target: {fileID: 0}
   value: 50

@@ -59,8 +59,8 @@ MonoBehaviour:
   value: 100
   isJump: 0
   jumpTime: 0
-  jumpForce: 7
-  gravity: 10
+  jumpForce: 8
+  gravity: 19
   delayMin: 0.2
   delayMax: 0.8
 --- !u!1 &1097906414934577110
