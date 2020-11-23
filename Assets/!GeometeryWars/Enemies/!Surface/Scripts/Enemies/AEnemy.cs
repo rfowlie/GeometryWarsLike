@@ -18,7 +18,6 @@ namespace GeometeryWars
         public LayerMask obstacleLayer;
         protected Vector3 velocity = Vector3.zero;
         public Transform target;
-        protected EnemyMovement currentMovement;
 
         private Coroutine delay = null;
 
@@ -37,6 +36,7 @@ namespace GeometeryWars
             obstacleLayer = gv.obstacleLayer;
 
             SetMovement();
+            SetRotation();
         }
         
         protected virtual void OnEnable()
@@ -71,13 +71,19 @@ namespace GeometeryWars
             }
         }
 
+        protected RaycastHit hit;
+        protected Func<Vector3> Movement;
+        protected Func<Quaternion> Rotation;
+
         protected virtual void FixedUpdate()
         {
             if (isActive)
             {
                 //Calc next pos and then check for obstacle collision
                 RaycastHit hitNext;
-                Vector3 nextPos = transform.position + currentMovement.RayDirection();
+                //fancy null check, because returns a value type use the ?? coalescing operator to tell what value to return on null
+                Vector3 nextPos = transform.position + Movement?.Invoke() ?? Vector3.zero;
+                //Vector3 nextPos = transform.position + currentMovement.RayDirection();
                 if (Physics.SphereCast(transform.position, 1f, transform.forward, out hitNext, obstacleDistance, obstacleLayer))
                 {
                     //obstacle hit...                    
@@ -88,15 +94,17 @@ namespace GeometeryWars
                 }
 
 
-                RaycastHit hit;
+                //RaycastHit hit;
                 if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity, mapLayer))
                 {
                     //move
-                    transform.position = currentMovement.NextPosition(hit);                    
+                    transform.position = hit.point + hit.normal;
                 }
 
                 //rotation
-                transform.rotation = currentMovement.NextRotation(hit);
+                //same as above here, quaterion is a value type so need the null coalescing operator to convert...
+                transform.rotation = Rotation?.Invoke() ?? transform.rotation;
+                //transform.rotation = currentMovement.NextRotation(hit);
             }
         }
         
@@ -114,5 +122,6 @@ namespace GeometeryWars
 
         //METHODS
         protected abstract void SetMovement();
+        protected abstract void SetRotation();
     }
 }

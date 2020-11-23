@@ -9,9 +9,12 @@ namespace GeometeryWars
     {
         protected override void SetMovement()
         {
-            defaultMovement = new Chase(this);
-            jumpMovement = new wander(this);
-            currentMovement = defaultMovement;
+            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+        }
+
+        protected override void SetRotation()
+        {
+            Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
         }
     }
 }

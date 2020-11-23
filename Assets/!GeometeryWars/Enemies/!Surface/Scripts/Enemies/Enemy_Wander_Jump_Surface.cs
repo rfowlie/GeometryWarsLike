@@ -8,9 +8,12 @@ namespace GeometeryWars
     {
         protected override void SetMovement()
         {
-            defaultMovement = new wander(this);
-            jumpMovement = new Wobble(this, Vector3.right, 10f, 3f);
-            currentMovement = defaultMovement;
+            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+        }
+
+        protected override void SetRotation()
+        {
+            Rotation = () => EMovement.Rotation.Forward(transform, hit);
         }
     }   
 }

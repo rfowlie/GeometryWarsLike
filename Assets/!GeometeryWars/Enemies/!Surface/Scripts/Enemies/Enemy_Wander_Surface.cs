@@ -8,7 +8,12 @@ namespace GeometeryWars
     {
         protected override void SetMovement()
         {
-            currentMovement = new wander(this);
+            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+        }
+
+        protected override void SetRotation()
+        {
+            Rotation = () => EMovement.Rotation.Forward(transform, hit);
         }
     }
 }

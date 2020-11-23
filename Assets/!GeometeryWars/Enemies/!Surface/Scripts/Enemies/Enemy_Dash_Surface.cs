@@ -5,20 +5,18 @@ using UnityEngine;
 
 namespace GeometeryWars
 {
-    //rotates to face player...
-    //dashs quickly forward a certain distance/range???
-    //then stops for awhile
-    //only when player in range??? 
-    //measure the arc distance??? 
-    //wouldn't be accurate if using odd shapes
-
-    //this one will need 3 movement states
-    //IDLE/ROTATETOFACE/DASH
+    //rotates to face target, doesn't move
+    //then dashs in most recent forward without rotating
     public class Enemy_Dash_Surface : AEnemy
     {
         protected override void SetMovement()
         {
-            currentMovement = new RotateToTarget(this);
+            Movement = null;
+        }
+
+        protected override void SetRotation()
+        {
+            Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
         }
 
         //FOR NOWWWWW
@@ -29,10 +27,18 @@ namespace GeometeryWars
             count += Time.deltaTime;
             if(count > 5f)
             {
-                count = 0f;
+                count -= 5f;
                 isDash = !isDash;
-                if(isDash) { currentMovement = new wander(this); }
-                else { currentMovement = new RotateToTarget(this); }
+                if(isDash)
+                {
+                    Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+                    Rotation = () => EMovement.Rotation.Forward(transform, hit);
+                }
+                else
+                {
+                    Movement = null;
+                    Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
+                }
             }
         }
     }
