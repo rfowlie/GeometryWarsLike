@@ -59,7 +59,7 @@ namespace GeometeryWars
             transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), transform.up) * transform.rotation;
             //start movement delay
             isActive = false;
-            delay = StartCoroutine(CoroutineEX.Delay(() => { isActive = true; }, timeWait));
+            delay = CoroutineEX.Delay(this, () => isActive = true, timeWait);
         }
 
         private void OnDisable()

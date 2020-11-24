@@ -21,6 +21,16 @@ public class ObjectPool
     private Queue<GameObject> deactive = new Queue<GameObject>();
     public int DeactiveCount() { return deactive.Count; }
 
+    public void SetupInitial(int number)
+    {
+        for(int i = 0; i < number; i++)
+        {
+            GameObject temp = Create();
+            temp.SetActive(false);
+            deactive.Enqueue(temp);
+        }
+    }
+
     //return available deactive objs else create a new one
     public GameObject Get()
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Extentions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,15 +14,15 @@ namespace GeometeryWars
             if (arraySize < 0) { arraySize = 0; }
             if (patternIndex.Length != arraySize)
             {
-                patternIndex = ArrayEX.ResizeArray(arraySize, patternIndex);
+                patternIndex = Extentions.ArrayEX.Resize(patternIndex, arraySize);
             }
             if (spawnTimes.Length != arraySize)
             {
-                spawnTimes = ArrayEX.ResizeArray(arraySize, spawnTimes);
+                spawnTimes = Extentions.ArrayEX.Resize(spawnTimes, arraySize);
             }
             if (enemyTypeIndex.Length != arraySize)
             {
-                enemyTypeIndex = ArrayEX.ResizeArray(arraySize, enemyTypeIndex);
+                enemyTypeIndex = Extentions.ArrayEX.Resize(enemyTypeIndex, arraySize);
             }
         }
 
