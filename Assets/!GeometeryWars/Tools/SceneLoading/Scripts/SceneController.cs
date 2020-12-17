@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +17,8 @@ public class SceneController : Singleton<SceneController>
     List<string> scenesToBeUnloaded;
     bool needsLoadScreen = false;
 
-    public static Action LoadingBegin;
-    public static Action LoadingFinished;
+    protected static Action LoadingBegin;
+    protected static Action LoadingFinished;
 
     protected override void Awake()
     {
@@ -37,6 +37,14 @@ public class SceneController : Singleton<SceneController>
     }
 
     #region Methods
+    //not using sceneList
+    public void SceneChange(string[] load, string[] unload, bool isLoadScreen = false)
+    {
+        if(unload != null) { QueueUnload(unload); }        
+        if(unload != null) { QueueLoad(load); }        
+        if(isLoadScreen) { ActivateLoadScreen(); }
+        Activate();
+    }
     //public accessor with order of operations
     public void SceneChange(SceneList sceneChange)
     {
@@ -57,25 +65,28 @@ public class SceneController : Singleton<SceneController>
             QueueLoad(sceneChange.loadNames);
         }
 
-        //ACTIVATE
-        //fire off event to notify loading started
-        if(LoadingBegin != null)
-        {
-            LoadingBegin();
-        }
-
         //determine loadscreen
         if (sceneChange.needsLoadScreen)
         {
             ActivateLoadScreen();
         }
 
+        Activate();
+    }
+    private void Activate()
+    {
+        //fire off event to notify loading started
+        if (LoadingBegin != null)
+        {
+            LoadingBegin();
+        }
+
         //begin loading/unloading
-        if(scenesToBeLoaded.Count > 0)
+        if (scenesToBeLoaded.Count > 0)
         {
             Load();
         }
-        if(scenesToBeUnloaded.Count > 0)
+        if (scenesToBeUnloaded.Count > 0)
         {
             Unload();
         }
@@ -199,7 +210,14 @@ public class SceneController : Singleton<SceneController>
         //second time will guarentee trigger the load screen
         if (scenesToBeLoaded.Count == 0 && scenesToBeUnloaded.Count == 0)
         {
-            if(needsLoadScreen)
+            //Debug
+            //Debug.LogError($"Count:{SceneManager.sceneCount}");
+            //for (int i = 0; i < SceneManager.sceneCount; i++)
+            //{
+            //    Debug.LogError($"{i}:{SceneManager.GetSceneAt(i).name}");
+            //}
+
+            if (needsLoadScreen)
             {
                 DeactivateLoadScreen();
             }
@@ -207,7 +225,7 @@ public class SceneController : Singleton<SceneController>
             //fire off event to notify outside parties that all loading is finished
             if(LoadingFinished != null)
             {
-                LoadingFinished();
+                LoadingFinished();                
             }
         }
     }

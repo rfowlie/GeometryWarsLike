@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 using System.Threading.Tasks;
 
 namespace GeometeryWars
@@ -15,13 +17,23 @@ namespace GeometeryWars
         public SO_LevelPattern levelPatterns;
         private ObjectPool[] pools;
         public int levelIndex = 0;
-        public float levelTimer = 60f;
         public float spawnCount = 0f;
-        public bool isPlay = false;
         bool isSpawn = false;
         Coroutine c = null;
 
-        private void Start()
+        private void OnEnable()
+        {
+            Timer.BEGIN += () => PauseSpawn(levelPatterns.startDelay);
+            Timer.FINISH += () => isSpawn = false;
+        }
+
+        private void OnDisable()
+        {
+            Timer.BEGIN -= () => PauseSpawn(levelPatterns.startDelay);
+            Timer.FINISH -= () => isSpawn = false;
+        }
+
+        public void Setup()
         {
             //create pools
             pools = new ObjectPool[levelPatterns.enemyPrefabs.Length];
@@ -29,70 +41,57 @@ namespace GeometeryWars
             {
                 if (levelPatterns.enemyPrefabs[i].GetComponent<Poolable>() != null)
                 {
-                    pools[i] = new ObjectPool(levelPatterns.enemyPrefabs[i].GetComponent<Poolable>());
-                    //create a number of enemies at start to prevent mass creations...
-                    pools[i].SetupInitial(100);
+                    pools[i] = new ObjectPool(levelPatterns.enemyPrefabs[i].GetComponent<Poolable>(), 100);
                 }
             }
 
-            //start
             levelIndex = 0;
+        }
+
+        public void PauseSpawn(float delay)
+        {
             isSpawn = false;
-            c = CoroutineEX.Delay(this, () => isSpawn = true, levelPatterns.startDelay); ;
-            isPlay = true;
+            c = CoroutineEX.Delay(this, () => isSpawn = true, delay);
         }
 
 
         private void Update()
-        {
-            //for now... once levelManager created it will execute this every frame
-            //or devise system using corotine to wait amount of time for next spawn to happen...
-            if(isPlay)
+        {            
+            if(isSpawn)
             {
-                isPlay = Run();
+               Run();
             }
         }
         
         
-        private bool Run()
+        private void Run()
         {
-            //update counters
-            levelTimer -= Time.deltaTime;
+            spawnCount += Time.deltaTime;
 
-            if(isSpawn)
+            //check time against current index
+            if (levelPatterns.spawnTimes[levelIndex] < spawnCount)
             {
-                spawnCount += Time.deltaTime;
+                //spawn pattern
+                StartCoroutine(SpawnUnits(levelIndex));
 
-                //check time against current index
-                if (levelPatterns.spawnTimes[levelIndex] < spawnCount)
+                //prime next pattern, activate delay
+                levelIndex++;
+                if (levelIndex == levelPatterns.patterns.Length)
                 {
-                    //spawn pattern
-                    //CallSpawnTask(levelIndex);
-                    StartCoroutine(SpawnUnits(levelIndex));
-
-                    //prime next pattern, activate delay
-                    levelIndex++;
-                    if (levelIndex == levelPatterns.patterns.Length)
-                    {
-                        levelIndex = 0;
-                        spawnCount = 0f;
-                        isSpawn = false;
-                        c = CoroutineEX.Delay(this, () => isSpawn = true, levelPatterns.startDelay);
-                        c = CoroutineEX.OnNextFrame(this, () => Debug.Log("This executed next frame"));
-                    }
+                    levelIndex = 0;
+                    spawnCount = 0f;
+                    PauseSpawn(levelPatterns.startDelay);
                 }
-            }     
-
-            return levelTimer > 0f;
+            }
         }
 
-        //spawn units on different thread so no lags...
+        //spawn units one on each frame... 
         IEnumerator SpawnUnits(int levelIndex)
         {
             //spawn pattern
             for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
             {
-                GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
+                GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();                
                 //get position
                 temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
                 //point transform down towards map
@@ -103,6 +102,10 @@ namespace GeometeryWars
 
 
 
+
+
+
+        //NEED TO USE JOBS SYSTEM
         //****************************
         //try to async spawn enemies...
         //won't work as you cannot instantiate nor change active state of gameobjects from outside main thread...

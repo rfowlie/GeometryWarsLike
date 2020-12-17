@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_01
   m_EditorClassIdentifier: 
   startDelay: 0
-  endDelay: 3
+  endDelay: 2
   enemyPrefabs:
   - {fileID: 4659450228159320405, guid: db0a4194f697d394da131b271eb0f2ee, type: 3}
   - {fileID: 1097906414491954186, guid: 38f6813a9ccc5a14dab19276b4201d54, type: 3}
@@ -32,9 +32,9 @@ MonoBehaviour:
   enemyTypeIndex: 050000000500000005000000060000000600000006000000
   patternIndex: 040000000100000002000000030000000000000002000000
   spawnTimes:
-  - 1
   - 2
-  - 3
   - 4
-  - 5
   - 6
+  - 8
+  - 10
+  - 12

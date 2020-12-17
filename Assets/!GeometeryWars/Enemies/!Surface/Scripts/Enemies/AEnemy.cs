@@ -19,14 +19,12 @@ namespace GeometeryWars
         protected Vector3 velocity = Vector3.zero;
         public Transform target;
 
-        private Coroutine delay = null;
-
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
 
-        //EVENTS
-        //notify that this has been removed from play
-        public static event Action<int> DEATH;
+        //notify listeners that this was destroyed
+        public static event Action<int> SHOT;
+
 
         //GAMELOOP
         protected virtual void Start()
@@ -59,7 +57,7 @@ namespace GeometeryWars
             transform.rotation = Quaternion.AngleAxis(UnityEngine.Random.Range(0f, 360f), transform.up) * transform.rotation;
             //start movement delay
             isActive = false;
-            delay = CoroutineEX.Delay(this, () => isActive = true, timeWait);
+            CoroutineEX.Delay(this, () => isActive = true, timeWait);
         }
 
         private void OnDisable()
@@ -102,7 +100,7 @@ namespace GeometeryWars
                 }
 
                 //rotation
-                //same as above here, quaterion is a value type so need the null coalescing operator to convert...
+                //same as above here, quaterion is a value type so need the null coalescing operator to convert
                 transform.rotation = Rotation?.Invoke() ?? transform.rotation;
                 //transform.rotation = currentMovement.NextRotation(hit);
             }
@@ -111,6 +109,12 @@ namespace GeometeryWars
 
         protected virtual void OnTriggerEnter(Collider other)
         {
+            //increase player score
+            if(other.gameObject.tag == "Bullet")
+            {
+                SHOT(value);
+            }
+
             ReturnSelf();
         }
 

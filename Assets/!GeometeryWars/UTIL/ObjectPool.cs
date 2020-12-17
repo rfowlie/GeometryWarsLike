@@ -8,10 +8,11 @@ using System;
 public class ObjectPool
 {
     //Constructor
-    public ObjectPool(Poolable poolObject, string poolName = "")
+    public ObjectPool(Poolable poolObject, int initialAmount = 1, string poolName = "")
     {
         this.poolObject = poolObject.gameObject;
         this.poolName = poolName;
+        SetupInitial(initialAmount < 0 ? 1 : initialAmount);
     }
 
     //use later for getting different pools through code...
@@ -49,6 +50,7 @@ public class ObjectPool
     private GameObject Create()
     {
         GameObject obj = GameObject.Instantiate(poolObject);
+        //set scene
         obj.name = poolObject.name + " " + objectCount++.ToString();
         obj.GetComponent<Poolable>().SetPool(this);
         return obj;
