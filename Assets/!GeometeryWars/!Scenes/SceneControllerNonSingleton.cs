@@ -1,48 +1,35 @@
-﻿    using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
-
-
-//handles as many incoming scene changes as possible while maintaining the BOOT scene
-public class SceneController : Singleton<SceneController>
+public class SceneControllerNonSingleton : MonoBehaviour
 {
-    [SerializeField] private string boot = "BOOT";
-    [SerializeField] private string firstlevel = "FirstLevel";
     string activeScene;
-    List<string> loadedScenes;
-    List<string> scenesToBeLoaded;
-    List<string> scenesToBeUnloaded;
+    protected List<string> loadedScenes;
+    protected List<string> scenesToBeLoaded;
+    protected List<string> scenesToBeUnloaded;
     bool needsLoadScreen = false;
 
     protected static Action LoadingBegin;
     protected static Action LoadingFinished;
 
-    protected override void Awake()
+    protected virtual void Awake()
     {
-        base.Awake();
-
         loadedScenes = new List<string>();
         scenesToBeLoaded = new List<string>();
         scenesToBeUnloaded = new List<string>();
     }
 
-    private void Start()
-    {
-        loadedScenes.Add(boot);
-        QueueLoad(new string[] { firstlevel });
-        Load();        
-    }
 
     #region Methods
     //not using sceneList
     public void SceneChange(string[] load, string[] unload, bool isLoadScreen = false)
     {
-        if(unload != null) { QueueUnload(unload); }        
-        if(unload != null) { QueueLoad(load); }        
-        if(isLoadScreen) { ActivateLoadScreen(); }
+        if (unload != null) { QueueUnload(unload); }
+        if (unload != null) { QueueLoad(load); }
+        if (isLoadScreen) { ActivateLoadScreen(); }
         Activate();
     }
     //public accessor with order of operations
@@ -92,7 +79,7 @@ public class SceneController : Singleton<SceneController>
         }
     }
     //add scenes to load list
-    private void QueueLoad(string[] newScenes)
+    protected void QueueLoad(string[] newScenes)
     {
         //vet all passed in scenes and assign them to scenes to be loaded
         for (int i = 0; i < newScenes.Length; i++)
@@ -106,7 +93,7 @@ public class SceneController : Singleton<SceneController>
         }
     }
     //add scenes to unload list
-    private void QueueUnload(string[] unload)
+    protected void QueueUnload(string[] unload)
     {
         //vet all passed in scenes and assign them to scenes to be loaded
         for (int i = 0; i < unload.Length; i++)
@@ -120,15 +107,13 @@ public class SceneController : Singleton<SceneController>
         }
     }
     //unload all except BOOT
-    private void UnloadAll()
+    protected virtual void UnloadAll()
     {
         scenesToBeUnloaded = new List<string>(loadedScenes);
-        //prevent boot from being unloaded...
-        scenesToBeUnloaded.Remove(boot);
     }
-    
-    
-    private void Load()
+
+
+    protected void Load()
     {
         //always additive as we always want BOOT and no weird glitches
         AsyncOperation ao = SceneManager.LoadSceneAsync(scenesToBeLoaded[0], LoadSceneMode.Additive);
@@ -137,7 +122,7 @@ public class SceneController : Singleton<SceneController>
         {
             Debug.Log(ao.ToString() + "didn't load/ doesn't exist");
             scenesToBeLoaded.RemoveAt(0);
-            if(scenesToBeLoaded.Count > 0)
+            if (scenesToBeLoaded.Count > 0)
             {
                 Load();
             }
@@ -148,7 +133,7 @@ public class SceneController : Singleton<SceneController>
             loadedScenes.Add(scenesToBeLoaded[0]);
             scenesToBeLoaded.RemoveAt(0);
             ao.completed += LoadComplete;
-        }        
+        }
     }
 
     private void LoadComplete(AsyncOperation ao)
@@ -164,8 +149,8 @@ public class SceneController : Singleton<SceneController>
             Finished();
         }
     }
-    
-    private void Unload()
+
+    protected void Unload()
     {
         //always additive as we always want BOOT and no weird glitches
         AsyncOperation ao = SceneManager.UnloadSceneAsync(scenesToBeUnloaded[0]);
@@ -185,7 +170,7 @@ public class SceneController : Singleton<SceneController>
             loadedScenes.Remove(scenesToBeUnloaded[0]);
             scenesToBeUnloaded.RemoveAt(0);
             ao.completed += UnloadComplete;
-        }   
+        }
     }
 
     private void UnloadComplete(AsyncOperation ao)
@@ -223,9 +208,9 @@ public class SceneController : Singleton<SceneController>
             }
 
             //fire off event to notify outside parties that all loading is finished
-            if(LoadingFinished != null)
+            if (LoadingFinished != null)
             {
-                LoadingFinished();                
+                LoadingFinished();
             }
         }
     }

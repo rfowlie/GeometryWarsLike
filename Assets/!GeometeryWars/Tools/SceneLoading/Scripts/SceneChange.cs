@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GeometeryWars;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,6 @@ public class SceneChange : MonoBehaviour
 
     public virtual void Change()
     {
-        SceneController.Instance.SceneChange(sceneChanges);
+        Tools.SceneControllerSingleton.Instance.SceneChange(sceneChanges);
     }
 }
