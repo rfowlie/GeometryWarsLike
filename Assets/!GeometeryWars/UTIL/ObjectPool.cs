@@ -46,7 +46,8 @@ public class ObjectPool
     }
 
     //keep track of total objs created in pool
-    public int objectCount = 0;
+    private int objectCount = 0;
+    public int CreatedCount() { return objectCount; }
     private GameObject Create()
     {
         GameObject obj = GameObject.Instantiate(poolObject);

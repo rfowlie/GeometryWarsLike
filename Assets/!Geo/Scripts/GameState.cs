@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-//hold game info for current session
-public class GameState : Singleton<GameState>
+public class GameState : MonoBehaviour
 {
-    [SerializeField] private int startingPoints = 100;   
+    [SerializeField] private int startingPoints = 100;
     private static GameStateInfo info;
 
     private void Start()
@@ -21,10 +19,10 @@ public class GameState : Singleton<GameState>
     {
         return info;
     }
-    public void UpdateGameStateInfo(GameStateInfo newInfo) 
+
+    public void UpdateGameStateInfo(GameStateInfo newInfo)
     {
         info = newInfo;
         Debug.Log($"Points: {info.points}, Movement: {info.levelMovement}, Bullet: {info.levelBullet}");
     }
 }
-

@@ -5,46 +5,128 @@ using UnityEngine.SceneManagement;
 using System;
 
 
+//control all aspects of level
 namespace GeometeryWars
 {
     public class LevelManager : MonoBehaviour
-    {       
-        //for now reset the scene...
-        private void OnEnable()
+    {
+        [SerializeField] private TimeManager time;
+        [SerializeField] private SpawnManagerALT spawn;
+        [SerializeField] private PointsManager points;
+        [SerializeField] private PlayerManager player;
+
+        private void Update()
         {
-            SurfacePlayer.DEATH += () => SceneManager.LoadScene(0);
+            //run timer..check if level finished
+            if(!time.AdjustTime(Time.deltaTime))
+            {
+                //level finished...
 
-            //listen for timer to finish, complete current level
-            Timer.FINISH += () => LevelComplete();
+                //update GameState
+            }
+
+            //run spawner
+            spawn.Execute(time.GetTimeFromStart());
+
+            //update units
+
+            //update player
+
         }
-               
+    }
 
-        [SerializeField] private SpawnManager spawnManager;
-        [SerializeField] private PointsManager pointsManager;
+    public class SpawnManagerALT : MonoBehaviour
+    {
+        [Header("Variables")]
+        public SO_LevelPattern levelPatterns;
+        private ObjectPool[] pools;
+        public int levelIndex = 0;
+        public float spawnCount = 0f;
+        bool isSpawn = true;
+        Coroutine c = null;
 
-        //setup pieces from Persistent
+        
         private void Start()
         {
-            //Better spot to do this??? to much access...
-            SceneManager.SetActiveScene(gameObject.scene);
-            spawnManager.Setup();
-            pointsManager.Adjust(GameState.Instance.GetGameStateInfo().points);
+            //create pools
+            pools = new ObjectPool[levelPatterns.enemyPrefabs.Length];
+            for (int i = 0; i < pools.Length; i++)
+            {
+                if (levelPatterns.enemyPrefabs[i].GetComponent<Poolable>() != null)
+                {
+                    pools[i] = new ObjectPool(levelPatterns.enemyPrefabs[i].GetComponent<Poolable>(), 100);
+                }
+            }
+
+            levelIndex = 0;
         }
 
-        //notify that this level is finished, and clean up done...
-        public static event Action LEVELFINISHED;
-        private void LevelComplete()
+        public void Execute(float timeFromZero)
         {
-            //update score
-            GameStateInfo info = GameState.Instance.GetGameStateInfo();
-            info.points = pointsManager.points;
-            GameState.Instance.UpdateGameStateInfo(info);
+            if(isSpawn)
+            {
+                //check time against current index
+                if (levelPatterns.spawnTimes[levelIndex] < timeFromZero)
+                {
+                    //spawn pattern
+                    StartCoroutine(SpawnUnits(levelIndex));
 
-            //NO BUSINESS CHANGING SCENES
-            //Tools.SceneControllerSingleton.Instance?.SceneChange(new string[] { "Stats" }, new string[] { gameObject.scene.name });
+                    //LOOPS, won't need later on...
+                    //prime next pattern, activate delay
+                    levelIndex++;
 
-            LEVELFINISHED();
+                    if (levelIndex == levelPatterns.patterns.Length)
+                    {
+                        isSpawn = false;
+                    }
+                }
+            }
+            
         }
+
+        //spawn units one on each frame... 
+        IEnumerator SpawnUnits(int levelIndex)
+        {
+            Transform map = GlobalVariables.Instance.map;
+
+            //spawn pattern
+            for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
+            {
+                GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
+                //get position
+                temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
+                //point transform down towards map
+                temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+                yield return null;
+            }
+        }
+    }
+
+
+    //keep track of the level time...
+    public class TimeManager : MonoBehaviour
+    {
+        [SerializeField] private int levelTime = 30;
+        private float currentTime = 0;
+        public float GetCurrentTime() { return currentTime; }
+        public float GetTimeFromStart() { return levelTime - currentTime; }
+
+        private void Start()
+        {
+            currentTime = levelTime;
+        }
+
+        public bool AdjustTime(float deltaTime)
+        {
+            currentTime -= deltaTime;
+            return currentTime < 0f;
+        }
+    }
+
+    //new player script...
+    public class PlayerManager : MonoBehaviour
+    {
+
     }
 }
 

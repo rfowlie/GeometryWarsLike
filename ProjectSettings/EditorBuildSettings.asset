@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/!GeometeryWars/!Scenes/New/MainMenu.unity
+    path: Assets/!Geo/Scenes/Base.unity
+    guid: dd08c0c0007c8bd419850b4d6c36ef3b
+  - enabled: 1
+    path: Assets/!Geo/Scenes/MainMenu.unity
     guid: e9340668054f87d45a5597e74107b6f5
   - enabled: 1
     path: Assets/!GeometeryWars/!Scenes/New/Persistent.unity

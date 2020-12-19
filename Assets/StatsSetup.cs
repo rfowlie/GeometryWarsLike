@@ -11,7 +11,7 @@ public class StatsSetup : MonoBehaviour
 
     private void Start()
     {
-        info = GameState.Instance.GetGameStateInfo();
+        info = GameStateSingleton.Instance.GetGameStateInfo();
         points.text = info.points.ToString();
         movement.text = info.levelMovement.ToString();
         //bullet.text = info.levelBullet.ToString();           
@@ -34,7 +34,7 @@ public class StatsSetup : MonoBehaviour
             movement.text = info.levelMovement.ToString();
 
             //could just do at the end??? before loading new scene???
-            GameState.Instance.UpdateGameStateInfo(info);
+            GameStateSingleton.Instance.UpdateGameStateInfo(info);
         }        
     }
 }
