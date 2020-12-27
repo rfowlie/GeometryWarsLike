@@ -8,8 +8,7 @@ public class SurfacePlayer : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private Transform body;
-    [SerializeField] private Poolable bullet;
-    private ObjectPool bulletPool;
+    [SerializeField] private BulletManager bullet;
     [Space]
 
     [Header("Variables")]
@@ -56,9 +55,6 @@ public class SurfacePlayer : MonoBehaviour
             transform.position = hit.point + hit.normal;
             transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         }
-
-        //create bullet pool
-        bulletPool = new ObjectPool(bullet);
     }
 
     
@@ -77,13 +73,11 @@ public class SurfacePlayer : MonoBehaviour
         //TEMP FIRE BULLETS
         if (Input.GetMouseButtonDown(0))
         {
-            isFire = true;
-            c = StartCoroutine(Fire());
+            bullet.BeginFire(transform);            
         }
         if(Input.GetMouseButtonUp(0))
         {
-            isFire = false;
-            c = null;
+            bullet.StopFire();
         }
     }
 
@@ -117,29 +111,5 @@ public class SurfacePlayer : MonoBehaviour
 
         //rotate body to face mouse
         body.rotation = Quaternion.FromToRotation(body.forward, local) * body.rotation;
-    }
-
-
-    Coroutine c = null;
-    [SerializeField] private bool isFire = false;
-    [Range(0.01f, 1f)]
-    [SerializeField] private float fireRate = 0.1f;
-
-    IEnumerator Fire()
-    {
-        float count = 0f;
-        while(isFire)
-        {
-            count += Time.deltaTime;
-            if(count > fireRate)
-            {
-                count -= fireRate;
-                GameObject bullet = bulletPool.Get();
-                bullet.transform.position = body.position + body.forward;
-                bullet.transform.rotation = body.rotation;
-            }
-
-            yield return null;
-        }
     }
 }

@@ -37,15 +37,15 @@ namespace PatternCreator
 
             if(o.p.Length != o.size)
             {
-                o.p = Extentions.ArrayEX.Resize(o.p, o.size);
+                o.p = ArrayEX.Resize(o.p, o.size);
             }
             if(o.c.Length != o.size)
             {
-                o.c = Extentions.ArrayEX.Resize(o.c, o.size, Color.white);
+                o.c = ArrayEX.Resize(o.c, o.size, Color.white);
             }
             if(o.toggles.Length != o.size)
             {
-                o.toggles = Extentions.ArrayEX.Resize(o.toggles, o.size);
+                o.toggles = ArrayEX.Resize(o.toggles, o.size);
             }
 
             for (int i = 0; i < o.size; i++)
@@ -56,9 +56,9 @@ namespace PatternCreator
                 o.c[i] = EditorGUILayout.ColorField(o.c[i],  GUILayout.MaxWidth(80));
                 if(GUILayout.Button("Remove"))
                 {
-                    o.p = Extentions.ArrayEX.Remove(o.p, i);
-                    o.c = Extentions.ArrayEX.Remove(o.c, i);
-                    o.toggles = Extentions.ArrayEX.Remove(o.toggles, i);
+                    o.p = ArrayEX.Remove(o.p, i);
+                    o.c = ArrayEX.Remove(o.c, i);
+                    o.toggles = ArrayEX.Remove(o.toggles, i);
                     o.size--;
                     i--;
                 }
