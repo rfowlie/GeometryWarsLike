@@ -5,6 +5,7 @@ using TMPro;
 
 namespace GeometeryWars
 {
+    //keep track of points...
     public class PointsManager : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;

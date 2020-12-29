@@ -13,8 +13,8 @@ public class GameStateSingleton : Singleton<GameStateSingleton>
     {
         info = new GameStateInfo();
         info.points = startingPoints;
-        info.levelMovement = 0;
-        info.levelBullet = 0;
+        info.levelMovementSpeed = 0;
+        info.levelFireRate = 0;
     }
 
     public GameStateInfo GetGameStateInfo()
@@ -24,7 +24,7 @@ public class GameStateSingleton : Singleton<GameStateSingleton>
     public void UpdateGameStateInfo(GameStateInfo newInfo) 
     {
         info = newInfo;
-        Debug.Log($"Points: {info.points}, Movement: {info.levelMovement}, Bullet: {info.levelBullet}");
+        Debug.Log($"Points: {info.points}, Movement: {info.levelMovementSpeed}, Bullet: {info.levelFireRate}");
     }
 }
 

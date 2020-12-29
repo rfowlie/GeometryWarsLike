@@ -748,10 +748,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 357961760}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91dd3f2030e9dfd46b87edbf4760fb00, type: 3}
+  m_Script: {fileID: 11500000, guid: 0de0313fb444ba746a0cb60305e3f3ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneChanges: {fileID: 11400000, guid: 8ffb17d6d51818d4293f6238c733f80c, type: 2}
 --- !u!4 &357961762
 Transform:
   m_ObjectHideFlags: 0
@@ -1273,7 +1272,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 357961761}
-        m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
+        m_TargetAssemblyTypeName: GeometeryWars.SceneChanger, Assembly-CSharp
         m_MethodName: Change
         m_Mode: 1
         m_Arguments:

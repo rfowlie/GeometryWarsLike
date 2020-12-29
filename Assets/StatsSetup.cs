@@ -3,38 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 
-public class StatsSetup : MonoBehaviour
+namespace GeometeryWars
 {
-    private GameStateInfo info;
-
-    private void Start()
+    public class StatsManager : MonoBehaviour
     {
-        info = GameStateSingleton.Instance.GetGameStateInfo();
-        points.text = info.points.ToString();
-        movement.text = info.levelMovement.ToString();
-        //bullet.text = info.levelBullet.ToString();           
-    }
+        [SerializeField] private TextMeshProUGUI points;
+        [SerializeField] private TextMeshProUGUI movement;
+        [SerializeField] private TextMeshProUGUI bullet;
+        private GameStateInfo info;
+        public GameStateInfo GetStats() { return info; }
 
-    [SerializeField] private TextMeshProUGUI points;
-    [SerializeField] private TextMeshProUGUI movement;
-    [SerializeField] private TextMeshProUGUI bullet;
+        
+        //*UPDATE THE UI, then on scene change, call event to notify GameController to grab updates
+        public static event Action<StatsManager> START;
 
-
-    public void IncrementMovement()
-    {
-        //check if enough points to increment...
-        int amount = UpgradeCosts.Instance.GetMovementUpgrade(info.levelMovement);
-        if (amount <= info.points)
+        public void SetStats(GameStateInfo i)
         {
-            info.points -= amount;
+            info = i;
             points.text = info.points.ToString();
-            info.levelMovement++;
-            movement.text = info.levelMovement.ToString();
+            movement.text = info.levelMovementSpeed.ToString();
+            //bullet.text = info.levelBullet.ToString();    
+        }
 
-            //could just do at the end??? before loading new scene???
-            GameStateSingleton.Instance.UpdateGameStateInfo(info);
-        }        
+        //movement
+        public void IncrementMovement()
+        {
+            //check if enough points to increment...
+            int amount = UpgradeCosts.Instance.GetMovementUpgrade(info.levelMovementSpeed);
+            if (amount <= info.points)
+            {
+                info.points -= amount;
+                points.text = info.points.ToString();
+                info.levelMovementSpeed++;
+                movement.text = info.levelMovementSpeed.ToString();
+
+                //could just do at the end??? before loading new scene???
+                GameStateSingleton.Instance.UpdateGameStateInfo(info);
+            }
+        }
     }
 }
+

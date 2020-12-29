@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System;
 
 
@@ -15,14 +14,32 @@ namespace GeometeryWars
         [SerializeField] private PointsManager points;
         [SerializeField] private PlayerManager player;
 
+        public static event Action<LevelManager> START;
+        public static event Action END;
+
+        //get the current points for this level
+        public int GetPoints()
+        {
+            return points.points;
+        }
+
+        private void Start()
+        {
+            time = GetComponent<TimeManager>();
+            spawn = GetComponent<SpawnManagerALT>();
+            points = GetComponent<PointsManager>();
+            player = GetComponent<PlayerManager>();
+
+            START(this);
+        }
+
         private void Update()
         {
             //run timer..check if level finished
             if(!time.AdjustTime(Time.deltaTime))
             {
-                //level finished...
-
-                //update GameState
+                //level finished
+                END();
             }
 
             //run spawner
@@ -35,6 +52,8 @@ namespace GeometeryWars
         }
     }
 
+    //will have a delta time passed in when active and will spawn units according to the updated time
+    //also holds all object pools for enemies
     public class SpawnManagerALT : MonoBehaviour
     {
         [Header("Variables")]
@@ -103,11 +122,11 @@ namespace GeometeryWars
     }
 
 
-    //keep track of the level time...
+    //keeps track of the level time
     public class TimeManager : MonoBehaviour
     {
         [SerializeField] private int levelTime = 30;
-        private float currentTime = 0;
+        private float currentTime;
         public float GetCurrentTime() { return currentTime; }
         public float GetTimeFromStart() { return levelTime - currentTime; }
 

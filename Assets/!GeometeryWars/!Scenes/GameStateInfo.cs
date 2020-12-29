@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//make struct so safe to pass out
 public struct GameStateInfo
 {
     public int points;
-    public int levelMovement;
-    public int levelBullet;
+    public int levelPlayer;
+    public int levelMovementSpeed;
+    public int levelFireRate;
 }
