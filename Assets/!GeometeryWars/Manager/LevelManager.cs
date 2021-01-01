@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using Unity.Burst;
+using Unity.Jobs;
+
 
 //control all aspects of level
 namespace GeometeryWars
@@ -10,9 +13,10 @@ namespace GeometeryWars
     public class LevelManager : MonoBehaviour
     {
         [SerializeField] private TimeManager time;
-        [SerializeField] private SpawnManagerALT spawn;
+        [SerializeField] private SpawnManager spawn;
         [SerializeField] private PointsManager points;
         [SerializeField] private PlayerManager player;
+        private EnemyManager enemy;
 
         public static event Action<LevelManager> START;
         public static event Action END;
@@ -26,9 +30,11 @@ namespace GeometeryWars
         private void Start()
         {
             time = GetComponent<TimeManager>();
-            spawn = GetComponent<SpawnManagerALT>();
+            spawn = GetComponent<SpawnManager>();
             points = GetComponent<PointsManager>();
             player = GetComponent<PlayerManager>();
+
+            enemy = new EnemyManager();
 
             START(this);
         }
@@ -52,71 +58,23 @@ namespace GeometeryWars
         }
     }
 
-    //will have a delta time passed in when active and will spawn units according to the updated time
-    //also holds all object pools for enemies
-    public class SpawnManagerALT : MonoBehaviour
+    //run enemy behaviour/movement using JOB system
+    public class EnemyManager
     {
-        [Header("Variables")]
-        public SO_LevelPattern levelPatterns;
-        private ObjectPool[] pools;
-        public int levelIndex = 0;
-        public float spawnCount = 0f;
-        bool isSpawn = true;
-        Coroutine c = null;
-
-        
-        private void Start()
+        public void Move(List<AEnemy> list)
         {
-            //create pools
-            pools = new ObjectPool[levelPatterns.enemyPrefabs.Length];
-            for (int i = 0; i < pools.Length; i++)
+            foreach(var i in list)
             {
-                if (levelPatterns.enemyPrefabs[i].GetComponent<Poolable>() != null)
-                {
-                    pools[i] = new ObjectPool(levelPatterns.enemyPrefabs[i].GetComponent<Poolable>(), 100);
-                }
+                //passing in list of Aenemy so run movement
+                i.Move();
             }
-
-            levelIndex = 0;
         }
 
-        public void Execute(float timeFromZero)
+        public struct EnemyMovement : IJobParallelFor
         {
-            if(isSpawn)
+            public void Execute(int index)
             {
-                //check time against current index
-                if (levelPatterns.spawnTimes[levelIndex] < timeFromZero)
-                {
-                    //spawn pattern
-                    StartCoroutine(SpawnUnits(levelIndex));
-
-                    //LOOPS, won't need later on...
-                    //prime next pattern, activate delay
-                    levelIndex++;
-
-                    if (levelIndex == levelPatterns.patterns.Length)
-                    {
-                        isSpawn = false;
-                    }
-                }
-            }
-            
-        }
-
-        //spawn units one on each frame... 
-        IEnumerator SpawnUnits(int levelIndex)
-        {
-            Transform map = GlobalVariables.Instance.map;
-
-            //spawn pattern
-            for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
-            {
-                GameObject temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
-                //get position
-                temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
-                //point transform down towards map
-                temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
-                yield return null;
+                
             }
         }
     }

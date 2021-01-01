@@ -26,7 +26,6 @@ namespace GeometeryWars
         public static event Action<int> SHOT;
 
 
-        //GAMELOOP
         protected virtual void Start()
         {
             GlobalVariables gv = FindObjectOfType<GlobalVariables>();
@@ -73,7 +72,10 @@ namespace GeometeryWars
         protected Func<Vector3> Movement;
         protected Func<Quaternion> Rotation;
 
-        protected virtual void FixedUpdate()
+        protected abstract void SetMovement();
+        protected abstract void SetRotation();
+
+        public void Move()
         {
             if (isActive)
             {
@@ -122,10 +124,5 @@ namespace GeometeryWars
         {
             ReturnToPool(gameObject);
         }
-
-
-        //METHODS
-        protected abstract void SetMovement();
-        protected abstract void SetRotation();
     }
 }

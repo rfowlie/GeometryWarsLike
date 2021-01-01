@@ -15,13 +15,8 @@ namespace GeometeryWars
         SceneController scene;
         //contains all the information for the current game
         private GameState state;
-        public GameStateInfo GetState()
-        {
-            return state.info;
-        }
-        //listens for levelmanager to fire off event indicating it is setup and active
-        LevelManager level = null;
-        StatsManager stats = null;
+        public GameStateInfo GetState() { return state.info; }
+        
 
         protected override void Awake()
         {
@@ -56,6 +51,10 @@ namespace GeometeryWars
             scene.SceneChange(new string[] { "MainMenu" }, null);
         }
 
+
+
+        //STATSMANAGER
+        StatsManager stats = null;
         private void SetupStats(StatsManager s)
         {
             //set this as current stats manager
@@ -69,9 +68,13 @@ namespace GeometeryWars
             state.info = stats.GetStats();
         }
 
+
+        //LEVEL MANAGER
         //when new level loads, the active level manager will fire event when ready
         //game controller takes in the level manager and sets it as the active level manager, as well as 
         //its scene as the active scene
+        //listens for levelmanager to fire off event indicating it is setup and active
+        LevelManager level = null;
         private void SetupLevel(LevelManager nextLevel)
         {
             level = nextLevel;
