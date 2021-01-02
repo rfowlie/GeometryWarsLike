@@ -59,8 +59,6 @@ namespace GeometeryWars
         {
             //set this as current stats manager
             stats = s;
-            //pass it current game state so it can setup UI
-            s.SetStats(state.info);
         }
         private void AdjustStats()
         {
@@ -83,8 +81,11 @@ namespace GeometeryWars
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()
         {
+            Debug.Log("<color=red>AdjustLevel</color>");
             //add points from level to total points
+            if(level == null) { Debug.Log("LEVEL MANAGER DISAPPEARED LOL"); }
             state.info.points += level.GetPoints();
+
 
             //remove level manager
             level = null;
@@ -104,17 +105,19 @@ namespace GeometeryWars
                     case GamePosition.MAINMENU:
                         position = GamePosition.STATS;
                         //load next level from level controller, unload main menu...
-                        scene.SceneChange(new string[] { "DemoScene_WithObstacles" }, new string[] { "MainMenu" });
+                        scene.SceneChange(new string[] { "Stats" }, new string[] { "MainMenu" });
                         break;
+                    
+                    //NEEDS LEVEL CONTROLLER TO PROPERLY LOAD NEXT LEVEL
                     case GamePosition.STATS:
                         AdjustStats();
                         position = GamePosition.LEVEL;
-                        scene.SceneChange(new string[] { "DemoScene_WithObstacles" }, new string[] { "MainMenu" });
+                        scene.SceneChange(new string[] { "DemoLevel_01" }, new string[] { "Stats" });
                         break;
                     case GamePosition.LEVEL:
                         position = GamePosition.STATS;
                         //load next level from level controller, unload main menu...
-                        scene.SceneChange(new string[] { "DemoScene_WithObstacles" }, new string[] { "MainMenu" });
+                        scene.SceneChange(new string[] { "Stats" }, new string[] { "DemoLevel_01" });
                         break;
                     default:
                         break;

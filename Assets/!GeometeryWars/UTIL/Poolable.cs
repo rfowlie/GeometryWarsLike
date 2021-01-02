@@ -1,22 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 //object pool will set itself as pool for this object
 public class Poolable : MonoBehaviour
 {
-    private ObjectPool pool;
-
-    //ensure only ObjectPool can call this method
-    public void SetPool<T>(T pool) where T : ObjectPool
-    {
-        this.pool = pool;
-    }
+    public event Action<Poolable> RECYCLE;
 
     //allow outside things to notify poolable Object to return to its pool
-    public void ReturnToPool(GameObject self)
+    public void ReturnToPool(Poolable self)
     {
-        pool.Return(self);
+        RECYCLE(this);
     }
 }

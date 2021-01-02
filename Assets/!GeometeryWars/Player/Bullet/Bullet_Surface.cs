@@ -25,7 +25,7 @@ namespace GeometeryWars
             if (lifetime < count)
             {
                 count = 0f;
-                ReturnToPool(gameObject);
+                ReturnToPool(this);
             }
         }
 
@@ -42,13 +42,13 @@ namespace GeometeryWars
             //if bullet glitches remove it...
             else
             {
-                ReturnToPool(gameObject);
+                ReturnToPool(this);
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            ReturnToPool(gameObject);
+            ReturnToPool(this);
         }
     }
 }

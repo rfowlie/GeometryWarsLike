@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/!GeometeryWars/!Scenes/New/Persistent.unity
     guid: 2c35bde899c43da4a80174f0d360b074
   - enabled: 1
-    path: Assets/!GeometeryWars/!Scenes/New/Stats.unity
+    path: Assets/!Geo/Scenes/Stats.unity
     guid: 01597ced5d2b7b440bd4596dfd46ca40
   - enabled: 1
     path: Assets/!Geo/Scenes/Levels/DemoLevel_01.unity

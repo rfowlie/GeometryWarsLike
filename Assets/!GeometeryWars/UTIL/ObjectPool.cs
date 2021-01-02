@@ -13,7 +13,7 @@ public class ObjectPool<T> where T : Poolable
         active = new Dictionary<int, T>();
         deactive = new Queue<T>();
 
-        this.poolObject = poolObject.gameObject;
+        this.poolObject = poolObject;
         this.poolName = poolName;
         int amount = initialAmount < 0 ? 1 : initialAmount;
         for (int i = 0; i < amount; i++)
@@ -27,7 +27,7 @@ public class ObjectPool<T> where T : Poolable
     //use later for getting different pools through code...
     private string poolName = string.Empty;
     public string Name() { return poolName; }
-    private GameObject poolObject = null;
+    private T poolObject = null;
     private Queue<T> deactive;
     public int DeactiveCount() { return deactive.Count; }
     private Dictionary<int, T> active;
@@ -49,7 +49,7 @@ public class ObjectPool<T> where T : Poolable
         
         return obj;
     }
-    public void Return(GameObject obj)
+    public void Return(Poolable obj)
     {
         T temp;
         if(active.TryGetValue(obj.GetInstanceID(), out temp))
@@ -68,10 +68,10 @@ public class ObjectPool<T> where T : Poolable
     public int CreatedCount() { return objectCount; }
     private T Create()
     {
-        GameObject obj = GameObject.Instantiate(poolObject);
+        GameObject obj = GameObject.Instantiate(poolObject.gameObject);
         //set scene
         obj.name = poolObject.name + " " + objectCount++.ToString();
-        //obj.GetComponent<Poolable>().SetPool(this);
+        obj.GetComponent<Poolable>().RECYCLE += Return;
         return obj.GetComponent<T>();
     }
 }

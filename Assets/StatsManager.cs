@@ -10,6 +10,7 @@ namespace GeometeryWars
 {
     public class StatsManager : MonoBehaviour
     {
+        //UI vars
         [SerializeField] private TextMeshProUGUI points;
         [SerializeField] private TextMeshProUGUI movement;
         [SerializeField] private TextMeshProUGUI bullet;
@@ -20,9 +21,13 @@ namespace GeometeryWars
         //*UPDATE THE UI, then on scene change, call event to notify GameController to grab updates
         public static event Action<StatsManager> START;
 
-        public void SetStats(GameStateInfo i)
+        private void OnEnable()
         {
-            info = i;
+            //notify game controller that active and that the game controller needs to set the game stats
+            START(this);
+
+            //get game stats from game controller
+            info = GameController.Instance.GetState();
             points.text = info.points.ToString();
             movement.text = info.levelMovementSpeed.ToString();
             //bullet.text = info.levelBullet.ToString();    

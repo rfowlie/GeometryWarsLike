@@ -13,6 +13,10 @@ namespace GeometeryWars
         [Header("Variables")]
         public SO_LevelPattern levelPatterns;
         private ObjectPool<AEnemy>[] pools;
+        public ObjectPool<AEnemy>[] GetPools()
+        {
+            return pools;
+        }
         public int levelIndex = 0;
         public float spawnCount = 0f;
         bool isSpawn = true;

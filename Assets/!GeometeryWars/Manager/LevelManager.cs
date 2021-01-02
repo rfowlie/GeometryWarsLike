@@ -13,10 +13,12 @@ namespace GeometeryWars
     public class LevelManager : MonoBehaviour
     {
         [SerializeField] private TimeManager time;
-        [SerializeField] private SpawnManager spawn;
         [SerializeField] private PointsManager points;
-        [SerializeField] private PlayerManager player;
+        [SerializeField] private SpawnManager spawn;
+        //[SerializeField] private PlayerManager player;
         private EnemyManager enemy;
+
+        private bool isActive = false;
 
         public static event Action<LevelManager> START;
         public static event Action END;
@@ -30,75 +32,68 @@ namespace GeometeryWars
         private void Start()
         {
             time = GetComponent<TimeManager>();
-            spawn = GetComponent<SpawnManager>();
             points = GetComponent<PointsManager>();
-            player = GetComponent<PlayerManager>();
+            spawn = GetComponent<SpawnManager>();
+            //player = GetComponent<PlayerManager>();
 
             enemy = new EnemyManager();
 
             START(this);
+            isActive = true;
         }
 
         private void Update()
         {
-            //run timer..check if level finished
-            if(!time.AdjustTime(Time.deltaTime))
+            if(isActive)
             {
-                //level finished
-                END();
+                //run timer..check if level finished
+                if (time.AdjustTime(Time.deltaTime))
+                {
+                    isActive = false;
+                    
+                    //level finished
+                    END();
+                }
+
+                //run spawner
+                spawn.Execute(time.GetTimeFromStart());
+
+                //update units
+                enemy.Move(spawn.GetPools());
+
+                //update player
             }
-
-            //run spawner
-            spawn.Execute(time.GetTimeFromStart());
-
-            //update units
-
-            //update player
-
         }
     }
+
+    
 
     //run enemy behaviour/movement using JOB system
     public class EnemyManager
     {
-        public void Move(List<AEnemy> list)
+        public void Move(ObjectPool<AEnemy>[] pools)
         {
-            foreach(var i in list)
+            for (int i = 0; i < pools.Length; i++)
             {
-                //passing in list of Aenemy so run movement
-                i.Move();
+                foreach(var enemy in pools[i].GetActive())
+                {
+                    enemy.Move();
+                }
             }
         }
 
+        //Try to make above IJOB
         public struct EnemyMovement : IJobParallelFor
         {
             public void Execute(int index)
             {
-                
+
             }
         }
     }
 
 
-    //keeps track of the level time
-    public class TimeManager : MonoBehaviour
-    {
-        [SerializeField] private int levelTime = 30;
-        private float currentTime;
-        public float GetCurrentTime() { return currentTime; }
-        public float GetTimeFromStart() { return levelTime - currentTime; }
-
-        private void Start()
-        {
-            currentTime = levelTime;
-        }
-
-        public bool AdjustTime(float deltaTime)
-        {
-            currentTime -= deltaTime;
-            return currentTime < 0f;
-        }
-    }
+    
 
     //new player script...
     public class PlayerManager : MonoBehaviour

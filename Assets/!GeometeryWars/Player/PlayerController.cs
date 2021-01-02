@@ -8,8 +8,8 @@ namespace GeometeryWars
     public class PlayerController : MonoBehaviour
     {
         [Header("Components")]
-        public Poolable bullet;
-        private ObjectPool bulletPool;
+        public Bullet_Surface bullet;
+        private ObjectPool<Bullet_Surface> bulletPool;
         [Space]
         public bool canMove = true;
         public float speed = 1.0f;
@@ -25,7 +25,7 @@ namespace GeometeryWars
             healthCurrent = healthMax;
             fireSpeed = 1f / fireRate;
             //set default shoot
-            bulletPool = new ObjectPool(bullet);
+            bulletPool = new ObjectPool<Bullet_Surface>(bullet);
             fire = SingleBullet;
         }
 
@@ -89,28 +89,29 @@ namespace GeometeryWars
         private Fire fire;
         private void SingleBullet()
         {
-            GameObject temp = bulletPool.Get();
+            Bullet_Surface temp = bulletPool.Get();
             temp.transform.position = transform.position + transform.up;
             temp.transform.rotation = transform.rotation;
         }
 
-        private void TripleBullet()
-        {
-            GameObject temp;
-            temp = bulletPool.Get();
-            temp.transform.position = transform.position + transform.up;
-            temp.transform.rotation = transform.rotation;
+        //HOOK UP LATER
+        //private void TripleBullet()
+        //{
+        //    GameObject temp;
+        //    temp = bulletPool.Get();
+        //    temp.transform.position = transform.position + transform.up;
+        //    temp.transform.rotation = transform.rotation;
 
-            temp = bulletPool.Get();
-            Quaternion rot = Quaternion.AngleAxis(8f, Vector3.forward);
-            temp.transform.position = transform.position + rot * transform.up;
-            temp.transform.rotation = transform.rotation * rot;
+        //    temp = bulletPool.Get();
+        //    Quaternion rot = Quaternion.AngleAxis(8f, Vector3.forward);
+        //    temp.transform.position = transform.position + rot * transform.up;
+        //    temp.transform.rotation = transform.rotation * rot;
 
-            temp = bulletPool.Get();
-            rot = Quaternion.AngleAxis(-8f, Vector3.forward);
-            temp.transform.position = transform.position + rot * transform.up;
-            temp.transform.rotation = transform.rotation * rot;
-        }
+        //    temp = bulletPool.Get();
+        //    rot = Quaternion.AngleAxis(-8f, Vector3.forward);
+        //    temp.transform.position = transform.position + rot * transform.up;
+        //    temp.transform.rotation = transform.rotation * rot;
+        //}
 
         //Stats
         public int healthMax = 3;
@@ -141,7 +142,7 @@ namespace GeometeryWars
                 if(cPickUp == null)
                 {
                     Debug.Log("<color=red>TripleBullet</color>");
-                    fire = TripleBullet;
+                    //fire = TripleBullet;
                     cPickUp = StartCoroutine(PickUpCountDown());
                 }
             }
@@ -154,11 +155,13 @@ namespace GeometeryWars
         Coroutine cPickUp = null;
         private IEnumerator PickUpCountDown()
         {
-            while(pickUpCount > 0)
-            {
-                pickUpCount -= Time.deltaTime;
-                yield return null;
-            }
+            //while(pickUpCount > 0)
+            //{
+            //    pickUpCount -= Time.deltaTime;
+            //    yield return null;
+            //}
+
+            yield return new WaitForSeconds(pickUpTime);
 
             Debug.Log("<color=blue>SingleBullet</color>");
             fire = SingleBullet;

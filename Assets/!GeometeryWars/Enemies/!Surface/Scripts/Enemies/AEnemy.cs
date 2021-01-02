@@ -75,7 +75,7 @@ namespace GeometeryWars
         protected abstract void SetMovement();
         protected abstract void SetRotation();
 
-        public void Move()
+        public virtual void Move()
         {
             if (isActive)
             {
@@ -122,7 +122,7 @@ namespace GeometeryWars
 
         private void ReturnSelf()
         {
-            ReturnToPool(gameObject);
+            ReturnToPool(this);
         }
     }
 }

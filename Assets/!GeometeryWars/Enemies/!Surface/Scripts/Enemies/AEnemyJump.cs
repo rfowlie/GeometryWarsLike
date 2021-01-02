@@ -29,9 +29,10 @@ namespace GeometeryWars
             jumpTime = 0f;
             c = StartCoroutine(CoroutineEX.RandomDelayFunc(SetJump, delayMin, delayMax));
         }
-        protected override void FixedUpdate()
+
+        public override void Move()
         {
-            base.FixedUpdate();
+            base.Move();
 
             if (isJump)
             {
@@ -41,7 +42,7 @@ namespace GeometeryWars
                 {
                     jumpPosition = 0f;
                     isJump = false;
-                    c = null;                    
+                    c = null;
                     c = StartCoroutine(CoroutineEX.RandomDelayFunc(SetJump, delayMin, delayMax));
                 }
 
