@@ -10,6 +10,7 @@ namespace GeometeryWars
     {
         string activeScene;
         protected List<string> loadedScenes;
+        public string[] GetLoadedScenes() { return loadedScenes.ToArray(); }
         protected List<string> scenesToBeLoaded;
         protected List<string> scenesToBeUnloaded;
         bool needsLoadScreen = false;

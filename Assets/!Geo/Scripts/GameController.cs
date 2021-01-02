@@ -12,24 +12,29 @@ namespace GeometeryWars
     public class GameController : Singleton<GameController>
     {
         //non singleton version of the scene conroller
-        SceneController scene;
+        SceneController sceneControl;
+        //holds ref to all levels
+        LevelController levelControl;
         //contains all the information for the current game
         private GameState state;
         public GameStateInfo GetState() { return state.info; }
-        
+
+        //enum to track position of game
+        public enum GamePosition { NONE, MAINMENU, STATS, LEVEL }
+        public GamePosition position = GamePosition.NONE;
+
 
         protected override void Awake()
         {
             base.Awake();
 
             //attached to gameObject
-            scene = GetComponent<SceneController>();
+            sceneControl = GetComponent<SceneController>();
+            levelControl = GetComponent<LevelController>();
             state = GetComponent<GameState>();
         }
 
-        //enum to track position of game
-        private enum GamePosition { NONE, MAINMENU, STATS, LEVEL }
-        private GamePosition position = GamePosition.NONE;
+        
 
         private void OnEnable()
         {
@@ -48,7 +53,7 @@ namespace GeometeryWars
         {
             //load the main menu
             position = GamePosition.MAINMENU;
-            scene.SceneChange(new string[] { "MainMenu" }, null);
+            sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, null);
         }
 
 
@@ -81,11 +86,11 @@ namespace GeometeryWars
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()
         {
-            Debug.Log("<color=red>AdjustLevel</color>");
-            //add points from level to total points
-            if(level == null) { Debug.Log("LEVEL MANAGER DISAPPEARED LOL"); }
-            state.info.points += level.GetPoints();
+            //Debug.Log("<color=red>AdjustLevel</color>");
+            if(level == null) { Debug.LogError("Level Manager is Null!!"); return; }
 
+            //add points from level to total points
+            state.info.points += level.GetPoints();
 
             //remove level manager
             level = null;
@@ -105,19 +110,17 @@ namespace GeometeryWars
                     case GamePosition.MAINMENU:
                         position = GamePosition.STATS;
                         //load next level from level controller, unload main menu...
-                        scene.SceneChange(new string[] { "Stats" }, new string[] { "MainMenu" });
+                        sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
-                    
-                    //NEEDS LEVEL CONTROLLER TO PROPERLY LOAD NEXT LEVEL
                     case GamePosition.STATS:
                         AdjustStats();
                         position = GamePosition.LEVEL;
-                        scene.SceneChange(new string[] { "DemoLevel_01" }, new string[] { "Stats" });
+                        sceneControl.SceneChange(new string[] { levelControl.NextLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
                         position = GamePosition.STATS;
                         //load next level from level controller, unload main menu...
-                        scene.SceneChange(new string[] { "Stats" }, new string[] { "DemoLevel_01" });
+                        sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     default:
                         break;

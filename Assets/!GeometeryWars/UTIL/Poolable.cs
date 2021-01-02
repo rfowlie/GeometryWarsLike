@@ -12,6 +12,6 @@ public class Poolable : MonoBehaviour
     //allow outside things to notify poolable Object to return to its pool
     public void ReturnToPool(Poolable self)
     {
-        RECYCLE(this);
+        RECYCLE(self);
     }
 }

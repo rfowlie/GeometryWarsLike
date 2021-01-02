@@ -49,7 +49,7 @@ namespace GeometeryWars
             foreach(ChildTrigger c in ct)
             {
                 //Debug.Log("Child Trigger Assigned");
-                c.TRIGGER += ReturnSelf;
+                c.TRIGGER += () => ReturnToPool(this);
             }
 
             //face random direction
@@ -64,7 +64,7 @@ namespace GeometeryWars
             ChildTrigger[] ct = GetComponentsInChildren<ChildTrigger>();
             foreach (ChildTrigger c in ct)
             {                
-                c.TRIGGER -= ReturnSelf;
+                c.TRIGGER -= () => ReturnToPool(this);
             }
         }
 
@@ -106,6 +106,10 @@ namespace GeometeryWars
                 transform.rotation = Rotation?.Invoke() ?? transform.rotation;
                 //transform.rotation = currentMovement.NextRotation(hit);
             }
+            else
+            {
+                Debug.Log("Not active!!");
+            }
         }
         
 
@@ -117,11 +121,6 @@ namespace GeometeryWars
                 SHOT(value);
             }
 
-            ReturnSelf();
-        }
-
-        private void ReturnSelf()
-        {
             ReturnToPool(this);
         }
     }

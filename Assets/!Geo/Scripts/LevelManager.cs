@@ -7,7 +7,7 @@ using Unity.Burst;
 using Unity.Jobs;
 
 
-//control all aspects of level
+//control all aspects of in game level
 namespace GeometeryWars
 {
     public class LevelManager : MonoBehaviour
@@ -56,13 +56,16 @@ namespace GeometeryWars
                 }
 
                 //run spawner
-                spawn.Execute(time.GetTimeFromStart());
-
-                //update units
-                enemy.Move(spawn.GetPools());
+                spawn.Execute(time.GetTimeFromStart());                
 
                 //update player
             }
+        }
+
+        private void FixedUpdate()
+        {
+            //update units
+            enemy.Move(spawn.GetPools());
         }
     }
 
@@ -73,11 +76,16 @@ namespace GeometeryWars
     {
         public void Move(ObjectPool<AEnemy>[] pools)
         {
+            Debug.Log("<color=blue>Move Enemies</color>");
             for (int i = 0; i < pools.Length; i++)
             {
-                foreach(var enemy in pools[i].GetActive())
+                List<AEnemy> temp = pools[i].GetActive();
+                for (int j = 0; j < temp.Count; j++)
                 {
-                    enemy.Move();
+                    if(temp[j] != null)
+                    {
+                        temp[j].Move();
+                    }
                 }
             }
         }
