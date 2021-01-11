@@ -36,7 +36,7 @@ namespace GeometeryWars
             spawn = GetComponent<SpawnManager>();
             //player = GetComponent<PlayerManager>();
 
-            enemy = new EnemyManager();
+            enemy = new EnemyManager(spawn);
 
             START(this);
             isActive = true;
@@ -65,7 +65,7 @@ namespace GeometeryWars
         private void FixedUpdate()
         {
             //update units
-            enemy.Move(spawn.GetPools());
+            enemy.Move();
         }
     }
 
@@ -74,18 +74,23 @@ namespace GeometeryWars
     //run enemy behaviour/movement using JOB system
     public class EnemyManager
     {
-        public void Move(ObjectPool<AEnemy>[] pools)
+        public EnemyManager(SpawnManager s)
         {
+            spawn = s;
+        }
+
+        private SpawnManager spawn;
+
+        public void Move()
+        {
+            ObjectPool<AEnemy>[] pools = spawn.GetPools();
             Debug.Log("<color=blue>Move Enemies</color>");
             for (int i = 0; i < pools.Length; i++)
             {
                 List<AEnemy> temp = pools[i].GetActive();
                 for (int j = 0; j < temp.Count; j++)
                 {
-                    if(temp[j] != null)
-                    {
-                        temp[j].Move();
-                    }
+                    temp[j].Move();
                 }
             }
         }

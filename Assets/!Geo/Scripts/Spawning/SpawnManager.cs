@@ -29,10 +29,7 @@ namespace GeometeryWars
             pools = new ObjectPool<AEnemy>[levelPatterns.enemyPrefabs.Length];
             for (int i = 0; i < pools.Length; i++)
             {
-                if (levelPatterns.enemyPrefabs[i].GetComponent<Poolable>() != null)
-                {
-                    pools[i] = new ObjectPool<AEnemy>(levelPatterns.enemyPrefabs[i].GetComponent<AEnemy>(), 100);
-                }
+                pools[i] = new ObjectPool<AEnemy>(levelPatterns.enemyPrefabs[i], 100);
             }
 
             levelIndex = 0;
@@ -51,7 +48,8 @@ namespace GeometeryWars
                     //prime next pattern, activate delay
                     levelIndex++;
 
-                    if (levelIndex == levelPatterns.patterns.Length)
+                    //if we've reached the end of the spawn list turn spawning off
+                    if (levelIndex == levelPatterns.spawnTimes.Length)
                     {
                         isSpawn = false;
                     }
@@ -68,7 +66,7 @@ namespace GeometeryWars
             //spawn pattern
             for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
             {
-                AEnemy temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Get();
+                AEnemy temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Retrieve();
                 //get position
                 temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
                 //point transform down towards map

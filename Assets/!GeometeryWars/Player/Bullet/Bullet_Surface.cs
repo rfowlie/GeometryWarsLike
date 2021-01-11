@@ -25,7 +25,7 @@ namespace GeometeryWars
             if (lifetime < count)
             {
                 count = 0f;
-                ReturnToPool(this);
+                gameObject.SetActive(false);
             }
         }
 
@@ -42,13 +42,13 @@ namespace GeometeryWars
             //if bullet glitches remove it...
             else
             {
-                ReturnToPool(this);
+                gameObject.SetActive(false);
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            ReturnToPool(this);
+            gameObject.SetActive(false);
         }
     }
 }

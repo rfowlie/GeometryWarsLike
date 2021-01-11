@@ -22,7 +22,7 @@ namespace GeometeryWars
         private void Update()
         {
             //strenght of effect varies from distance to target
-            intensity = (target.position - transform.position).magnitude / 3f;
+            intensity = (target.position - transform.position).magnitude / huntRange;
         }
     }
 }

@@ -4,40 +4,40 @@ using UnityEngine;
 using System;
 
 
+//Adds a poolable component to any Gameobject passed in if doesn't have one already
+//sets event on poolable to the return method of the object pool
+//fires the event when gameobject is disable/set inactive
+
 //Object pool for gameobjects
-public class ObjectPool<T> where T : Poolable
+public class ObjectPool<T> where T : MonoBehaviour
 {
     //Constructor
-    public ObjectPool(T poolObject, int initialAmount = 1, string poolName = "")
+    public ObjectPool(T obj, int initialAmount = 1)
     {
-        active = new Dictionary<int, T>();
+        active = new List<T>();
         deactive = new Queue<T>();
 
-        this.poolObject = poolObject;
-        this.poolName = poolName;
+        poolObject = obj;
         int amount = initialAmount < 0 ? 1 : initialAmount;
         for (int i = 0; i < amount; i++)
         {
             T temp = Create();
+            active.Add(temp);
             temp.gameObject.SetActive(false);
-            deactive.Enqueue(temp);
         }
     }
 
-    //use later for getting different pools through code...
-    private string poolName = string.Empty;
-    public string Name() { return poolName; }
-    private T poolObject = null;
+    private T poolObject;
     private Queue<T> deactive;
     public int DeactiveCount() { return deactive.Count; }
-    private Dictionary<int, T> active;
-    public List<T> GetActive() { return new List<T>(active.Values); }
+    private List<T> active;
+    public List<T> GetActive() { return active; }
 
     //return available deactive objs else create a new one
-    public T Get()
+    public T Retrieve()
     {
         T obj;
-        if(deactive.Count > 0)
+        if (deactive.Count > 0)
         {
             obj = deactive.Dequeue();
             obj.gameObject.SetActive(true);
@@ -45,21 +45,24 @@ public class ObjectPool<T> where T : Poolable
         else
         {
             obj = Create();
-        }        
-        
+        }
+
+        active.Add(obj);
         return obj;
     }
-    public void Return(Poolable obj)
+    public void Return(GameObject obj)
     {
-        T temp;
-        if(active.TryGetValue(obj.GetInstanceID(), out temp))
+        T temp = obj.GetComponent<T>();
+        if (active.Contains(temp))
         {
+            active.Remove(temp);
             deactive.Enqueue(temp);
-            temp.gameObject.SetActive(false);
+            //need this???
+            obj.SetActive(false);
         }
         else
         {
-            Debug.Log($"{obj.name} does not belong in object pool {poolName}!!");
+            Debug.Log($"{obj.name} does not belong to this object pool!!");
         }
     }
 
@@ -69,9 +72,23 @@ public class ObjectPool<T> where T : Poolable
     private T Create()
     {
         GameObject obj = GameObject.Instantiate(poolObject.gameObject);
+        
+        //check if Poolable componet, set pool, add if not
+        Poolable temp = obj.GetComponent<Poolable>();
+        if (temp != null)
+        {
+            temp.RETURN += Return;
+            //obj.GetComponent<PoolableALT>().pool = this;
+        }
+        else
+        {
+
+            temp = obj.AddComponent<Poolable>();
+            temp.RETURN += Return;
+        }
+
         //set scene
         obj.name = poolObject.name + " " + objectCount++.ToString();
-        obj.GetComponent<Poolable>().RECYCLE += Return;
         return obj.GetComponent<T>();
     }
 }

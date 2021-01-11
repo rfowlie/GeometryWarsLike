@@ -403,8 +403,9 @@ GameObject:
   m_Component:
   - component: {fileID: 165268795}
   - component: {fileID: 165268794}
+  - component: {fileID: 165268796}
   m_Layer: 0
-  m_Name: Setup
+  m_Name: Components
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -439,6 +440,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &165268796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165268793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b27ae7a1eb1ecb941be454f1f1973e1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradeCosts: {fileID: 11400000, guid: 8a27b58bc834a0b4d895c91d1f2576a9, type: 2}
 --- !u!1 &200062603
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using System;
 
 namespace GeometeryWars
 {
-    public abstract class AEnemy : Poolable
+    public abstract class AEnemy : MonoBehaviour
     {
         //the map layer so raycasting for movement is correct
         public LayerMask mapLayer;
@@ -49,7 +49,7 @@ namespace GeometeryWars
             foreach(ChildTrigger c in ct)
             {
                 //Debug.Log("Child Trigger Assigned");
-                c.TRIGGER += () => ReturnToPool(this);
+                c.TRIGGER += () => gameObject.SetActive(false);
             }
 
             //face random direction
@@ -64,7 +64,7 @@ namespace GeometeryWars
             ChildTrigger[] ct = GetComponentsInChildren<ChildTrigger>();
             foreach (ChildTrigger c in ct)
             {                
-                c.TRIGGER -= () => ReturnToPool(this);
+                c.TRIGGER -= () => gameObject.SetActive(false);
             }
         }
 
@@ -72,8 +72,14 @@ namespace GeometeryWars
         protected Func<Vector3> Movement;
         protected Func<Quaternion> Rotation;
 
+                
         protected abstract void SetMovement();
         protected abstract void SetRotation();
+
+        public void UpdateMovement()
+        {
+            Move();
+        }
 
         public virtual void Move()
         {
@@ -121,7 +127,7 @@ namespace GeometeryWars
                 SHOT(value);
             }
 
-            ReturnToPool(this);
+            gameObject.SetActive(false);
         }
     }
 }

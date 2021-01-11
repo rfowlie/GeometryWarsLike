@@ -40,7 +40,7 @@ namespace GeometeryWars
                 if (count > fireRate)
                 {
                     count -= fireRate;
-                    Bullet_Surface bullet = bulletPool.Get();
+                    Bullet_Surface bullet = bulletPool.Retrieve();
                     bullet.transform.position = body.position + body.forward;
                     bullet.transform.rotation = body.rotation;
                 }

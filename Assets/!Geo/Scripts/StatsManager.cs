@@ -10,6 +10,8 @@ namespace GeometeryWars
 {
     public class StatsManager : MonoBehaviour
     {
+        private UpgradeCosts costs;
+
         //UI vars
         [SerializeField] private TextMeshProUGUI points;
         [SerializeField] private TextMeshProUGUI movement;
@@ -21,6 +23,10 @@ namespace GeometeryWars
         //*UPDATE THE UI, then on scene change, call event to notify GameController to grab updates
         public static event Action<StatsManager> START;
 
+        private void Start()
+        {
+            costs = GetComponent<UpgradeCosts>();
+        }
         private void OnEnable()
         {
             //notify game controller that active and that the game controller needs to set the game stats
@@ -36,17 +42,18 @@ namespace GeometeryWars
         //movement
         public void IncrementMovement()
         {
-            //check if enough points to increment...
-            int amount = UpgradeCosts.Instance.GetMovementUpgrade(info.levelMovementSpeed);
-            if (amount <= info.points)
+            //ensure that movement can be upgraded
+            if(info.levelMovementSpeed < costs.GetMovementCount())
             {
-                info.points -= amount;
-                points.text = info.points.ToString();
-                info.levelMovementSpeed++;
-                movement.text = info.levelMovementSpeed.ToString();
-
-                //could just do at the end??? before loading new scene???
-                GameStateSingleton.Instance.UpdateGameStateInfo(info);
+                //check if enough points to increment...
+                int amount = costs.GetMovementUpgrade(info.levelMovementSpeed);
+                if (amount <= info.points)
+                {
+                    info.points -= amount;
+                    points.text = info.points.ToString();
+                    info.levelMovementSpeed++;
+                    movement.text = info.levelMovementSpeed.ToString();
+                }
             }
         }
     }

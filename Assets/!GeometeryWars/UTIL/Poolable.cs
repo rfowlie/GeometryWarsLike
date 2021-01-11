@@ -7,11 +7,13 @@ using System;
 //object pool will set itself as pool for this object
 public class Poolable : MonoBehaviour
 {
-    public event Action<Poolable> RECYCLE;
+    //public ObjectPoolALT pool;
+    public event Action<GameObject> RETURN;
 
-    //allow outside things to notify poolable Object to return to its pool
-    public void ReturnToPool(Poolable self)
+    //?could be a sneaky solve, gameobject doesn't even have to know it has a poolable component...
+    private void OnDisable()
     {
-        RECYCLE(self);
+        RETURN(gameObject);
+        //pool.Return(gameObject);
     }
 }

@@ -89,7 +89,7 @@ namespace GeometeryWars
         private Fire fire;
         private void SingleBullet()
         {
-            Bullet_Surface temp = bulletPool.Get();
+            Bullet_Surface temp = bulletPool.Retrieve();
             temp.transform.position = transform.position + transform.up;
             temp.transform.rotation = transform.rotation;
         }
