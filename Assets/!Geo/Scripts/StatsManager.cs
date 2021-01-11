@@ -11,12 +11,12 @@ namespace GeometeryWars
     public class StatsManager : MonoBehaviour
     {
         //serializable object that holds concrete upgrade costs
-        private UpgradeCosts costs;
+        private Upgrades costs;
 
         //UI vars
         [SerializeField] private TextMeshProUGUI points;
         [SerializeField] private TextMeshProUGUI movement;
-        [SerializeField] private TextMeshProUGUI bullet;
+        [SerializeField] private TextMeshProUGUI fireRate;
         private GameStateInfo info;
         public GameStateInfo GetStats() { return info; }
 
@@ -26,7 +26,7 @@ namespace GeometeryWars
 
         private void Start()
         {
-            costs = GetComponent<UpgradeCosts>();
+            costs = Upgrades.Instance;
         }
         private void OnEnable()
         {
@@ -34,26 +34,41 @@ namespace GeometeryWars
             START(this);
 
             //get game stats from game controller
-            info = GameController.Instance.GetState();
+            info = GameController.Instance.GetStateInfo();
             points.text = info.points.ToString();
             movement.text = info.levelMovementSpeed.ToString();
-            //bullet.text = info.levelBullet.ToString();    
+            fireRate.text = info.levelFireRate.ToString();    
         }
 
         //movement
         public void IncrementMovement()
         {
             //ensure that movement can be upgraded
-            if(info.levelMovementSpeed < costs.GetMovementCount())
+            if(info.levelMovementSpeed < costs.GetMovementLevels() - 1)
             {
                 //check if enough points to increment...
-                int amount = costs.GetMovementUpgrade(info.levelMovementSpeed);
+                int amount = costs.GetMovementCost(info.levelMovementSpeed);
                 if (amount <= info.points)
                 {
                     info.points -= amount;
                     points.text = info.points.ToString();
                     info.levelMovementSpeed++;
                     movement.text = info.levelMovementSpeed.ToString();
+                }
+            }
+        }
+
+        public void IncrementFireRate()
+        {
+            if(info.levelFireRate < costs.GetFireRateLevels() - 1)
+            {
+                int amount = costs.GetFireRateCost(info.levelFireRate);
+                if(amount <= info.points)
+                {
+                    info.points -= amount;
+                    points.text = info.points.ToString();
+                    info.levelFireRate++;
+                    fireRate.text = info.levelFireRate.ToString();
                 }
             }
         }

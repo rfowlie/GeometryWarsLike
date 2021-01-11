@@ -15,10 +15,22 @@ namespace GeometeryWars
             bulletPool = new ObjectPool<Bullet_Surface>(bullet);
         }
 
+        public void AdjustFireRate(float rate)
+        {
+            if(rate < 0f)
+            {
+                rate = 0.1f;
+            }
+            else
+            {
+                fireRate = rate;
+            }
+        }
+
         Coroutine c = null;
         [SerializeField] public bool isFire = false;
         [Range(0.01f, 1f)]
-        [SerializeField] private float fireRate = 0.1f;
+        [SerializeField] private float fireRate = 1f;
 
         public void BeginFire(Transform t)
         {

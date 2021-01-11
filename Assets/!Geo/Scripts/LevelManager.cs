@@ -18,6 +18,7 @@ namespace GeometeryWars
         [SerializeField] private PlayerManager player;
         private EnemyManager enemy;
 
+
         private bool isActive = false;
 
         public static event Action<LevelManager> START;
@@ -53,7 +54,8 @@ namespace GeometeryWars
         private void Start()
         {
             START(this);
-            player.Setup();
+            player.Setup(Upgrades.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
+                         Upgrades.Instance.GetFireRateValue(GameController.Instance.GetStateInfo().levelFireRate));
             enemy = new EnemyManager(spawn);
             isActive = true;
         }

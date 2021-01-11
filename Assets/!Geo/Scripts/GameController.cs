@@ -18,7 +18,7 @@ namespace GeometeryWars
 
         //contains all the information for the current game
         private GameStateInfo info;
-        public GameStateInfo GetState() { return info; }
+        public GameStateInfo GetStateInfo() { return info; }
 
         //enum to track position of game
         public enum GamePosition { NONE, GAMEOVER, MAINMENU, STATS, LEVEL }

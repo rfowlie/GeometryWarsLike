@@ -42,8 +42,13 @@ namespace GeometeryWars
             }
         }
 
-        public void Setup()
+        public void Setup(float movementSpeed, float fireRate)
         {
+            //setup player stats from info
+            speed = movementSpeed;
+            bullet.AdjustFireRate(fireRate);
+
+
             //get game map from global variables
             GlobalVariables gv = FindObjectOfType<GlobalVariables>();
             map = gv.map;
@@ -79,7 +84,7 @@ namespace GeometeryWars
             //TEMP FIRE BULLETS
             if (Input.GetMouseButtonDown(0))
             {
-                bullet.BeginFire(transform);
+                bullet.BeginFire(body);
             }
             if (Input.GetMouseButtonUp(0))
             {

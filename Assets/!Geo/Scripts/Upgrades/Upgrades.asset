@@ -10,6 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 865e8781f0c8b5a49b80bdbfcf8e6fb2, type: 3}
-  m_Name: Upgrade Costs
+  m_Name: Upgrades
   m_EditorClassIdentifier: 
-  movementUpgradeCost: 64000000c80000009001000020030000
+  movementCosts: 64000000c80000009001000020030000
+  movementValues:
+  - 4
+  - 5
+  - 6
+  - 7
+  fireRateCosts: 64000000c80000002c01000090010000
+  fireRateValues:
+  - 1
+  - 0.85
+  - 0.55
+  - 0.3
