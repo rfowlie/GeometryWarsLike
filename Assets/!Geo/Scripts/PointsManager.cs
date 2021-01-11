@@ -9,11 +9,12 @@ namespace GeometeryWars
     public class PointsManager : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI text;
-        public int points;
+        public int points = 0;
 
         private void OnEnable()
         {
             AEnemy.SHOT += Adjust;
+            Adjust(0);
         }    
 
         public void Adjust(int value)

@@ -6,7 +6,7 @@ using System;
 namespace GeometeryWars
 {
     //keep this object a certain distance from the plane...
-    public class SurfacePlayer : MonoBehaviour
+    public class PlayerManager : MonoBehaviour
     {
         [Header("Components")]
         [SerializeField] private Transform body;
@@ -24,10 +24,10 @@ namespace GeometeryWars
         public LayerMask mapLayer, obstacleLayer;
         public float obstacleDistance = 1f;
 
-
-
-        public static event Action DEATH;
         [SerializeField] private int lives = 3;
+        
+
+        public event Action DEATH;
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Enemy")
@@ -36,19 +36,22 @@ namespace GeometeryWars
                 lives--;
                 if (lives <= 0)
                 {
-                    //game over...
+                    //notify listeners of game over
                     DEATH();
                 }
             }
         }
 
-        private void Start()
+        public void Setup()
         {
             //get game map from global variables
             GlobalVariables gv = FindObjectOfType<GlobalVariables>();
             map = gv.map;
             mapLayer = gv.mapLayer;
             obstacleLayer = gv.obstacleLayer;
+
+            //create object pool for bullets
+            bullet.Setup();
 
             //make sure player is setup correctly
             RaycastHit hit;
@@ -59,10 +62,11 @@ namespace GeometeryWars
             }
         }
 
-
+        //get resolution...
         private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
 
-        private void Update()
+        
+        public void UpdatePlayer()
         {
             //movement
             velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
@@ -83,7 +87,7 @@ namespace GeometeryWars
             }
         }
 
-        private void FixedUpdate()
+        public void Move()
         {
             //keep object on surface of world
             if (velocity != Vector3.zero)

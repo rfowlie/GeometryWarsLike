@@ -59,7 +59,7 @@ namespace GeometeryWars
             }
             public static Quaternion AnticipatePosition(Transform transform, Transform target, float intensity, RaycastHit hit)
             {
-                Vector3 velocity = target.GetComponent<SurfacePlayer>().velocity * intensity;
+                Vector3 velocity = target.GetComponent<PlayerManager>().velocity * intensity;
                 Vector3 selfToTarget = ((target.position + velocity) - transform.position).normalized;
                 transform.rotation = Quaternion.FromToRotation(transform.forward, selfToTarget) * transform.rotation;
                 transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;

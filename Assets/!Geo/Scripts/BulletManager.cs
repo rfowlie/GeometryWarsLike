@@ -9,7 +9,7 @@ namespace GeometeryWars
         [SerializeField] private Bullet_Surface bullet;
         private ObjectPool<Bullet_Surface> bulletPool;
 
-        private void Start()
+        public void Setup()
         {
             //create bullet pool
             bulletPool = new ObjectPool<Bullet_Surface>(bullet);

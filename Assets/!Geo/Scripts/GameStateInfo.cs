@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//make struct so safe to pass out
+//make struct so info gets copied and can't be tampered with
 public struct GameStateInfo
 {
     public int points;

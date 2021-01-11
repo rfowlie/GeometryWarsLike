@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1576775658}
-  - component: {fileID: 1576775656}
   - component: {fileID: 1576775657}
   - component: {fileID: 1576775655}
   - component: {fileID: 1576775659}
@@ -155,19 +154,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10bb6b488296a834b84b00360758b871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1576775656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576775654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a04bc4f0961b52543a2cb5de1b63d4db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingPoints: 100
 --- !u!114 &1576775657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,6 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenu: MainMenu
   statsMenu: Stats
+  gameOverMenu: GameOver
   currentlevelIndex: 0
   alllevels:
   - DemoLevel_01

@@ -15,12 +15,13 @@ namespace GeometeryWars
         SceneController sceneControl;
         //holds ref to all levels
         LevelController levelControl;
+
         //contains all the information for the current game
-        private GameState state;
-        public GameStateInfo GetState() { return state.info; }
+        private GameStateInfo info;
+        public GameStateInfo GetState() { return info; }
 
         //enum to track position of game
-        public enum GamePosition { NONE, MAINMENU, STATS, LEVEL }
+        public enum GamePosition { NONE, GAMEOVER, MAINMENU, STATS, LEVEL }
         public GamePosition position = GamePosition.NONE;
 
 
@@ -31,10 +32,7 @@ namespace GeometeryWars
             //attached to gameObject
             sceneControl = GetComponent<SceneController>();
             levelControl = GetComponent<LevelController>();
-            state = GetComponent<GameState>();
-        }
-
-        
+        }        
 
         private void OnEnable()
         {
@@ -44,6 +42,7 @@ namespace GeometeryWars
             //listen for LevelController events
             LevelManager.START += SetupLevel;
             LevelManager.END += AdjustLevel;
+            LevelManager.GAMEOVER += GameOver;
 
             //statsManager
             StatsManager.START += SetupStats;
@@ -51,12 +50,28 @@ namespace GeometeryWars
 
         private void Start()
         {
-            //load the main menu
-            position = GamePosition.MAINMENU;
-            sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, null);
+            AdjustScene();
         }
 
+        //set all values to default
+        private void Restart()
+        {
+            level = null;
+            stats = null;
 
+            //setup game info
+            info = new GameStateInfo();
+            info.points = 0;
+            info.levelPlayer = 0;
+            info.levelMovementSpeed = 0;
+            info.levelFireRate = 0;            
+        }
+
+        private void GameOver()
+        {
+            position = GamePosition.GAMEOVER;
+            AdjustScene();
+        }
 
         //STATSMANAGER
         StatsManager stats = null;
@@ -68,7 +83,7 @@ namespace GeometeryWars
         private void AdjustStats()
         {
             //grab updated info from statsManager, and set to game state
-            state.info = stats.GetStats();
+            info = stats.GetStats();
         }
 
 
@@ -81,7 +96,7 @@ namespace GeometeryWars
         private void SetupLevel(LevelManager nextLevel)
         {
             level = nextLevel;
-            SceneManager.SetActiveScene(level.gameObject.scene);
+            SceneManager.SetActiveScene(level.gameObject.scene);            
         }
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()
@@ -90,7 +105,7 @@ namespace GeometeryWars
             if(level == null) { Debug.LogError("Level Manager is Null!!"); return; }
 
             //add points from level to total points
-            state.info.points += level.GetPoints();
+            info.points += level.GetPoints();
 
             //remove level manager
             level = null;
@@ -121,6 +136,16 @@ namespace GeometeryWars
                         position = GamePosition.STATS;
                         //load next level from level controller, unload main menu...
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
+                        break;
+                    case GamePosition.GAMEOVER:
+                        position = GamePosition.NONE;
+                        sceneControl.SceneChange(new string[] { levelControl.GetGameOverMenu() }, sceneControl.GetLoadedScenes());
+                        break;
+                    case GamePosition.NONE:
+                        //ensure all values are default...
+                        Restart();                      
+                        position = GamePosition.MAINMENU;
+                        sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     default:
                         break;

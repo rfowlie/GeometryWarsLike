@@ -12,8 +12,8 @@ EditorBuildSettings:
     path: Assets/!Geo/Scenes/MainMenu.unity
     guid: e9340668054f87d45a5597e74107b6f5
   - enabled: 1
-    path: Assets/!GeometeryWars/!Scenes/New/Persistent.unity
-    guid: 2c35bde899c43da4a80174f0d360b074
+    path: Assets/!Geo/Scenes/GameOver.unity
+    guid: c7440d0c2a4628e42acbf15039907b2f
   - enabled: 1
     path: Assets/!Geo/Scenes/Stats.unity
     guid: 01597ced5d2b7b440bd4596dfd46ca40

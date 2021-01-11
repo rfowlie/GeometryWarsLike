@@ -13,6 +13,9 @@ public class LevelController : MonoBehaviour
     public string GetMainMenu() { return mainMenu; }
     [SerializeField] private string statsMenu;
     public string GetStatsMenu() { return statsMenu; }
+    [SerializeField] private string gameOverMenu;
+    public string GetGameOverMenu() { return gameOverMenu; }
+
 
     [Space]
     [SerializeField] private int currentlevelIndex = 0;

@@ -10,6 +10,7 @@ namespace GeometeryWars
 {
     public class StatsManager : MonoBehaviour
     {
+        //serializable object that holds concrete upgrade costs
         private UpgradeCosts costs;
 
         //UI vars
