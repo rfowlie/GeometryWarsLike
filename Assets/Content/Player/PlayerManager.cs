@@ -15,7 +15,7 @@ namespace GeometeryWars
 
         [Header("Variables")]
         [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
-        public float speed = 1f;
+        public float movementSpeed = 1f;
         public Vector3 velocity;
         private Vector3 aim;
         private Vector3 local;
@@ -25,6 +25,7 @@ namespace GeometeryWars
         public float obstacleDistance = 1f;
 
         [SerializeField] private int lives = 3;
+        [SerializeField] private int health = 100;
         
 
         public event Action DEATH;
@@ -33,24 +34,38 @@ namespace GeometeryWars
             if (other.tag == "Enemy")
             {
                 Debug.Log("<color=blue>Lost Life</color>");
-                lives--;
-                if (lives <= 0)
+                //health version
+                //FOR now...
+                health -= other.GetComponent<AEnemy>().damage;
+
+                if(health < 0)
                 {
-                    //notify listeners of game over
+                    //death
                     DEATH();
                 }
+
+
+                //lives--;
+                //if (lives <= 0)
+                //{
+                //    //notify listeners of game over
+                //    DEATH();
+                //}
             }
         }
 
-        public void Setup(float movementSpeed, float fireRate)
+        public void Setup(int health, float movementSpeed, float fireRate)
         {
             //set values
             map = GameController.Instance.GetMap().transform;
+            //sketchy...
+            transform.position = map.GetChild(0).transform.position;
             mapLayer = GameController.Instance.GetMapLayer();
             obstacleLayer = GameController.Instance.GetObstacleLayer();
 
             //setup player stats from info
-            speed = movementSpeed;
+            this.health = health;
+            this.movementSpeed = movementSpeed;
             bullet.AdjustFireRate(fireRate);
 
 
@@ -98,7 +113,7 @@ namespace GeometeryWars
             {
                 //Calc next pos and then check for obstacle collision
                 RaycastHit hitNext;
-                Vector3 nextPos = transform.position + velocity * speed * Time.fixedDeltaTime;
+                Vector3 nextPos = transform.position + velocity * movementSpeed * Time.fixedDeltaTime;
                 if (Physics.SphereCast(transform.position, 1f, velocity, out hitNext, obstacleDistance, obstacleLayer))
                 {
                     //obstacle hit...
@@ -107,7 +122,7 @@ namespace GeometeryWars
                     Vector3 p = Vector3.Project(transform.position - hitNext.point, hitNext.normal);
                     p = ((hitNext.point - transform.position) + p).normalized;
                     Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
-                    nextPos = transform.position + p * speed * Time.fixedDeltaTime;
+                    nextPos = transform.position + p * movementSpeed * Time.fixedDeltaTime;
                 }
 
                 //calc move after factoring obstacle avoidance

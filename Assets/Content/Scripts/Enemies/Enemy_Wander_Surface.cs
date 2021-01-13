@@ -8,12 +8,24 @@ namespace GeometeryWars
     {
         public override void SetMovement()
         {
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
         public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.Forward(transform, hit);
+            Rotation = () => SurfaceMovement.Rotation.SlightRotation(transform, hit, Random.Range(0f, 1f));
+            //Rotation = () => SurfaceMovement.Rotation.Forward(transform, hit);
+        }
+
+        Coroutine c = null;
+
+        protected override void Start()
+        {
+            base.Start();
+
+            c = CoroutineEX.RandomDelay(this, SetRotation, 0f, 5f);
+
+            
         }
     }
 }

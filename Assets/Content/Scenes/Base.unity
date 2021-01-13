@@ -182,6 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maps: {fileID: 11400000, guid: 97aaca0ba0680bf4db0d6dfdfbc75bd2, type: 2}
   upgrades: {fileID: 0}
+  levelPatterns: {fileID: 11400000, guid: f8ea7d38d2ffc9446ba82ba0a220b329, type: 2}
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -220,7 +221,5 @@ MonoBehaviour:
   statsMenu: Stats
   gameOverMenu: GameOver
   gameLevel: Level
-  currentlevelIndex: -1
-  alllevels:
-  - DemoLevel_01
-  - DemoLevel_02
+  maxLevels: 2
+  currentlevelIndex: 0

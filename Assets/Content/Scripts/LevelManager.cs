@@ -54,7 +54,8 @@ namespace GeometeryWars
             //notify GameController of active levelManager
             START(this);
             //setup player
-            player.Setup(UpgradesController.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
+            player.Setup(UpgradesController.Instance.GetHealtheValue(GameController.Instance.GetStateInfo().levelHealth),
+                         UpgradesController.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
                          UpgradesController.Instance.GetFireRateValue(GameController.Instance.GetStateInfo().levelFireRate));
             enemy = new EnemyManager(spawn);
             isActive = true;

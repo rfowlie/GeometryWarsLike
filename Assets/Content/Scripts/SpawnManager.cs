@@ -9,8 +9,10 @@ namespace GeometeryWars
     public class SpawnManager : MonoBehaviour
     {
         [Header("Variables")]
-        public SO_LevelPattern levelPatterns;
+        private SO_LevelPattern levelPatterns;
         private ObjectPool<AEnemy>[] pools;
+        private Transform map;
+
         public ObjectPool<AEnemy>[] GetPools()
         {
             return pools;
@@ -37,6 +39,8 @@ namespace GeometeryWars
 
         private void Start()
         {
+            //get values from global variables...
+            levelPatterns = GameController.Instance.GetCurrentLevelPattern();
             map = GameController.Instance.GetMap().transform;
 
             //create pools
@@ -73,7 +77,7 @@ namespace GeometeryWars
         }
 
 
-        public Transform map;        
+        
         //spawn units one on each frame... 
         IEnumerator SpawnUnits(int levelIndex)
         {

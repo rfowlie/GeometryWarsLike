@@ -15,4 +15,8 @@ public class UpgradesController : Singleton<UpgradesController>
     public int GetFireRateLevels() { return upgrades.fireRateCosts.Length; }
     public int GetFireRateCost(int level) { return upgrades.fireRateCosts[level]; }
     public float GetFireRateValue(int level) { return upgrades.fireRateValues[level]; }
+
+    public int GetHealthLevels() { return upgrades.healthCosts.Length; }
+    public int GetHealthCost(int level) { return upgrades.healthCosts[level]; }
+    public int GetHealtheValue(int level) { return upgrades.healthValues[level]; }
 }

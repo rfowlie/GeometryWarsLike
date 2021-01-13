@@ -7,6 +7,7 @@ public struct GameStateInfo
 {
     public int points;
     public int levelPlayer;
+    public int levelHealth;
     public int levelMovementSpeed;
     public int levelFireRate;
 }

@@ -20,6 +20,11 @@ namespace GeometeryWars
         [Header("Scriptable Objects")]
         public SO_Maps maps;
         public SO_Upgrades upgrades;
+        [SerializeField] private SO_GameLevelPatterns levelPatterns;
+        public SO_LevelPattern GetCurrentLevelPattern()
+        {
+            return levelPatterns.GetPatternAtIndex(levelControl.GetCurrentLevelIndex());
+        }
 
         [Space]
         [Header("Global Variables")]
@@ -71,15 +76,13 @@ namespace GeometeryWars
         //set all values to default
         private void Restart()
         {
+            levelControl.Restart();
+
             level = null;
             stats = null;
 
             //setup game info
             info = new GameStateInfo();
-            info.points = 0;
-            info.levelPlayer = 0;
-            info.levelMovementSpeed = 0;
-            info.levelFireRate = 0;            
         }
 
         private void GameOver()
@@ -151,10 +154,11 @@ namespace GeometeryWars
                     case GamePosition.STATS:
                         AdjustStats();
                         position = GamePosition.LEVEL;
+                        levelControl.IncrementLevel();
                         //setup map...
                         map = Instantiate(maps.GetMapAtIndex(levelControl.GetCurrentLevelIndex()));
                         map.transform.position = Vector3.zero;
-                        sceneControl.SceneChange(new string[] { levelControl.NextLevel() }, sceneControl.GetLoadedScenes());
+                        sceneControl.SceneChange(new string[] { levelControl.GetGameLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
                         position = GamePosition.STATS;                        

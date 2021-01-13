@@ -15,15 +15,15 @@ namespace GeometeryWars
         {
             Movement = () =>
             {
-                Vector3 d = EMovement.Direction.Forward(transform, speedThrust);
-                Vector3 d2 = EMovement.Direction.Wobble(transform, new WobbleInfo(Vector3.right, wobbleSpeed, wobbleIntensity));
+                Vector3 d = SurfaceMovement.Direction.Forward(transform, speedThrust);
+                Vector3 d2 = SurfaceMovement.Direction.Wobble(transform, new WobbleInfo(Vector3.right, wobbleSpeed, wobbleIntensity));
                 return d + d2;
             };
         }
 
         public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
+            Rotation = () => SurfaceMovement.Rotation.FaceTarget(transform, target, hit);
         }
     }
 }

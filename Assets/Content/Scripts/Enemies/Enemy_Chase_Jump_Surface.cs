@@ -9,12 +9,12 @@ namespace GeometeryWars
     {
         public override void SetMovement()
         {
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
         public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
+            Rotation = () => SurfaceMovement.Rotation.FaceTarget(transform, target, hit);
         }
     }
 }

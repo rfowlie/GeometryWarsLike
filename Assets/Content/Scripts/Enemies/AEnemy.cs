@@ -27,6 +27,7 @@ namespace GeometeryWars
 
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
+        public int damage = 25;
 
         //notify listeners that this was destroyed
         public static event Action<int> SHOT;
