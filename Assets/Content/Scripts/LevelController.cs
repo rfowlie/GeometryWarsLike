@@ -16,6 +16,9 @@ public class LevelController : MonoBehaviour
     [SerializeField] private string gameOverMenu;
     public string GetGameOverMenu() { return gameOverMenu; }
 
+    [SerializeField] private string gameLevel;
+    public string GetGameLevel() { return gameLevel; }
+
 
     [Space]
     [SerializeField] private int currentlevelIndex = -1;
@@ -34,6 +37,7 @@ public class LevelController : MonoBehaviour
     {
         //prevent going out of bounds for now...
         currentlevelIndex = (currentlevelIndex + 1) % alllevels.Length;
-        return alllevels[currentlevelIndex];
+        return GetGameLevel();
+        //return alllevels[currentlevelIndex];
     }
 }

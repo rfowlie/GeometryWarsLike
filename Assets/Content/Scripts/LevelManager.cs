@@ -22,6 +22,7 @@ namespace GeometeryWars
         public static event Action END;
         public static event Action GAMEOVER;
 
+                
         //get the current points for this level
         public int GetPoints()
         {
@@ -50,7 +51,9 @@ namespace GeometeryWars
 
         private void Start()
         {
+            //notify GameController of active levelManager
             START(this);
+            //setup player
             player.Setup(UpgradesController.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
                          UpgradesController.Instance.GetFireRateValue(GameController.Instance.GetStateInfo().levelFireRate));
             enemy = new EnemyManager(spawn);

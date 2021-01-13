@@ -15,11 +15,13 @@ namespace PatternCreator
     {
         public void ResetValues()
         {
+            //set creator to center of map
+            transform.position = map.transform.position;
+
             amountOfPoints = 1;
             radius = 10;
             angleOffset = 0;
             gizmoColour = Color.white;
-            patternName = string.Empty;
             spawnShape = SpawnShape.LINE;
             Configure();
         }
@@ -33,8 +35,6 @@ namespace PatternCreator
         public int amountOfPoints = 4;
         public float radius = 1f;
         [Range(0f, 360f)] public float angleOffset = 0f;
-        [Space]
-        public string patternName = string.Empty;
 
         private Vector3[] points;
         private List<Vector3> p = new List<Vector3>();

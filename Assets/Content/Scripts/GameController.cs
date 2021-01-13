@@ -16,6 +16,21 @@ namespace GeometeryWars
         //holds ref to all levels
         LevelController levelControl;
 
+        //Scriptable Objects
+        [Header("Scriptable Objects")]
+        public SO_Maps maps;
+        public SO_Upgrades upgrades;
+
+        [Space]
+        [Header("Global Variables")]
+        [SerializeField] private LayerMask mapLayer;
+        public LayerMask GetMapLayer() { return mapLayer; }
+        [SerializeField] private LayerMask obstacleLayer;
+        public LayerMask GetObstacleLayer() { return obstacleLayer; }
+        [SerializeField] private GameObject map;
+        public GameObject GetMap() { return map; }
+
+
         //contains all the information for the current game
         private GameStateInfo info;
         public GameStateInfo GetStateInfo() { return info; }
@@ -95,8 +110,14 @@ namespace GeometeryWars
         LevelManager level = null;
         private void SetupLevel(LevelManager nextLevel)
         {
+            if(level != null)
+            {
+                Debug.LogError("There is more then one levelManager in the scene!!");
+            }
             level = nextLevel;
-            SceneManager.SetActiveScene(level.gameObject.scene);            
+            SceneManager.SetActiveScene(level.gameObject.scene);
+            //move map to active scene
+            SceneManager.MoveGameObjectToScene(map, SceneManager.GetActiveScene()); 
         }
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()
@@ -130,10 +151,13 @@ namespace GeometeryWars
                     case GamePosition.STATS:
                         AdjustStats();
                         position = GamePosition.LEVEL;
+                        //setup map...
+                        map = Instantiate(maps.GetMapAtIndex(levelControl.GetCurrentLevelIndex()));
+                        map.transform.position = Vector3.zero;
                         sceneControl.SceneChange(new string[] { levelControl.NextLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
-                        position = GamePosition.STATS;
+                        position = GamePosition.STATS;                        
                         //load next level from level controller, unload main menu...
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;

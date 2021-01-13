@@ -180,6 +180,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a996cd1b70f9144da4b48ec3944c489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maps: {fileID: 11400000, guid: 97aaca0ba0680bf4db0d6dfdfbc75bd2, type: 2}
+  upgrades: {fileID: 0}
+  mapLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 16384
+  map: {fileID: 0}
   position: 0
 --- !u!4 &1576775658
 Transform:
@@ -210,6 +219,7 @@ MonoBehaviour:
   mainMenu: MainMenu
   statsMenu: Stats
   gameOverMenu: GameOver
+  gameLevel: Level
   currentlevelIndex: -1
   alllevels:
   - DemoLevel_01

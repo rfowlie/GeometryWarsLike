@@ -34,9 +34,8 @@ namespace GeometeryWars
 
         protected virtual void Start()
         {
-            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
-            mapLayer = gv.mapLayer;
-            obstacleLayer = gv.obstacleLayer;
+            mapLayer = GameController.Instance.GetMapLayer();
+            obstacleLayer = GameController.Instance.GetObstacleLayer();
 
             SetMovement();
             SetRotation();

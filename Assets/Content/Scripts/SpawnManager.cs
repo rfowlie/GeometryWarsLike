@@ -37,6 +37,8 @@ namespace GeometeryWars
 
         private void Start()
         {
+            map = GameController.Instance.GetMap().transform;
+
             //create pools
             pools = new ObjectPool<AEnemy>[levelPatterns.enemyPrefabs.Length];
             for (int i = 0; i < pools.Length; i++)
@@ -70,11 +72,11 @@ namespace GeometeryWars
 
         }
 
+
+        public Transform map;        
         //spawn units one on each frame... 
         IEnumerator SpawnUnits(int levelIndex)
         {
-            Transform map = GlobalVariables.Instance.map;
-
             //spawn pattern
             for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
             {

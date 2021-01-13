@@ -44,16 +44,15 @@ namespace GeometeryWars
 
         public void Setup(float movementSpeed, float fireRate)
         {
+            //set values
+            map = GameController.Instance.GetMap().transform;
+            mapLayer = GameController.Instance.GetMapLayer();
+            obstacleLayer = GameController.Instance.GetObstacleLayer();
+
             //setup player stats from info
             speed = movementSpeed;
             bullet.AdjustFireRate(fireRate);
 
-
-            //get game map from global variables
-            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
-            map = gv.map;
-            mapLayer = gv.mapLayer;
-            obstacleLayer = gv.obstacleLayer;
 
             //create object pool for bullets
             bullet.Setup();
