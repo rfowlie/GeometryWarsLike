@@ -5,6 +5,12 @@ using System;
 
 namespace GeometeryWars
 {
+    public interface IEnemyMovement
+    {
+        Vector3 Movement();
+        Quaternion Rotation();
+    }
+
     public abstract class AEnemy : MonoBehaviour
     {
         //the map layer so raycasting for movement is correct
@@ -68,19 +74,19 @@ namespace GeometeryWars
             }
         }
 
-        protected RaycastHit hit;
-        protected Func<Vector3> Movement;
-        protected Func<Quaternion> Rotation;
-
+        public RaycastHit hit;
+        public Func<Vector3> Movement;
+        public Func<Quaternion> Rotation;
                 
-        protected abstract void SetMovement();
-        protected abstract void SetRotation();
+        public abstract void SetMovement();
+        public abstract void SetRotation();        
 
         public void UpdateMovement()
         {
             Move();
         }
 
+        
         public virtual void Move()
         {
             if (isActive)

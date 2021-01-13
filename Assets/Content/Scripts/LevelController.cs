@@ -18,7 +18,7 @@ public class LevelController : MonoBehaviour
 
 
     [Space]
-    [SerializeField] private int currentlevelIndex = 0;
+    [SerializeField] private int currentlevelIndex = -1;
     public int GetCurrentLevelIndex() { return currentlevelIndex; }
     [SerializeField] private string[] alllevels;
 

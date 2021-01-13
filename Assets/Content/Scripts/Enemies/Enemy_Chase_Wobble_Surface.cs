@@ -11,7 +11,7 @@ namespace GeometeryWars
         [SerializeField] float wobbleSpeed = 1f;
         [SerializeField] float wobbleIntensity = 1f;
 
-        protected override void SetMovement()
+        public override void SetMovement()
         {
             Movement = () =>
             {
@@ -21,7 +21,7 @@ namespace GeometeryWars
             };
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
             Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
         }

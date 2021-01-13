@@ -424,7 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points: {fileID: 761044490}
   movement: {fileID: 131694297}
-  fireRate: {fileID: 0}
+  fireRate: {fileID: 1349137165}
 --- !u!4 &165268795
 Transform:
   m_ObjectHideFlags: 0

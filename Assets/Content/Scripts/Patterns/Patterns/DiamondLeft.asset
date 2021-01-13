@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80f5a8bec7684b4dba5a4d63210dea0, type: 3}
+  m_Name: DiamondLeft
+  m_EditorClassIdentifier: 
+  iD: DiamondLeft
+  points:
+  - {x: 0.00000073417857, y: -8.709768, z: -6.7186227}
+  - {x: 5.2559056, y: -5.2559037, z: -8.108696}
+  - {x: 8.709772, y: -0.000000550634, z: -6.718622}
+  - {x: 5.2559037, y: 5.255904, z: -8.108695}
+  - {x: -0.0000007341787, y: 8.70977, z: -6.7186236}
+  - {x: -5.2559047, y: 5.255904, z: -8.108695}
+  - {x: -8.709772, y: 0.000000550634, z: -6.718622}
+  - {x: -5.2559056, y: -5.2559047, z: -8.108698}

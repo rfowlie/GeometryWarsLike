@@ -9,12 +9,12 @@ namespace GeometeryWars
     //then dashs in most recent forward without rotating
     public class Enemy_Dash_Surface : AEnemy
     {
-        protected override void SetMovement()
+        public override void SetMovement()
         {
             Movement = null;
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
             Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
         }

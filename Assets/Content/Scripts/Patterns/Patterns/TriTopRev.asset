@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c80f5a8bec7684b4dba5a4d63210dea0, type: 3}
+  m_Name: TriTopRev
+  m_EditorClassIdentifier: 
+  iD: TriTopRev
+  points:
+  - {x: -4.763139, y: 9.526279, z: 2.7499998}
+  - {x: -4.062019, y: 10.155049, z: 1.1726048}
+  - {x: -3.1560056, y: 10.520017, z: -0.607373}
+  - {x: -2.1040027, y: 10.520013, z: -2.4294934}
+  - {x: -1.0155052, y: 10.155049, z: -4.1041145}
+  - {x: -0.00000048082535, y: 9.5262785, z: -5.5000005}
+  - {x: 1.0155047, y: 10.155049, z: -4.1041155}
+  - {x: 2.104004, y: 10.520017, z: -2.4294946}
+  - {x: 3.1560054, y: 10.520015, z: -0.60737383}
+  - {x: 4.062021, y: 10.155049, z: 1.1726036}
+  - {x: 4.76314, y: 9.52628, z: 2.7500002}
+  - {x: 3.0465152, y: 10.155049, z: 2.9315104}
+  - {x: 1.0520017, y: 10.520015, z: 3.0368674}
+  - {x: -1.0520011, y: 10.520015, z: 3.0368674}
+  - {x: -3.046514, y: 10.155048, z: 2.9315104}
