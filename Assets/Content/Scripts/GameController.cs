@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.InputSystem;
+
 
 namespace GeometeryWars
 {
@@ -52,7 +54,56 @@ namespace GeometeryWars
             //attached to gameObject
             sceneControl = GetComponent<SceneController>();
             levelControl = GetComponent<LevelController>();
-        }        
+
+
+            //NEW INPUT TEST
+            input = new InputAction_01();
+            input.Menu.Enable();
+            input.Menu.Select.performed += (ctx) =>
+            {
+                //fire normal left mouse button
+                //Mouse.current.IsPressed();
+            };
+            input.Menu.Cursor.performed += (ctx) =>
+            {
+                Debug.Log($"<color=blue>Current: {Mouse.current.position.ReadValue()}</color>");
+                Debug.Log($"<color=red>Input: {ctx.ReadValue<Vector2>()}</color>");
+                Debug.Log($"<color=green>Input: {Mouse.current.position.ReadValue() + ctx.ReadValue<Vector2>()}</color>");
+
+                Vector2 pos = Mouse.current.position.ReadValue() + ctx.ReadValue<Vector2>() * 10f;
+                Mouse.current.WarpCursorPosition(pos);
+
+                currentCursorChange = ctx.ReadValue<Vector2>();                
+            };
+            input.Menu.Cursor.canceled += (ctx) =>
+            {
+                currentCursorChange = Vector2.zero;
+            };
+            
+            Cursor.lockState = CursorLockMode.Confined;
+            cursorCurrentPos = Mouse.current.position.ReadValue();
+            screenHeight = Screen.height;
+            screenWidth = Screen.width;
+        }
+
+        Vector2 currentCursorChange;
+        Vector2 cursorCurrentPos;
+        float screenHeight;
+        float screenWidth;
+
+        private void Update()
+        {
+            //MOVE MOUSE WITH NEW INPUT SYSTEM
+            Debug.Log($"<color=purple>Mouse: {Mouse.current.position.ReadValue()}</color>");
+            Mouse.current.WarpCursorPosition(cursorCurrentPos);
+
+            if (currentCursorChange != Vector2.zero)
+            {
+                cursorCurrentPos += currentCursorChange * 4f;
+                cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
+                Mouse.current.WarpCursorPosition(cursorCurrentPos);
+            }
+        }
 
         private void OnEnable()
         {
@@ -68,9 +119,10 @@ namespace GeometeryWars
             StatsManager.START += SetupStats;
         }
 
+        InputAction_01 input;
         private void Start()
         {
-            AdjustScene();
+            AdjustScene();            
         }
 
         //set all values to default
@@ -133,6 +185,9 @@ namespace GeometeryWars
 
             //remove level manager
             level = null;
+
+            //stop all coroutines
+            StopAllCoroutines();
 
             //change to relevant scene
             AdjustScene();

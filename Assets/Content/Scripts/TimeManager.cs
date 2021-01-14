@@ -6,26 +6,29 @@ using TMPro;
 namespace GeometeryWars
 {
     //keeps track of the level time
-    public class TimeManager : MonoBehaviour
+    public class TimeManager
     {
-        [SerializeField] private TextMeshProUGUI text;
+        public TimeManager(int levelTime, TextMeshProUGUI ui)
+        {
+            this.levelTime = levelTime;
+            this.ui = ui;
+
+            currentTime = levelTime;
+            ui.text = currentTime.ToString();
+        }
+
+        private int levelTime;
+        private TextMeshProUGUI ui;
 
 
-        [SerializeField] private int levelTime = 30;
         private float currentTime;
         public float GetCurrentTime() { return currentTime; }
         public float GetTimeFromStart() { return levelTime - currentTime; }
 
-        private void Start()
-        {
-            currentTime = levelTime;
-            text.text = currentTime.ToString();
-        }
-
         public bool AdjustTime(float deltaTime)
         {
             currentTime -= deltaTime;
-            text.text = Mathf.Ceil(currentTime).ToString();
+            ui.text = Mathf.Ceil(currentTime).ToString();
             return currentTime < 0f;
         }
     }

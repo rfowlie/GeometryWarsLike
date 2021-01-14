@@ -2,6 +2,8 @@
 using UnityEngine;
 using System;
 
+using UnityEngine.InputSystem;
+
 
 namespace GeometeryWars
 {
@@ -25,7 +27,11 @@ namespace GeometeryWars
         public float obstacleDistance = 1f;
 
         [SerializeField] private int lives = 3;
-        [SerializeField] private int health = 100;
+        [SerializeField] private int healthMax = 100;
+        private int healthCurrent;
+
+        public RectTransform healthUI;
+
         
 
         public event Action DEATH;
@@ -36,9 +42,10 @@ namespace GeometeryWars
                 Debug.Log("<color=blue>Lost Life</color>");
                 //health version
                 //FOR now...
-                health -= other.GetComponent<AEnemy>().damage;
+                healthCurrent -= other.GetComponent<AEnemy>().damage;
+                healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
 
-                if(health < 0)
+                if(healthCurrent < 0)
                 {
                     //death
                     DEATH();
@@ -54,8 +61,42 @@ namespace GeometeryWars
             }
         }
 
-        public void Setup(int health, float movementSpeed, float fireRate)
+        private InputAction_01 input;
+        private void AIM(Vector2 ctx)
         {
+            Vector3 direction = Camera.main.transform.TransformDirection(new Vector3(ctx.x, ctx.y, 0f)) - Camera.main.transform.position;
+        }
+
+        private void OnDisable()
+        {
+            input.Gameplay.Disable();
+        }
+
+        public void Setup(RectTransform healthUI, int health, float movementSpeed, float fireRate)
+        {
+            //NEW INPUT SYSTEM
+            input = new InputAction_01();
+            input.Gameplay.Enable();
+            input.Gameplay.Move.performed += (ctx) =>
+            {
+                velocity = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
+            };
+            input.Gameplay.Aim.performed += (ctx) =>
+            {
+                local = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
+                //Debug.Log($"<color==green>Hello World!!</color>");
+            };
+            input.Gameplay.Fire.started += (ctx) =>
+            {
+                bullet.BeginFire(body);
+            };
+            input.Gameplay.Fire.canceled += (ctx) =>
+            {
+                bullet.StopFire();
+            };
+
+            this.healthUI = healthUI;
+
             //set values
             map = GameController.Instance.GetMap().transform;
             //sketchy...
@@ -64,7 +105,8 @@ namespace GeometeryWars
             obstacleLayer = GameController.Instance.GetObstacleLayer();
 
             //setup player stats from info
-            this.health = health;
+            this.healthMax = health;
+            healthCurrent = healthMax;
             this.movementSpeed = movementSpeed;
             bullet.AdjustFireRate(fireRate);
 
@@ -88,22 +130,27 @@ namespace GeometeryWars
         public void UpdatePlayer()
         {
             //movement
-            velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
+            //velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
 
-            //get mouse position compare to center of screen to aquire rotation direction, apply to player body
-            aim = Input.mousePosition - screenSize;
-            local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
+            ////get mouse position compare to center of screen to aquire rotation direction, apply to player body
+            //aim = Input.mousePosition - screenSize;
+            //local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
 
 
-            //TEMP FIRE BULLETS
-            if (Input.GetMouseButtonDown(0))
-            {
-                bullet.BeginFire(body);
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                bullet.StopFire();
-            }
+            ////TEMP FIRE BULLETS
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    bullet.BeginFire(body);
+            //}
+            //if (Input.GetMouseButtonUp(0))
+            //{
+            //    bullet.StopFire();
+            //}
+        }
+
+        public void GamepadInput()
+        {
+
         }
 
         public void Move()

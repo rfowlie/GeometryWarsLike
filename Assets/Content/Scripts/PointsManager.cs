@@ -2,27 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 namespace GeometeryWars
 {
     //keep track of points...
-    public class PointsManager : MonoBehaviour
+    public class PointsManager 
     {
-        [SerializeField] private TextMeshProUGUI text;
-        public int points = 0;
-
-        private void OnEnable()
+        public PointsManager(TextMeshProUGUI ui)
         {
+            //hate that this is coupled...
             AEnemy.SHOT += Adjust;
-            Adjust(0);
-        }    
+
+            this.ui = ui;
+            points = 0;
+            ui.text = points.ToString();
+        }
+
+        private TextMeshProUGUI ui;
+        public int points { get; private set; }
 
         public void Adjust(int value)
         {
             //change score
             points += value;
             //update UI
-            text.text = points.ToString();
+            ui.text = points.ToString();
         }
     }
 }

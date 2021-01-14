@@ -6,12 +6,32 @@ using UnityEngine.SceneManagement;
 
 namespace GeometeryWars
 {
-    public class SpawnManager : MonoBehaviour
+    public class SpawnManager
     {
-        [Header("Variables")]
+        public SpawnManager(SO_LevelPattern levelPatterns, Transform map)
+        {
+            //get values from global variables...
+            this.levelPatterns = levelPatterns;
+            this.map = map;
+
+            //create pools
+            pools = new ObjectPool<AEnemy>[levelPatterns.enemyPrefabs.Length];
+            for (int i = 0; i < pools.Length; i++)
+            {
+                pools[i] = new ObjectPool<AEnemy>(levelPatterns.enemyPrefabs[i], 100);
+            }
+
+            levelIndex = 0;
+        }
+
+
+        public int levelIndex = 0;
+        public float spawnCount = 0f;
+        bool isSpawn = true;
+        //Coroutine c = null;
         private SO_LevelPattern levelPatterns;
-        private ObjectPool<AEnemy>[] pools;
         private Transform map;
+        private ObjectPool<AEnemy>[] pools;
 
         public ObjectPool<AEnemy>[] GetPools()
         {
@@ -31,27 +51,8 @@ namespace GeometeryWars
 
             return temp;
         }
-        public int levelIndex = 0;
-        public float spawnCount = 0f;
-        bool isSpawn = true;
-        Coroutine c = null;
-
-
-        private void Start()
-        {
-            //get values from global variables...
-            levelPatterns = GameController.Instance.GetCurrentLevelPattern();
-            map = GameController.Instance.GetMap().transform;
-
-            //create pools
-            pools = new ObjectPool<AEnemy>[levelPatterns.enemyPrefabs.Length];
-            for (int i = 0; i < pools.Length; i++)
-            {
-                pools[i] = new ObjectPool<AEnemy>(levelPatterns.enemyPrefabs[i], 100);
-            }
-
-            levelIndex = 0;
-        }
+               
+               
 
         public void Execute(float timeFromZero)
         {
@@ -60,8 +61,7 @@ namespace GeometeryWars
                 //check time against current index
                 if (levelPatterns.spawnTimes[levelIndex] < timeFromZero)
                 {
-                    //spawn pattern
-                    StartCoroutine(SpawnUnits(levelIndex));
+                    GameController.Instance.StartCoroutine(SpawnUnits(levelIndex, levelPatterns));                    
 
                     //prime next pattern, activate delay
                     levelIndex++;
@@ -73,22 +73,25 @@ namespace GeometeryWars
                     }
                 }
             }
-
         }
 
-
-        
         //spawn units one on each frame... 
-        IEnumerator SpawnUnits(int levelIndex)
+        IEnumerator SpawnUnits(int levelIndex, SO_LevelPattern levelPatterns)
         {
             //spawn pattern
             for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
             {
+                int j = i;
                 AEnemy temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Retrieve();
-                //get position
-                temp.transform.position = levelPatterns.patterns[levelIndex].points[i];
-                //point transform down towards map
-                temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+
+                if(temp != null)
+                {
+                    //get position
+                    temp.transform.position = levelPatterns.patterns[levelIndex].points[j];
+                    //point transform down towards map
+                    temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
+                }
+                
                 yield return null;
             }
         }

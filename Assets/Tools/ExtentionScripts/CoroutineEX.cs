@@ -41,4 +41,20 @@ public static class CoroutineEX
         yield return null;
         func();
     }
+
+
+    
+    //DOESN"T WORK YET
+    public static Coroutine Loop(MonoBehaviour inst, Action func, int length)
+    {
+        return inst.StartCoroutine(CoroutineLoop(func, length));
+    }
+    private static IEnumerator CoroutineLoop(Action func, int length)
+    {
+        for (int i = 0; i < length; i++)
+        {
+            func();
+            yield return null;
+        }
+    }
 }

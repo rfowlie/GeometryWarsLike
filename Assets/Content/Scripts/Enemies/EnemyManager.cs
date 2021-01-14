@@ -22,7 +22,7 @@ namespace GeometeryWars
         public void Move()
         {
             ObjectPool<AEnemy>[] pools = spawn.GetPools();
-            Debug.Log("<color=blue>Move Enemies</color>");
+            //Debug.Log("<color=blue>Move Enemies</color>");
             for (int i = 0; i < pools.Length; i++)
             {
                 List<AEnemy> temp = pools[i].GetActiveObjects();
@@ -33,6 +33,7 @@ namespace GeometeryWars
             }
         }
 
+        //NOT WORKING YET
         public void MoveIJob()
         {
             //create all native containers and populate 

@@ -8,13 +8,13 @@ namespace GeometeryWars
     {
         public override void SetMovement()
         {
-            Debug.Log("Set Movement on Chase");
+            //Debug.Log("Set Movement on Chase");
             Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
         public override void SetRotation()
         {
-            Debug.Log("Set Rotation on Chase");
+            //Debug.Log("Set Rotation on Chase");
             Rotation = () => SurfaceMovement.Rotation.FaceTarget(transform, target, hit);
         }
     }

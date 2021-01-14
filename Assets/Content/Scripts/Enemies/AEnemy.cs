@@ -31,6 +31,10 @@ namespace GeometeryWars
 
         //notify listeners that this was destroyed
         public static event Action<int> SHOT;
+        public static void Subscribe(Action<int> func)
+        {
+            SHOT += func;
+        }
 
 
         protected virtual void Start()
