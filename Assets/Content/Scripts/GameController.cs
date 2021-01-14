@@ -61,45 +61,39 @@ namespace GeometeryWars
             input.Menu.Enable();
             input.Menu.Select.performed += (ctx) =>
             {
-                //fire normal left mouse button
-                //Mouse.current.IsPressed();
+                //fire the event of current registerd interaction
+                InteractController.Instance.ExecuteCurrent();
+                //interactControl.ExecuteCurrent();
             };
             input.Menu.Cursor.performed += (ctx) =>
             {
-                Debug.Log($"<color=blue>Current: {Mouse.current.position.ReadValue()}</color>");
-                Debug.Log($"<color=red>Input: {ctx.ReadValue<Vector2>()}</color>");
-                Debug.Log($"<color=green>Input: {Mouse.current.position.ReadValue() + ctx.ReadValue<Vector2>()}</color>");
-
-                Vector2 pos = Mouse.current.position.ReadValue() + ctx.ReadValue<Vector2>() * 10f;
-                Mouse.current.WarpCursorPosition(pos);
-
-                currentCursorChange = ctx.ReadValue<Vector2>();                
+                //set the rate of change to input value
+                cursorDelta = ctx.ReadValue<Vector2>();                
             };
             input.Menu.Cursor.canceled += (ctx) =>
             {
-                currentCursorChange = Vector2.zero;
+                //ensure cursor doesn't do any weird movement
+                cursorDelta = Vector2.zero;
             };
+
             
-            Cursor.lockState = CursorLockMode.Confined;
-            cursorCurrentPos = Mouse.current.position.ReadValue();
+            //get screen dimensions for clamping
             screenHeight = Screen.height;
             screenWidth = Screen.width;
         }
 
-        Vector2 currentCursorChange;
+        Vector2 cursorDelta;
         Vector2 cursorCurrentPos;
         float screenHeight;
         float screenWidth;
+        [SerializeField] private float cursorSpeed = 250f;
 
         private void Update()
         {
-            //MOVE MOUSE WITH NEW INPUT SYSTEM
-            Debug.Log($"<color=purple>Mouse: {Mouse.current.position.ReadValue()}</color>");
-            Mouse.current.WarpCursorPosition(cursorCurrentPos);
-
-            if (currentCursorChange != Vector2.zero)
+            //MOVE MOUSE WITH NEW INPUT SYSTEM            
+            if (cursorDelta != Vector2.zero)
             {
-                cursorCurrentPos += currentCursorChange * 4f;
+                cursorCurrentPos += cursorDelta * cursorSpeed * Time.deltaTime;
                 cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
                 Mouse.current.WarpCursorPosition(cursorCurrentPos);
             }
@@ -209,6 +203,9 @@ namespace GeometeryWars
                     case GamePosition.STATS:
                         AdjustStats();
                         position = GamePosition.LEVEL;
+                        //hide cursor in level
+                        Cursor.lockState = CursorLockMode.Locked;
+                        Cursor.visible = false;
                         levelControl.IncrementLevel();
                         //setup map...
                         map = Instantiate(maps.GetMapAtIndex(levelControl.GetCurrentLevelIndex()));
@@ -216,17 +213,27 @@ namespace GeometeryWars
                         sceneControl.SceneChange(new string[] { levelControl.GetGameLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
-                        position = GamePosition.STATS;                        
+                        position = GamePosition.STATS;
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
+                        
                         //load next level from level controller, unload main menu...
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.GAMEOVER:
                         position = GamePosition.NONE;
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
                         sceneControl.SceneChange(new string[] { levelControl.GetGameOverMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.NONE:
                         //ensure all values are default...
-                        Restart();                      
+                        Restart();
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
                         position = GamePosition.MAINMENU;
                         sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, sceneControl.GetLoadedScenes());
                         break;

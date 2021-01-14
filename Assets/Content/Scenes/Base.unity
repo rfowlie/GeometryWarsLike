@@ -385,6 +385,7 @@ GameObject:
   - component: {fileID: 1576775655}
   - component: {fileID: 1576775659}
   - component: {fileID: 1576775656}
+  - component: {fileID: 1576775660}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -473,6 +474,18 @@ MonoBehaviour:
   gameLevel: Level
   maxLevels: 2
   currentlevelIndex: 0
+--- !u!114 &1576775660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576775654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eca53c49cb8f9441b24aa2ae22e7fd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2064249190
 GameObject:
   m_ObjectHideFlags: 0

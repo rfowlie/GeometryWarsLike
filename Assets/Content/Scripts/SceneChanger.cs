@@ -11,7 +11,7 @@ namespace GeometeryWars
         public static event Action TRIGGER;
         public void Change()
         {
-            TRIGGER();
+            TRIGGER?.Invoke();
         }
     }
 }
