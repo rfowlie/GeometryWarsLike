@@ -27,6 +27,10 @@ namespace GeometeryWars
         {
             return levelPatterns.GetPatternAtIndex(levelControl.GetCurrentLevelIndex());
         }
+        //pass to levelManager on start, which then gives to DropManager
+        [SerializeField] private SO_Drops drops;
+        
+
 
         [Space]
         [Header("Global Variables")]
@@ -80,20 +84,23 @@ namespace GeometeryWars
             //get screen dimensions for clamping
             screenHeight = Screen.height;
             screenWidth = Screen.width;
+            //make 10% of hypo
+            screenSpeed = Mathf.Sqrt((screenHeight * screenHeight) + (screenWidth * screenWidth));
         }
 
         Vector2 cursorDelta;
         Vector2 cursorCurrentPos;
         float screenHeight;
         float screenWidth;
-        [SerializeField] private float cursorSpeed = 250f;
+        float screenSpeed;
+        [SerializeField] private float cursorSpeed = 2;
 
         private void Update()
         {
             //MOVE MOUSE WITH NEW INPUT SYSTEM            
             if (cursorDelta != Vector2.zero)
             {
-                cursorCurrentPos += cursorDelta * cursorSpeed * Time.deltaTime;
+                cursorCurrentPos += cursorDelta * cursorSpeed * screenSpeed * Time.deltaTime;
                 cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
                 Mouse.current.WarpCursorPosition(cursorCurrentPos);
             }
@@ -102,12 +109,20 @@ namespace GeometeryWars
         private void OnEnable()
         {
             //listen for SceneChange events
-            SceneChanger.TRIGGER += AdjustScene;
+            SceneChanger.TRIGGER += (ctx) =>
+            {
+                if(ctx) { AdjustScene(); }
+                else
+                {
+                    position = GamePosition.NONE;
+                    AdjustScene();
+                }
+            };
 
             //listen for LevelController events
             LevelManager.START += SetupLevel;
             LevelManager.END += AdjustLevel;
-            LevelManager.GAMEOVER += GameOver;
+            LevelManager.GAMEOVER += AdjustLevel;
 
             //statsManager
             StatsManager.START += SetupStats;
@@ -163,10 +178,14 @@ namespace GeometeryWars
             {
                 Debug.LogError("There is more then one levelManager in the scene!!");
             }
+
             level = nextLevel;
             SceneManager.SetActiveScene(level.gameObject.scene);
             //move map to active scene
-            SceneManager.MoveGameObjectToScene(map, SceneManager.GetActiveScene()); 
+            SceneManager.MoveGameObjectToScene(map, SceneManager.GetActiveScene());
+
+            //pass all relevant info to new levelManager
+            level.Setup(GetCurrentLevelPattern(), GetMap().transform, drops, GetStateInfo());
         }
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()

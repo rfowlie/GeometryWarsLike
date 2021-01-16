@@ -22,10 +22,10 @@ namespace GeometeryWars
         private TextMeshProUGUI ui;
         public int points { get; private set; }
 
-        public void Adjust(int value)
+        public void Adjust(EnemyInfo e)
         {
             //change score
-            points += value;
+            points += e.points;
             //update UI
             ui.text = points.ToString();
         }

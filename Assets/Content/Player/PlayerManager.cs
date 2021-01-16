@@ -30,9 +30,7 @@ namespace GeometeryWars
         [SerializeField] private int healthMax = 100;
         private int healthCurrent;
 
-        public RectTransform healthUI;
-
-        
+        private RectTransform healthUI;        
 
         public event Action DEATH;
         private void OnTriggerEnter(Collider other)
@@ -50,23 +48,10 @@ namespace GeometeryWars
                     //death
                     DEATH();
                 }
-
-
-                //lives--;
-                //if (lives <= 0)
-                //{
-                //    //notify listeners of game over
-                //    DEATH();
-                //}
             }
         }
 
-        private InputAction_01 input;
-        private void AIM(Vector2 ctx)
-        {
-            Vector3 direction = Camera.main.transform.TransformDirection(new Vector3(ctx.x, ctx.y, 0f)) - Camera.main.transform.position;
-        }
-
+        private InputAction_01 input;        
         private void OnDisable()
         {
             input.Gameplay.Disable();

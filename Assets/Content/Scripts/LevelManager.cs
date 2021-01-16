@@ -14,12 +14,15 @@ namespace GeometeryWars
         [SerializeField] public TextMeshProUGUI timerUI;
         [SerializeField] public TextMeshProUGUI pointsUI;
         [SerializeField] public RectTransform playerHealthUI;
-
+        [Header("Player")]
         [SerializeField] private PlayerManager player;
+
+        //components
         private TimeManager timer;
         private PointsManager points;
         private SpawnManager spawn;
         private EnemyManager enemy;
+        private DropManager drop;
 
         private bool isActive = false;
 
@@ -28,7 +31,26 @@ namespace GeometeryWars
         public static event Action END;
         public static event Action GAMEOVER;
 
-                
+
+        public void Setup(SO_LevelPattern levelPattern, Transform map, SO_Drops allDrops, GameStateInfo info)
+        {
+            //setup components
+            timer = new TimeManager(20, timerUI);
+            points = new PointsManager(pointsUI);
+
+            spawn = new SpawnManager(levelPattern, map);
+            enemy = new EnemyManager(spawn);
+            drop = new DropManager(allDrops);
+
+            //setup player
+            player.Setup(playerHealthUI,
+                         UpgradesController.Instance.GetHealtheValue(info.levelHealth),
+                         UpgradesController.Instance.GetMovementValue(info.levelMovementSpeed),
+                         UpgradesController.Instance.GetFireRateValue(info.levelFireRate));
+
+
+            isActive = true;
+        }
         //get the current points for this level
         public int GetPoints()
         {
@@ -51,22 +73,7 @@ namespace GeometeryWars
         private void Start()
         {
             //notify GameController of active levelManager
-            START(this);
-
-            //setup components
-            timer = new TimeManager(20, timerUI);
-            points = new PointsManager(pointsUI);
-            spawn = new SpawnManager(GameController.Instance.GetCurrentLevelPattern(),
-                                     GameController.Instance.GetMap().transform);
-            enemy = new EnemyManager(spawn);
-
-            //setup player
-            player.Setup(playerHealthUI,
-                         UpgradesController.Instance.GetHealtheValue(GameController.Instance.GetStateInfo().levelHealth),
-                         UpgradesController.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
-                         UpgradesController.Instance.GetFireRateValue(GameController.Instance.GetStateInfo().levelFireRate));
-
-            isActive = true;
+            START(this);            
         }
 
         private void Update()

@@ -434,6 +434,7 @@ MonoBehaviour:
   maps: {fileID: 11400000, guid: 97aaca0ba0680bf4db0d6dfdfbc75bd2, type: 2}
   upgrades: {fileID: 0}
   levelPatterns: {fileID: 11400000, guid: f8ea7d38d2ffc9446ba82ba0a220b329, type: 2}
+  drops: {fileID: 11400000, guid: 106cd295ae9607a4da4990e2b4ebea3e, type: 2}
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -442,6 +443,7 @@ MonoBehaviour:
     m_Bits: 16384
   map: {fileID: 0}
   position: 0
+  cursorSpeed: 1
 --- !u!4 &1576775658
 Transform:
   m_ObjectHideFlags: 0

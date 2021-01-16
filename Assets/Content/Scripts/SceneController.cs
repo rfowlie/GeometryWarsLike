@@ -18,6 +18,12 @@ namespace GeometeryWars
         protected static Action LoadingBegin;
         protected static Action LoadingFinished;
 
+        //work this in somehow...
+        //public static void Quit()
+        //{
+        //    Application.Quit();
+        //}
+
         protected virtual void Awake()
         {
             loadedScenes = new List<string>();

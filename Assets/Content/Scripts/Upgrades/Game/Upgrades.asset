@@ -20,7 +20,9 @@ MonoBehaviour:
   - 7
   fireRateCosts: 64000000c80000002c01000090010000
   fireRateValues:
-  - 1
-  - 0.85
-  - 0.55
-  - 0.3
+  - 0.5
+  - 0.45
+  - 0.4
+  - 0.35
+  healthCosts: 64000000c80000009001000020030000
+  healthValues: 64000000c80000002c01000090010000
