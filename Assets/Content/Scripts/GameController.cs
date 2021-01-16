@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEngine.InputSystem;
+
 
 namespace GeometeryWars
 {
@@ -16,6 +18,30 @@ namespace GeometeryWars
         //holds ref to all levels
         LevelController levelControl;
 
+        //Scriptable Objects
+        [Header("Scriptable Objects")]
+        public SO_Maps maps;
+        public SO_Upgrades upgrades;
+        [SerializeField] private SO_GameLevelPatterns levelPatterns;
+        public SO_LevelPattern GetCurrentLevelPattern()
+        {
+            return levelPatterns.GetPatternAtIndex(levelControl.GetCurrentLevelIndex());
+        }
+        //pass to levelManager on start, which then gives to DropManager
+        [SerializeField] private SO_Drops drops;
+        
+
+
+        [Space]
+        [Header("Global Variables")]
+        [SerializeField] private LayerMask mapLayer;
+        public LayerMask GetMapLayer() { return mapLayer; }
+        [SerializeField] private LayerMask obstacleLayer;
+        public LayerMask GetObstacleLayer() { return obstacleLayer; }
+        [SerializeField] private GameObject map;
+        public GameObject GetMap() { return map; }
+
+
         //contains all the information for the current game
         private GameStateInfo info;
         public GameStateInfo GetStateInfo() { return info; }
@@ -25,6 +51,8 @@ namespace GeometeryWars
         public GamePosition position = GamePosition.NONE;
 
 
+        //public InputAction_01 input;
+        public Input_Menu input;
         protected override void Awake()
         {
             base.Awake();
@@ -32,39 +60,92 @@ namespace GeometeryWars
             //attached to gameObject
             sceneControl = GetComponent<SceneController>();
             levelControl = GetComponent<LevelController>();
-        }        
 
+
+            //NEW INPUT TEST
+            input = new Input_Menu();            
+            input.Menu.Select.performed += (ctx) =>
+            {
+                //fire the event of current registerd interaction
+                InteractController.Instance.ExecuteCurrent();
+                //interactControl.ExecuteCurrent();
+            };
+            input.Menu.Cursor.performed += (ctx) =>
+            {
+                //set the rate of change to input value
+                cursorDelta = ctx.ReadValue<Vector2>();                
+            };
+            input.Menu.Cursor.canceled += (ctx) =>
+            {
+                //ensure cursor doesn't do any weird movement
+                cursorDelta = Vector2.zero;
+            };
+
+            
+            //get screen dimensions for clamping
+            screenHeight = Screen.height;
+            screenWidth = Screen.width;
+            //make 10% of hypo
+            screenSpeed = Mathf.Sqrt((screenHeight * screenHeight) + (screenWidth * screenWidth));
+        }
+
+        Vector2 cursorDelta;
+        Vector2 cursorCurrentPos;
+        float screenHeight;
+        float screenWidth;
+        float screenSpeed;
+        [SerializeField] private float cursorSpeed = 2;
+
+        private void Update()
+        {
+            //MOVE MOUSE WITH NEW INPUT SYSTEM            
+            if (cursorDelta != Vector2.zero)
+            {
+                cursorCurrentPos += cursorDelta * cursorSpeed * screenSpeed * Time.deltaTime;
+                cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
+                Mouse.current.WarpCursorPosition(cursorCurrentPos);
+            }
+        }
+
+        
         private void OnEnable()
         {
             //listen for SceneChange events
-            SceneChanger.TRIGGER += AdjustScene;
+            SceneChanger.TRIGGER += (ctx) =>
+            {
+                if(ctx) { AdjustScene(); }
+                else
+                {
+                    position = GamePosition.NONE;
+                    AdjustScene();
+                }
+            };
 
             //listen for LevelController events
             LevelManager.START += SetupLevel;
             LevelManager.END += AdjustLevel;
-            LevelManager.GAMEOVER += GameOver;
+            LevelManager.GAMEOVER += AdjustLevel;
 
             //statsManager
             StatsManager.START += SetupStats;
         }
 
+        
         private void Start()
         {
-            AdjustScene();
+            AdjustScene();            
         }
 
         //set all values to default
         private void Restart()
         {
+            levelControl.Restart();
+
             level = null;
             stats = null;
 
             //setup game info
             info = new GameStateInfo();
-            info.points = 0;
-            info.levelPlayer = 0;
-            info.levelMovementSpeed = 0;
-            info.levelFireRate = 0;            
         }
 
         private void GameOver()
@@ -95,8 +176,18 @@ namespace GeometeryWars
         LevelManager level = null;
         private void SetupLevel(LevelManager nextLevel)
         {
+            if(level != null)
+            {
+                Debug.LogError("There is more then one levelManager in the scene!!");
+            }
+
             level = nextLevel;
-            SceneManager.SetActiveScene(level.gameObject.scene);            
+            SceneManager.SetActiveScene(level.gameObject.scene);
+            //move map to active scene
+            SceneManager.MoveGameObjectToScene(map, SceneManager.GetActiveScene());
+
+            //pass all relevant info to new levelManager
+            level.Setup(GetCurrentLevelPattern(), GetMap().transform, drops, GetStateInfo());
         }
         //when timer on level manager finishes, update points, remove levelmanager and update scene
         private void AdjustLevel()
@@ -109,6 +200,9 @@ namespace GeometeryWars
 
             //remove level manager
             level = null;
+
+            //stop all coroutines
+            StopAllCoroutines();
 
             //change to relevant scene
             AdjustScene();
@@ -128,22 +222,43 @@ namespace GeometeryWars
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.STATS:
+                        input.Menu.Disable();
                         AdjustStats();
                         position = GamePosition.LEVEL;
-                        sceneControl.SceneChange(new string[] { levelControl.NextLevel() }, sceneControl.GetLoadedScenes());
+                        //hide cursor in level
+                        Cursor.lockState = CursorLockMode.Locked;
+                        Cursor.visible = false;
+                        levelControl.IncrementLevel();
+                        //setup map...
+                        map = Instantiate(maps.GetMapAtIndex(levelControl.GetCurrentLevelIndex()));
+                        map.transform.position = Vector3.zero;
+                        sceneControl.SceneChange(new string[] { levelControl.GetGameLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
+                        input.Menu.Enable();
                         position = GamePosition.STATS;
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
+                        
                         //load next level from level controller, unload main menu...
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.GAMEOVER:
+                        input.Menu.Enable();
                         position = GamePosition.NONE;
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
                         sceneControl.SceneChange(new string[] { levelControl.GetGameOverMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.NONE:
                         //ensure all values are default...
-                        Restart();                      
+                        Restart();
+                        //ensure cursor stays in game window
+                        Cursor.lockState = CursorLockMode.Confined;
+                        Cursor.visible = true;
+                        input.Menu.Enable();
                         position = GamePosition.MAINMENU;
                         sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, sceneControl.GetLoadedScenes());
                         break;

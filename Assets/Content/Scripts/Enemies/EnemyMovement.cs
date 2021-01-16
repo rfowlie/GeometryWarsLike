@@ -22,7 +22,7 @@ namespace GeometeryWars
 
 
     //static methods that hold enemy movement methods
-    public static class EMovement
+    public static class SurfaceMovement
     {
         //directions
         public static class Direction
@@ -48,6 +48,12 @@ namespace GeometeryWars
         {
             public static Quaternion Forward(Transform t, RaycastHit hit)
             {
+                return Quaternion.FromToRotation(t.up, hit.normal) * t.rotation;
+            }
+            public static Quaternion SlightRotation(Transform t, RaycastHit hit, float offset)
+            {
+                //apply slight rotation first and then return rotation 
+                t.Rotate(new Vector3(0f, offset, 0f));
                 return Quaternion.FromToRotation(t.up, hit.normal) * t.rotation;
             }
             public static Quaternion FaceTarget(Transform transform, Transform target, RaycastHit hit)

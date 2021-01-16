@@ -37,11 +37,14 @@ public class ObjectPool<T> where T : MonoBehaviour
     //return available deactive objs else create a new one
     public T Retrieve()
     {
-        T obj;
+        T obj = null;
         if (deactive.Count > 0)
         {
             obj = deactive.Dequeue();
-            obj.gameObject.SetActive(true);
+            if(obj != null)
+            {
+                obj.gameObject.SetActive(true);
+            }
         }
         else
         {

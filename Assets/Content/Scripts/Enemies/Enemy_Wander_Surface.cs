@@ -6,14 +6,26 @@ namespace GeometeryWars
 {
     public class Enemy_Wander_Surface : AEnemy
     {
-        protected override void SetMovement()
+        public override void SetMovement()
         {
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.Forward(transform, hit);
+            Rotation = () => SurfaceMovement.Rotation.SlightRotation(transform, hit, Random.Range(0f, 1f));
+            //Rotation = () => SurfaceMovement.Rotation.Forward(transform, hit);
+        }
+
+        Coroutine c = null;
+
+        protected override void Start()
+        {
+            base.Start();
+
+            c = CoroutineEX.RandomDelay(this, SetRotation, 0f, 5f);
+
+            
         }
     }
 }

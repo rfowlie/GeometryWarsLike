@@ -5,6 +5,12 @@ using System;
 
 namespace GeometeryWars
 {
+    public interface IEnemyMovement
+    {
+        Vector3 Movement();
+        Quaternion Rotation();
+    }
+
     public abstract class AEnemy : MonoBehaviour
     {
         //the map layer so raycasting for movement is correct
@@ -21,16 +27,16 @@ namespace GeometeryWars
 
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
+        public int damage = 25;
 
         //notify listeners that this was destroyed
-        public static event Action<int> SHOT;
-
+        public static event Action<EnemyInfo> SHOT;
+        
 
         protected virtual void Start()
         {
-            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
-            mapLayer = gv.mapLayer;
-            obstacleLayer = gv.obstacleLayer;
+            mapLayer = GameController.Instance.GetMapLayer();
+            obstacleLayer = GameController.Instance.GetObstacleLayer();
 
             SetMovement();
             SetRotation();
@@ -68,19 +74,19 @@ namespace GeometeryWars
             }
         }
 
-        protected RaycastHit hit;
-        protected Func<Vector3> Movement;
-        protected Func<Quaternion> Rotation;
-
+        public RaycastHit hit;
+        public Func<Vector3> Movement;
+        public Func<Quaternion> Rotation;
                 
-        protected abstract void SetMovement();
-        protected abstract void SetRotation();
+        public abstract void SetMovement();
+        public abstract void SetRotation();        
 
         public void UpdateMovement()
         {
             Move();
         }
 
+        
         public virtual void Move()
         {
             if (isActive)
@@ -114,7 +120,7 @@ namespace GeometeryWars
             }
             else
             {
-                Debug.Log("Not active!!");
+                //Debug.Log("Not active!!");
             }
         }
         
@@ -124,10 +130,24 @@ namespace GeometeryWars
             //increase player score
             if(other.gameObject.tag == "Bullet")
             {
-                SHOT(value);
+                EnemyInfo e = new EnemyInfo(value, transform.position, transform.up);
+                SHOT(e);
             }
 
             gameObject.SetActive(false);
         }
+    }
+
+    public struct EnemyInfo
+    {
+        public EnemyInfo(int points, Vector3 position, Vector3 up)
+        {
+            this.points = points;
+            this.position = position;
+            this.up = up;
+        }
+        public readonly int points;
+        public readonly Vector3 position;
+        public readonly Vector3 up;
     }
 }

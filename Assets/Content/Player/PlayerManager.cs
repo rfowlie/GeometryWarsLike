@@ -2,6 +2,8 @@
 using UnityEngine;
 using System;
 
+using UnityEngine.InputSystem;
+
 
 namespace GeometeryWars
 {
@@ -14,17 +16,23 @@ namespace GeometeryWars
         [Space]
 
         [Header("Variables")]
+        public Transform map;
+        public LayerMask mapLayer, obstacleLayer;
         [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
-        public float speed = 1f;
+        public float obstacleDistance = 1f;
+
+
+
         public Vector3 velocity;
         private Vector3 aim;
         private Vector3 local;
 
-        public Transform map;
-        public LayerMask mapLayer, obstacleLayer;
-        public float obstacleDistance = 1f;
+        [Space]
+        [SerializeField] private int healthMax = 100;
+        private int healthCurrent;
+        public float movementSpeed = 1f;
 
-        [SerializeField] private int lives = 3;
+        private RectTransform healthUI;   
         
 
         public event Action DEATH;
@@ -33,30 +41,110 @@ namespace GeometeryWars
             if (other.tag == "Enemy")
             {
                 Debug.Log("<color=blue>Lost Life</color>");
-                lives--;
-                if (lives <= 0)
+                //health version
+                //FOR now...
+                healthCurrent -= other.GetComponent<AEnemy>().damage;
+                healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
+
+                if(healthCurrent < 0)
                 {
-                    //notify listeners of game over
+                    //death
                     DEATH();
                 }
             }
         }
 
-        public void Setup(float movementSpeed, float fireRate)
+        //temp        
+        private void DetermineDrop(DropType t)
         {
-            //setup player stats from info
-            speed = movementSpeed;
-            bullet.AdjustFireRate(fireRate);
+            switch(t)
+            {
+                case DropType.HEAL:
+                    int temp = healthCurrent + 25;
+                    healthCurrent = temp > healthMax ? healthMax : temp;
+                    healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
+                    break;
+                case DropType.HEALTH:
+                    break;
+                case DropType.MOVEMENTSPEED:
+                    //could work...
+                    movementSpeed = UpgradesController.Instance.GetMovementValue(++playerInfo.levelMovementSpeed);
+                    CoroutineEX.Delay(this, () => movementSpeed = UpgradesController.Instance.GetMovementValue(--playerInfo.levelMovementSpeed), 5f);
+                    break;
+                case DropType.FIRERATE:
+                    bullet.AdjustFireRate(UpgradesController.Instance.GetFireRateValue(++playerInfo.levelFireRate));
+                    CoroutineEX.Delay(this, () => bullet.AdjustFireRate(UpgradesController.Instance.GetFireRateValue(--playerInfo.levelFireRate)), 5f);
+                    break;
+                case DropType.ARMOUR:
+                    break;
+                default:
+                    break;
+            }
+        }
 
 
-            //get game map from global variables
-            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
-            map = gv.map;
-            mapLayer = gv.mapLayer;
-            obstacleLayer = gv.obstacleLayer;
+        
 
+        //private InputAction_01 input;        
+        private void OnDisable()
+        {
+            input.GamePlay.Disable();
+            Drop.TRIGGER -= DetermineDrop;
+        }
+
+        private void OnEnable()
+        {
+            //listen for drop
+            Drop.TRIGGER += DetermineDrop;
+        }
+
+        //put player input on player so when it gets destoyed so does the input 
+        private Input_Gameplay input;
+
+        private GameStateInfo playerInfo;
+        public void Setup(RectTransform healthUI, GameStateInfo info)
+        {
+            playerInfo = info;
+            UpgradesController u = UpgradesController.Instance;
+            healthMax = u.GetHealthValue(info.levelHealth);
+            healthCurrent = healthMax;
+            this.healthUI = healthUI;
+            movementSpeed = u.GetMovementValue(info.levelMovementSpeed);
+            bullet.AdjustFireRate(u.GetFireRateValue(info.levelFireRate));
             //create object pool for bullets
             bullet.Setup();
+
+            //NEW INPUT SYSTEM
+            input = new Input_Gameplay();            
+            
+            input.GamePlay.Move.performed += (ctx) =>
+            {
+                velocity = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
+            };
+            input.GamePlay.Aim.performed += (ctx) =>
+            {
+                local = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
+                //Debug.Log($"<color==green>Hello World!!</color>");
+            };
+            input.GamePlay.Fire.started += (ctx) =>
+            {
+                bullet.BeginFire(body);
+            };
+            input.GamePlay.Fire.canceled += (ctx) =>
+            {
+                bullet.StopFire();
+            };
+
+            input.GamePlay.Enable();
+            
+
+            //set values
+            map = GameController.Instance.GetMap().transform;
+            //sketchy...
+            transform.position = map.GetChild(0).transform.position;
+            mapLayer = GameController.Instance.GetMapLayer();
+            obstacleLayer = GameController.Instance.GetObstacleLayer();
+            
 
             //make sure player is setup correctly
             RaycastHit hit;
@@ -68,29 +156,8 @@ namespace GeometeryWars
         }
 
         //get resolution...
-        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
-
-        
-        public void UpdatePlayer()
-        {
-            //movement
-            velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
-
-            //get mouse position compare to center of screen to aquire rotation direction, apply to player body
-            aim = Input.mousePosition - screenSize;
-            local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
-
-
-            //TEMP FIRE BULLETS
-            if (Input.GetMouseButtonDown(0))
-            {
-                bullet.BeginFire(body);
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                bullet.StopFire();
-            }
-        }
+        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);        
+       
 
         public void Move()
         {
@@ -99,7 +166,7 @@ namespace GeometeryWars
             {
                 //Calc next pos and then check for obstacle collision
                 RaycastHit hitNext;
-                Vector3 nextPos = transform.position + velocity * speed * Time.fixedDeltaTime;
+                Vector3 nextPos = transform.position + velocity * movementSpeed * Time.fixedDeltaTime;
                 if (Physics.SphereCast(transform.position, 1f, velocity, out hitNext, obstacleDistance, obstacleLayer))
                 {
                     //obstacle hit...
@@ -108,7 +175,7 @@ namespace GeometeryWars
                     Vector3 p = Vector3.Project(transform.position - hitNext.point, hitNext.normal);
                     p = ((hitNext.point - transform.position) + p).normalized;
                     Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
-                    nextPos = transform.position + p * speed * Time.fixedDeltaTime;
+                    nextPos = transform.position + p * movementSpeed * Time.fixedDeltaTime;
                 }
 
                 //calc move after factoring obstacle avoidance

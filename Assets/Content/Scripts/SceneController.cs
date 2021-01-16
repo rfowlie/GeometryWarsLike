@@ -18,6 +18,12 @@ namespace GeometeryWars
         protected static Action LoadingBegin;
         protected static Action LoadingFinished;
 
+        //work this in somehow...
+        //public static void Quit()
+        //{
+        //    Application.Quit();
+        //}
+
         protected virtual void Awake()
         {
             loadedScenes = new List<string>();
@@ -32,7 +38,7 @@ namespace GeometeryWars
         {
             if (unload != null) { QueueUnload(unload); }
             if (load != null) { QueueLoad(load); }
-            if (isLoadScreen) { ActivateLoadScreen(); }
+            if (isLoadScreen) { SetLoadScreen(true); }
             Activate();
         }
         //public accessor with order of operations
@@ -58,7 +64,7 @@ namespace GeometeryWars
             //determine loadscreen
             if (sceneChange.needsLoadScreen)
             {
-                ActivateLoadScreen();
+                SetLoadScreen(true);
             }
 
             Activate();
@@ -205,9 +211,9 @@ namespace GeometeryWars
                 //    Debug.LogError($"{i}:{SceneManager.GetSceneAt(i).name}");
                 //}
 
-                if (needsLoadScreen)
+                if (true)
                 {
-                    DeactivateLoadScreen();
+                    SetLoadScreen(false);
                 }
 
                 //fire off event to notify outside parties that all loading is finished
@@ -218,16 +224,12 @@ namespace GeometeryWars
             }
         }
 
+        [SerializeField] private Canvas loadScreenCanvas;
         //do all the loading screen shit
-        private void ActivateLoadScreen()
+        private void SetLoadScreen(bool b)
         {
             //turn on load screen
-
-            //pause game time
-        }
-        private void DeactivateLoadScreen()
-        {
-
+            loadScreenCanvas.gameObject.SetActive(b);
         }
 
         #endregion

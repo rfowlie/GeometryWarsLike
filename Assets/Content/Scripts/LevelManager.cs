@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
-using Unity.Burst;
-using Unity.Jobs;
+using TMPro;
 
 
 //control all aspects of in game level
@@ -12,19 +10,44 @@ namespace GeometeryWars
 {
     public class LevelManager : MonoBehaviour
     {
-        [SerializeField] private TimeManager time;
-        [SerializeField] private PointsManager points;
-        [SerializeField] private SpawnManager spawn;
+        [Header("UI")]
+        [SerializeField] public TextMeshProUGUI timerUI;
+        [SerializeField] public TextMeshProUGUI pointsUI;
+        [SerializeField] public RectTransform playerHealthUI;
+        [Header("Player")]
         [SerializeField] private PlayerManager player;
-        private EnemyManager enemy;
 
+        //components
+        private TimeManager timer;
+        private PointsManager points;
+        private SpawnManager spawn;
+        private EnemyManager enemy;
+        private DropManager drop;
 
         private bool isActive = false;
 
+        //events
         public static event Action<LevelManager> START;
         public static event Action END;
         public static event Action GAMEOVER;
 
+
+        public void Setup(SO_LevelPattern levelPattern, Transform map, SO_Drops allDrops, GameStateInfo info)
+        {
+            //setup components
+            timer = new TimeManager(timerUI, 45);
+            points = new PointsManager(pointsUI);
+
+            spawn = new SpawnManager(levelPattern, map);
+            enemy = new EnemyManager(spawn);
+            drop = new DropManager(allDrops, info.levelDropRate);
+
+            //setup player
+            player.Setup(playerHealthUI, info);
+
+
+            isActive = true;
+        }
         //get the current points for this level
         public int GetPoints()
         {
@@ -43,21 +66,11 @@ namespace GeometeryWars
         {
             player.DEATH += PrepareLevelOver;
         }
-
-        private void Awake()
-        {
-            time = GetComponent<TimeManager>();
-            points = GetComponent<PointsManager>();
-            spawn = GetComponent<SpawnManager>();
-        }
-
+                
         private void Start()
         {
-            START(this);
-            player.Setup(UpgradesController.Instance.GetMovementValue(GameController.Instance.GetStateInfo().levelMovementSpeed),
-                         UpgradesController.Instance.GetFireRateValue(GameController.Instance.GetStateInfo().levelFireRate));
-            enemy = new EnemyManager(spawn);
-            isActive = true;
+            //notify GameController of active levelManager
+            START(this);            
         }
 
         private void Update()
@@ -66,7 +79,7 @@ namespace GeometeryWars
             if(isActive)
             {
                 //run timer..check if level finished
-                if (time.AdjustTime(Time.deltaTime))
+                if (timer.AdjustTime(Time.deltaTime))
                 {
                     isActive = false;
                     
@@ -75,58 +88,27 @@ namespace GeometeryWars
                 }
 
                 //run spawner
-                spawn.Execute(time.GetTimeFromStart());
-
-                //update player
-                player.UpdatePlayer();
+                spawn.Execute(timer.GetTimeFromStart());
             }
         }
 
+        public bool IJob = false;
         private void FixedUpdate()
         {
             if(isActive)
             {
-                //move enemies
-                enemy.Move();
+                if(IJob)
+                {
+                    enemy.MoveIJob();
+                }
+                else
+                {
+                    //move enemies
+                    enemy.Move();
+                }
 
                 //move player
                 player.Move();
-            }
-        }
-    }
-
-    
-
-    //run enemy behaviour/movement using JOB system
-    public class EnemyManager
-    {
-        public EnemyManager(SpawnManager s)
-        {
-            spawn = s;
-        }
-
-        private SpawnManager spawn;
-
-        public void Move()
-        {
-            ObjectPool<AEnemy>[] pools = spawn.GetPools();
-            Debug.Log("<color=blue>Move Enemies</color>");
-            for (int i = 0; i < pools.Length; i++)
-            {
-                List<AEnemy> temp = pools[i].GetActiveObjects();
-                for (int j = 0; j < temp.Count; j++)
-                {
-                    temp[j].Move();
-                }
-            }
-        }
-
-        //Try to make above IJOB
-        public struct EnemyMovement : IJobParallelFor
-        {
-            public void Execute(int index)
-            {
-
             }
         }
     }

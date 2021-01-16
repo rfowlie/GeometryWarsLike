@@ -263,9 +263,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   target: {fileID: 0}
-  value: 90
-  isJump: 0
-  jumpTime: 0
+  value: 8
+  damage: 25
   jumpForce: 5
   gravity: 10
   delayMin: 1

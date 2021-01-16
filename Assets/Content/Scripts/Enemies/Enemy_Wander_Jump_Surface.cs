@@ -6,14 +6,14 @@ namespace GeometeryWars
 {
     public class Enemy_Wander_Jump_Surface : AEnemyJump
     {
-        protected override void SetMovement()
+        public override void SetMovement()
         {
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.Forward(transform, hit);
+            Rotation = () => SurfaceMovement.Rotation.Forward(transform, hit);
         }
     }   
 }

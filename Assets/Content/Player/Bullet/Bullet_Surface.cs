@@ -14,9 +14,7 @@ namespace GeometeryWars
 
         private void Start()
         {
-            //eh...
-            GlobalVariables gv = FindObjectOfType<GlobalVariables>();
-            mapLayer = gv.mapLayer;
+            mapLayer = GameController.Instance.GetMapLayer();
         }
 
         private void Update()

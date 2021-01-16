@@ -16,11 +16,14 @@ public class LevelController : MonoBehaviour
     [SerializeField] private string gameOverMenu;
     public string GetGameOverMenu() { return gameOverMenu; }
 
+    [SerializeField] private string gameLevel;
+    public string GetGameLevel() { return gameLevel; }
+
 
     [Space]
-    [SerializeField] private int currentlevelIndex = 0;
+    [SerializeField] private int maxLevels = 2;
+    [SerializeField] private int currentlevelIndex = -1;
     public int GetCurrentLevelIndex() { return currentlevelIndex; }
-    [SerializeField] private string[] alllevels;
 
     
     private void Start()
@@ -28,12 +31,14 @@ public class LevelController : MonoBehaviour
         //get persistent
         Boot = gameObject.scene;
     }
-
-    //return the string name of the scene, don't load here
-    public string NextLevel()
+            
+    public void IncrementLevel()
     {
-        //prevent going out of bounds for now...
-        currentlevelIndex = (currentlevelIndex + 1) % alllevels.Length;
-        return alllevels[currentlevelIndex];
+        currentlevelIndex = (currentlevelIndex + 1) % maxLevels;
+    }
+
+    public void Restart()
+    {
+        currentlevelIndex = -1;
     }
 }

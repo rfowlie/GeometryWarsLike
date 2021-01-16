@@ -6,14 +6,14 @@ namespace GeometeryWars
 {
     public class Enemy_Hunt : AEnemy
     {
-        protected override void SetMovement()
+        public override void SetMovement()
         {
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
-            Rotation = () => EMovement.Rotation.AnticipatePosition(transform, target, intensity, hit);
+            Rotation = () => SurfaceMovement.Rotation.AnticipatePosition(transform, target, intensity, hit);
         }
 
         public float huntRange = 5f;

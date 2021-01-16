@@ -6,16 +6,16 @@ namespace GeometeryWars
 {
     public class Enemy_Chase_Surface : AEnemy
     {
-        protected override void SetMovement()
+        public override void SetMovement()
         {
-            Debug.Log("Set Movement on Chase");
-            Movement = () => EMovement.Direction.Forward(transform, speedThrust);
+            //Debug.Log("Set Movement on Chase");
+            Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
         }
 
-        protected override void SetRotation()
+        public override void SetRotation()
         {
-            Debug.Log("Set Rotation on Chase");
-            Rotation = () => EMovement.Rotation.FaceTarget(transform, target, hit);
+            //Debug.Log("Set Rotation on Chase");
+            Rotation = () => SurfaceMovement.Rotation.FaceTarget(transform, target, hit);
         }
     }
 }
