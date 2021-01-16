@@ -18,5 +18,5 @@ public class UpgradesController : Singleton<UpgradesController>
 
     public int GetHealthLevels() { return upgrades.healthCosts.Length; }
     public int GetHealthCost(int level) { return upgrades.healthCosts[level]; }
-    public int GetHealtheValue(int level) { return upgrades.healthValues[level]; }
+    public int GetHealthValue(int level) { return upgrades.healthValues[level]; }
 }

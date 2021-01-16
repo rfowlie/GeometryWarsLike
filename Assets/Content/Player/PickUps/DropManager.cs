@@ -6,15 +6,38 @@ namespace GeometeryWars
 {    
     public class DropManager 
     {
-        public DropManager(SO_Drops drops)
+        public DropManager(SO_Drops drops, int playerDropRateLevel)
         {
             this.drops = drops;
-
+            this.playerDropRateLevel = playerDropRateLevel;
+            
             AEnemy.SHOT += (ctx) =>
             {
-                Drop temp = drops.GetRandomPickUp();
-                temp.transform.position = ctx.position;
+                if (isDrop()) { CreateDrop(ctx); }                              
             };
+        }
+
+        private bool isDrop()
+        {
+            //change to compare against player drop rate level...
+            return Random.Range(0f, 1f) > 0.5f;
+        }
+        private void CreateDrop(EnemyInfo e)
+        {
+            //spawn drop
+            DropInfo info = drops.GetRandomPickUp();
+
+            //Use ObjectPooling later on...
+            GameObject obj = GameObject.Instantiate(info.prefab);
+            //attach Drops component and set type
+            Drop drop = obj.GetComponent<Drop>();
+            if (drop == null)
+            {
+                drop = obj.AddComponent<Drop>();
+            }
+
+            drop.type = info.type;
+            obj.transform.position = e.position;
         }
 
         //List of all drops...
@@ -22,5 +45,7 @@ namespace GeometeryWars
         //currently available drops and chances of getting them depending on the drops they have
         //unlocked and their drop level
         private SO_Drops drops;
+        private int playerDropRateLevel;
+        public static event System.Action<GameStateInfo> UPDATE;
     }
 }

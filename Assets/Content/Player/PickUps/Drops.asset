@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b1e28c4212613c479b84e0ff9e1d7b6, type: 3}
   m_Name: Drops
   m_EditorClassIdentifier: 
-  values:
-  - drop: {fileID: 5831335531708732082, guid: 9a4a3e19a4635eb49a63d20b6c94f6e6, type: 3}
+  sets:
+  - type: 4
+    prefab: {fileID: 5165317469841275632, guid: 9a4a3e19a4635eb49a63d20b6c94f6e6, type: 3}
     percentage: 0.25

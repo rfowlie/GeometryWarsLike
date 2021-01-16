@@ -40,13 +40,10 @@ namespace GeometeryWars
 
             spawn = new SpawnManager(levelPattern, map);
             enemy = new EnemyManager(spawn);
-            drop = new DropManager(allDrops);
+            drop = new DropManager(allDrops, info.levelDropRate);
 
             //setup player
-            player.Setup(playerHealthUI,
-                         UpgradesController.Instance.GetHealtheValue(info.levelHealth),
-                         UpgradesController.Instance.GetMovementValue(info.levelMovementSpeed),
-                         UpgradesController.Instance.GetFireRateValue(info.levelFireRate));
+            player.Setup(playerHealthUI, info);
 
 
             isActive = true;
@@ -92,9 +89,6 @@ namespace GeometeryWars
 
                 //run spawner
                 spawn.Execute(timer.GetTimeFromStart());
-
-                //update player
-                player.UpdatePlayer();
             }
         }
 

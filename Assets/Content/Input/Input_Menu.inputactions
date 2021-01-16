@@ -1,0 +1,74 @@
+{
+    "name": "Input_Menu",
+    "maps": [
+        {
+            "name": "Menu",
+            "id": "ab2a6f96-80f2-4528-848f-7e60fdcecdfe",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "268d607d-55c5-403f-ad31-ec9d9b760092",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Cursor",
+                    "type": "Value",
+                    "id": "9bc5dee9-f61c-46c0-875d-1445fa8e7a12",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3681ffd0-50e4-40e3-9051-82cb3f15fb14",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2774b320-9453-4700-84d0-aa4ba8ac6a94",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "46a602a3-21ed-4063-b9b0-904b9ff1ff98",
+                    "path": "<XInputController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cursor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb6975bd-3eca-4fd6-969e-b59ef5b397c4",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cursor",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

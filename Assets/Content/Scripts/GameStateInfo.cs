@@ -10,4 +10,5 @@ public struct GameStateInfo
     public int levelHealth;
     public int levelMovementSpeed;
     public int levelFireRate;
+    public int levelDropRate;
 }

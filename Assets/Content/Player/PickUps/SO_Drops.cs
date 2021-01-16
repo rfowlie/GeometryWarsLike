@@ -7,16 +7,31 @@ using System;
 [CreateAssetMenu(fileName = "SO_Drops", menuName = "ScriptableObjects/Game/Drops")]
 public class SO_Drops : ScriptableObject
 {
-    [SerializeField] private DropInfo[] values;
+
+    [SerializeField] private DropInfo[] sets;    
     
-    public Drop GetRandomPickUp()
+    //send drop info depending on random selection based on stored percentages
+    public DropInfo GetRandomPickUp()
     {
-        //randomly select a drop
+        //determine which drop info to return from percentages...
+        return sets[SelectIndexFromPercentages()];
+    }
 
-        //instantiate
+    public int SelectIndexFromPercentages()
+    {
+        int index = -1;
+        float largest = -1;
+        for (int i = 0; i < sets.Length; i++)
+        {
+            float temp = sets[i].percentage * UnityEngine.Random.Range(0f, 1f);
+            if (temp > largest)
+            {
+                index = i;
+                largest = temp;
+            }
+        }
 
-        //return
-        return null;
+        return index;
     }
 }
 
@@ -25,6 +40,10 @@ public class SO_Drops : ScriptableObject
 [System.Serializable]
 public struct DropInfo
 {
-    public Drop drop;
+    public DropType type;
+    //prefab
+    public GameObject prefab;
     public float percentage;
 }
+
+public enum DropType { NONE, HEAL, HEALTH, FIRERATE, MOVEMENTSPEED, ARMOUR }

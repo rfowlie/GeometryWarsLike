@@ -51,6 +51,8 @@ namespace GeometeryWars
         public GamePosition position = GamePosition.NONE;
 
 
+        //public InputAction_01 input;
+        public Input_Menu input;
         protected override void Awake()
         {
             base.Awake();
@@ -61,8 +63,7 @@ namespace GeometeryWars
 
 
             //NEW INPUT TEST
-            input = new InputAction_01();
-            input.Menu.Enable();
+            input = new Input_Menu();            
             input.Menu.Select.performed += (ctx) =>
             {
                 //fire the event of current registerd interaction
@@ -106,6 +107,7 @@ namespace GeometeryWars
             }
         }
 
+        
         private void OnEnable()
         {
             //listen for SceneChange events
@@ -128,7 +130,7 @@ namespace GeometeryWars
             StatsManager.START += SetupStats;
         }
 
-        InputAction_01 input;
+        
         private void Start()
         {
             AdjustScene();            
@@ -220,6 +222,7 @@ namespace GeometeryWars
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.STATS:
+                        input.Menu.Disable();
                         AdjustStats();
                         position = GamePosition.LEVEL;
                         //hide cursor in level
@@ -232,6 +235,7 @@ namespace GeometeryWars
                         sceneControl.SceneChange(new string[] { levelControl.GetGameLevel() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.LEVEL:
+                        input.Menu.Enable();
                         position = GamePosition.STATS;
                         //ensure cursor stays in game window
                         Cursor.lockState = CursorLockMode.Confined;
@@ -241,6 +245,7 @@ namespace GeometeryWars
                         sceneControl.SceneChange(new string[] { levelControl.GetStatsMenu() }, sceneControl.GetLoadedScenes());
                         break;
                     case GamePosition.GAMEOVER:
+                        input.Menu.Enable();
                         position = GamePosition.NONE;
                         //ensure cursor stays in game window
                         Cursor.lockState = CursorLockMode.Confined;
@@ -253,6 +258,7 @@ namespace GeometeryWars
                         //ensure cursor stays in game window
                         Cursor.lockState = CursorLockMode.Confined;
                         Cursor.visible = true;
+                        input.Menu.Enable();
                         position = GamePosition.MAINMENU;
                         sceneControl.SceneChange(new string[] { levelControl.GetMainMenu() }, sceneControl.GetLoadedScenes());
                         break;

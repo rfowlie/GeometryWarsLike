@@ -16,21 +16,24 @@ namespace GeometeryWars
         [Space]
 
         [Header("Variables")]
+        public Transform map;
+        public LayerMask mapLayer, obstacleLayer;
         [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
-        public float movementSpeed = 1f;
+        public float obstacleDistance = 1f;
+
+
+
         public Vector3 velocity;
         private Vector3 aim;
         private Vector3 local;
 
-        public Transform map;
-        public LayerMask mapLayer, obstacleLayer;
-        public float obstacleDistance = 1f;
-
-        [SerializeField] private int lives = 3;
+        [Space]
         [SerializeField] private int healthMax = 100;
         private int healthCurrent;
+        public float movementSpeed = 1f;
 
-        private RectTransform healthUI;        
+        private RectTransform healthUI;   
+        
 
         public event Action DEATH;
         private void OnTriggerEnter(Collider other)
@@ -51,34 +54,84 @@ namespace GeometeryWars
             }
         }
 
-        private InputAction_01 input;        
-        private void OnDisable()
+        //temp        
+        private void DetermineDrop(DropType t)
         {
-            input.Gameplay.Disable();
+            switch(t)
+            {
+                case DropType.HEAL:
+                    int temp = healthCurrent + 25;
+                    healthCurrent = temp > healthMax ? healthMax : temp;
+                    break;
+                case DropType.HEALTH:
+                    break;
+                case DropType.MOVEMENTSPEED:
+                    //could work...
+                    movementSpeed = UpgradesController.Instance.GetMovementValue(++playerInfo.levelMovementSpeed);
+                    CoroutineEX.Delay(this, () => movementSpeed = UpgradesController.Instance.GetMovementValue(--playerInfo.levelMovementSpeed), 5f);
+                    break;
+                case DropType.FIRERATE:
+                    break;
+                case DropType.ARMOUR:
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void Setup(RectTransform healthUI, int health, float movementSpeed, float fireRate)
+
+        
+
+        //private InputAction_01 input;        
+        private void OnDisable()
         {
+            input.GamePlay.Disable();
+            Drop.TRIGGER -= DetermineDrop;
+        }
+
+        private void OnEnable()
+        {
+            //listen for drop
+            Drop.TRIGGER += DetermineDrop;
+        }
+
+
+        private Input_Gameplay input;
+
+        private GameStateInfo playerInfo;
+        public void Setup(RectTransform healthUI, GameStateInfo info)
+        {
+            playerInfo = info;
+            UpgradesController u = UpgradesController.Instance;
+            healthMax = u.GetHealthValue(info.levelHealth);
+            movementSpeed = u.GetMovementValue(info.levelMovementSpeed);
+            bullet.AdjustFireRate(u.GetFireRateValue(info.levelFireRate));
+            //create object pool for bullets
+            bullet.Setup();
+
             //NEW INPUT SYSTEM
-            input = new InputAction_01();
-            input.Gameplay.Enable();
-            input.Gameplay.Move.performed += (ctx) =>
+            input = new Input_Gameplay();            
+            
+            input.GamePlay.Move.performed += (ctx) =>
             {
                 velocity = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
             };
-            input.Gameplay.Aim.performed += (ctx) =>
+            input.GamePlay.Aim.performed += (ctx) =>
             {
                 local = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
                 //Debug.Log($"<color==green>Hello World!!</color>");
             };
-            input.Gameplay.Fire.started += (ctx) =>
+            input.GamePlay.Fire.started += (ctx) =>
             {
                 bullet.BeginFire(body);
             };
-            input.Gameplay.Fire.canceled += (ctx) =>
+            input.GamePlay.Fire.canceled += (ctx) =>
             {
                 bullet.StopFire();
             };
+
+            input.GamePlay.Enable();
+
 
             this.healthUI = healthUI;
 
@@ -88,16 +141,7 @@ namespace GeometeryWars
             transform.position = map.GetChild(0).transform.position;
             mapLayer = GameController.Instance.GetMapLayer();
             obstacleLayer = GameController.Instance.GetObstacleLayer();
-
-            //setup player stats from info
-            this.healthMax = health;
-            healthCurrent = healthMax;
-            this.movementSpeed = movementSpeed;
-            bullet.AdjustFireRate(fireRate);
-
-
-            //create object pool for bullets
-            bullet.Setup();
+            
 
             //make sure player is setup correctly
             RaycastHit hit;
@@ -109,34 +153,8 @@ namespace GeometeryWars
         }
 
         //get resolution...
-        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
-
-        
-        public void UpdatePlayer()
-        {
-            //movement
-            //velocity = (transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal")).normalized;
-
-            ////get mouse position compare to center of screen to aquire rotation direction, apply to player body
-            //aim = Input.mousePosition - screenSize;
-            //local = transform.TransformDirection(new Vector3(aim.x, 0f, aim.y)).normalized;
-
-
-            ////TEMP FIRE BULLETS
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    bullet.BeginFire(body);
-            //}
-            //if (Input.GetMouseButtonUp(0))
-            //{
-            //    bullet.StopFire();
-            //}
-        }
-
-        public void GamepadInput()
-        {
-
-        }
+        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);        
+       
 
         public void Move()
         {

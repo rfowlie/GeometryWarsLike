@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-
-public enum DropType { NONE, HEALTH, FIRERATE, MOVEMENTSPEED, ARMOUR }
 public class Drop : MonoBehaviour
 {
-    [SerializeField] private DropType type = DropType.NONE;
+    public DropType type = DropType.NONE;
 
-
-    public static event Action TRIGGER;
+    public static event Action<DropType> TRIGGER;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -18,7 +15,7 @@ public class Drop : MonoBehaviour
         if(other.gameObject.tag == "Player")
         {
             Debug.Log("Player collected this!!");
-            TRIGGER?.Invoke();
+            TRIGGER?.Invoke(type);
         }
     }
 }
