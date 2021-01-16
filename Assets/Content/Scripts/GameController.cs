@@ -70,16 +70,33 @@ namespace GeometeryWars
                 InteractController.Instance.ExecuteCurrent();
                 //interactControl.ExecuteCurrent();
             };
-            input.Menu.Cursor.performed += (ctx) =>
+
+            if (Application.platform == RuntimePlatform.WindowsEditor)
             {
-                //set the rate of change to input value
-                cursorDelta = ctx.ReadValue<Vector2>();                
-            };
-            input.Menu.Cursor.canceled += (ctx) =>
+                input.Menu.Cursor.performed += (ctx) =>
+                {
+                    //set the rate of change to input value
+                    cursorDelta = ctx.ReadValue<Vector2>();
+                };
+                input.Menu.Cursor.canceled += (ctx) =>
+                {
+                    //ensure cursor doesn't do any weird movement
+                    cursorDelta = Vector2.zero;
+                };
+            }
+            else
             {
-                //ensure cursor doesn't do any weird movement
-                cursorDelta = Vector2.zero;
-            };
+                input.Menu.Cursor.performed += (ctx) =>
+                {
+                    //set the rate of change to input value
+                    cursorDelta = ctx.ReadValue<Vector2>() * new Vector2(1f, -1f);
+                };
+                input.Menu.Cursor.canceled += (ctx) =>
+                {
+                    //ensure cursor doesn't do any weird movement
+                    cursorDelta = Vector2.zero;
+                };
+            }
 
             
             //get screen dimensions for clamping

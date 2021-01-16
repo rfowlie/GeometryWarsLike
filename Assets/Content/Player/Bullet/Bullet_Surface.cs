@@ -12,6 +12,7 @@ namespace GeometeryWars
         private float count = 0f;
         private LayerMask mapLayer;
 
+        
         private void Start()
         {
             mapLayer = GameController.Instance.GetMapLayer();
@@ -44,8 +45,14 @@ namespace GeometeryWars
             }
         }
 
+        
         private void OnTriggerEnter(Collider other)
-        {
+        {            
+            if(other.gameObject.tag == "Enemy")
+            {
+                other.GetComponent<AEnemy>().CallEvent();
+            }
+
             gameObject.SetActive(false);
         }
     }

@@ -28,6 +28,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Exit",
+                    "type": "Button",
+                    "id": "a026e47c-f2ba-47a8-9fa8-cbaa2d6e1752",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "AimMouse",
+                    "type": "PassThrough",
+                    "id": "0adbb42b-44b0-4211-9a8b-f67812af5cbc",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -110,17 +126,6 @@
                 },
                 {
                     "name": "",
-                    "id": "467dcec6-62d7-42d6-8e9b-c9d2abc5c2d0",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "6ee2d51e-ff35-4715-bc8c-630951388d3c",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
@@ -138,6 +143,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9865b92-b435-49f6-bbec-7a3960a96147",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Exit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fbc56747-466b-4217-ae16-afc2fcb8e6b8",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AimMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -74,7 +74,7 @@ public class @Input_Menu : IInputActionCollection, IDisposable
                     ""id"": ""eb6975bd-3eca-4fd6-969e-b59ef5b397c4"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""ScaleVector2(x=0.5,y=0.5)"",
                     ""groups"": """",
                     ""action"": ""Cursor"",
                     ""isComposite"": false,

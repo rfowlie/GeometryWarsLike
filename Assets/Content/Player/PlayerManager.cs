@@ -36,19 +36,41 @@ namespace GeometeryWars
         
 
         public event Action DEATH;
+
+        //shift to health component...
+        private Coroutine c = null;
+        IEnumerator HealthUpdate()
+        {
+            while(healthUI.localScale.y > healthPercentage)
+            {
+                healthUI.localScale -= new Vector3(0f, Time.deltaTime, 0f);
+                yield return null;
+            }
+
+            c = null;
+        }
+        public float healthPercentage = 0f;
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Enemy")
             {
+                other.gameObject.SetActive(false);
                 Debug.Log("<color=blue>Lost Life</color>");
                 //health version
                 //FOR now...
-                healthCurrent -= other.GetComponent<AEnemy>().damage;
-                healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
-
-                if(healthCurrent < 0)
+                healthCurrent -= other.GetComponent<AEnemy>().GetDamage();
+                healthPercentage = (float)healthCurrent / (float)healthMax;
+                if (c == null)
                 {
-                    //death
+                    c = StartCoroutine(HealthUpdate());
+                }
+                //healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
+
+                if(healthCurrent <= 0)
+                {
+                    //fix things
+                    StopCoroutine(c);
+                    c = null;
                     DEATH();
                 }
             }
@@ -115,7 +137,13 @@ namespace GeometeryWars
             bullet.Setup();
 
             //NEW INPUT SYSTEM
-            input = new Input_Gameplay();            
+            input = new Input_Gameplay();
+
+            input.GamePlay.Exit.performed += (ctx) =>
+            {
+                //temporary so player can exit level
+                DEATH();
+            };
             
             input.GamePlay.Move.performed += (ctx) =>
             {
@@ -125,6 +153,13 @@ namespace GeometeryWars
             {
                 local = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
                 //Debug.Log($"<color==green>Hello World!!</color>");
+            };
+            input.GamePlay.AimMouse.performed += (ctx) =>
+            {
+                Debug.Log($"<color=white>{ctx.ReadValue<Vector2>()}</color>");
+                Vector2 dir = (ctx.ReadValue<Vector2>() - new Vector2(Screen.width / 2f, Screen.height / 2f)).normalized;
+                local = (transform.forward * dir.y + transform.right * dir.x).normalized;
+
             };
             input.GamePlay.Fire.started += (ctx) =>
             {
@@ -155,9 +190,6 @@ namespace GeometeryWars
             }
         }
 
-        //get resolution...
-        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);        
-       
 
         public void Move()
         {
