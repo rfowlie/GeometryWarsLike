@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5831335531708732082}
   - component: {fileID: 735709792630716624}
   m_Layer: 12
-  m_Name: Drop_Health
+  m_Name: Drop_Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5165317469841275632}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 236a5b807dbc6e144b3224c5d1c6784b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
+  type: 0
 --- !u!54 &735709792630716624
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ namespace GeometeryWars
     //keeps track of the level time
     public class TimeManager
     {
-        public TimeManager(int levelTime, TextMeshProUGUI ui)
+        public TimeManager(TextMeshProUGUI ui, int levelTime)
         {
             this.levelTime = levelTime;
             this.ui = ui;

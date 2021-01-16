@@ -87,7 +87,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   target: {fileID: 0}
-  value: 100
+  value: 10
+  damage: 25
 --- !u!1 &1097906414934577110
 GameObject:
   m_ObjectHideFlags: 0

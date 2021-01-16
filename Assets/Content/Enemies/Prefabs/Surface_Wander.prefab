@@ -250,4 +250,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   target: {fileID: 0}
-  value: 50
+  value: 5
+  damage: 25

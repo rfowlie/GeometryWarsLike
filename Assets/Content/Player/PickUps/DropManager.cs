@@ -26,6 +26,7 @@ namespace GeometeryWars
         {
             //spawn drop
             DropInfo info = drops.GetRandomPickUp();
+            Debug.Log($"<color=red>DROP: {info.type}</color>");
 
             //Use ObjectPooling later on...
             GameObject obj = GameObject.Instantiate(info.prefab);

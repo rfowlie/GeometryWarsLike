@@ -15,4 +15,10 @@ MonoBehaviour:
   sets:
   - type: 4
     prefab: {fileID: 5165317469841275632, guid: 9a4a3e19a4635eb49a63d20b6c94f6e6, type: 3}
-    percentage: 0.25
+    percentage: 0.3
+  - type: 1
+    prefab: {fileID: 5165317469841275632, guid: 9a4a3e19a4635eb49a63d20b6c94f6e6, type: 3}
+    percentage: 0.5
+  - type: 3
+    prefab: {fileID: 5165317469841275632, guid: 9a4a3e19a4635eb49a63d20b6c94f6e6, type: 3}
+    percentage: 0.4

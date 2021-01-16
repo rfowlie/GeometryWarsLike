@@ -35,7 +35,7 @@ namespace GeometeryWars
         public void Setup(SO_LevelPattern levelPattern, Transform map, SO_Drops allDrops, GameStateInfo info)
         {
             //setup components
-            timer = new TimeManager(20, timerUI);
+            timer = new TimeManager(timerUI, 45);
             points = new PointsManager(pointsUI);
 
             spawn = new SpawnManager(levelPattern, map);

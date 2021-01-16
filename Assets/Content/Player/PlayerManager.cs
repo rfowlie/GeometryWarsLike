@@ -62,6 +62,7 @@ namespace GeometeryWars
                 case DropType.HEAL:
                     int temp = healthCurrent + 25;
                     healthCurrent = temp > healthMax ? healthMax : temp;
+                    healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
                     break;
                 case DropType.HEALTH:
                     break;
@@ -71,6 +72,8 @@ namespace GeometeryWars
                     CoroutineEX.Delay(this, () => movementSpeed = UpgradesController.Instance.GetMovementValue(--playerInfo.levelMovementSpeed), 5f);
                     break;
                 case DropType.FIRERATE:
+                    bullet.AdjustFireRate(UpgradesController.Instance.GetFireRateValue(++playerInfo.levelFireRate));
+                    CoroutineEX.Delay(this, () => bullet.AdjustFireRate(UpgradesController.Instance.GetFireRateValue(--playerInfo.levelFireRate)), 5f);
                     break;
                 case DropType.ARMOUR:
                     break;
@@ -95,7 +98,7 @@ namespace GeometeryWars
             Drop.TRIGGER += DetermineDrop;
         }
 
-
+        //put player input on player so when it gets destoyed so does the input 
         private Input_Gameplay input;
 
         private GameStateInfo playerInfo;
@@ -104,6 +107,8 @@ namespace GeometeryWars
             playerInfo = info;
             UpgradesController u = UpgradesController.Instance;
             healthMax = u.GetHealthValue(info.levelHealth);
+            healthCurrent = healthMax;
+            this.healthUI = healthUI;
             movementSpeed = u.GetMovementValue(info.levelMovementSpeed);
             bullet.AdjustFireRate(u.GetFireRateValue(info.levelFireRate));
             //create object pool for bullets
@@ -131,9 +136,7 @@ namespace GeometeryWars
             };
 
             input.GamePlay.Enable();
-
-
-            this.healthUI = healthUI;
+            
 
             //set values
             map = GameController.Instance.GetMap().transform;
