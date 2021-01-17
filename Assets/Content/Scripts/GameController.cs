@@ -71,17 +71,16 @@ namespace GeometeryWars
                 //interactControl.ExecuteCurrent();
             };
 
+
+            //BUG 
+            //have to flip y value when not in editor mode...
             if (Application.platform == RuntimePlatform.WindowsEditor)
             {
                 input.Menu.Cursor.performed += (ctx) =>
                 {
                     //set the rate of change to input value
                     cursorDelta = ctx.ReadValue<Vector2>();
-                };
-                input.Menu.Cursor.canceled += (ctx) =>
-                {
-                    //ensure cursor doesn't do any weird movement
-                    cursorDelta = Vector2.zero;
+                    UpdateCursor();
                 };
             }
             else
@@ -90,15 +89,16 @@ namespace GeometeryWars
                 {
                     //set the rate of change to input value
                     cursorDelta = ctx.ReadValue<Vector2>() * new Vector2(1f, -1f);
-                };
-                input.Menu.Cursor.canceled += (ctx) =>
-                {
-                    //ensure cursor doesn't do any weird movement
-                    cursorDelta = Vector2.zero;
+                    UpdateCursor();
                 };
             }
+            input.Menu.Cursor.canceled += (ctx) =>
+            {
+                //ensure cursor doesn't do any weird movement
+                cursorDelta = Vector2.zero;
+            };
 
-            
+
             //get screen dimensions for clamping
             screenHeight = Screen.height;
             screenWidth = Screen.width;
@@ -106,23 +106,19 @@ namespace GeometeryWars
             screenSpeed = Mathf.Sqrt((screenHeight * screenHeight) + (screenWidth * screenWidth));
         }
 
+        private void UpdateCursor()
+        {
+            cursorCurrentPos += cursorDelta * gamepadCursorSpeed * screenSpeed * Time.deltaTime;
+            cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
+            Mouse.current.WarpCursorPosition(cursorCurrentPos);
+        }
+
         Vector2 cursorDelta;
         Vector2 cursorCurrentPos;
         float screenHeight;
         float screenWidth;
         float screenSpeed;
-        [SerializeField] private float cursorSpeed = 2;
-
-        private void Update()
-        {
-            //MOVE MOUSE WITH NEW INPUT SYSTEM            
-            if (cursorDelta != Vector2.zero)
-            {
-                cursorCurrentPos += cursorDelta * cursorSpeed * screenSpeed * Time.deltaTime;
-                cursorCurrentPos = new Vector2(Mathf.Clamp(cursorCurrentPos.x, 0f, screenWidth), Mathf.Clamp(cursorCurrentPos.y, 0f, screenHeight));
-                Mouse.current.WarpCursorPosition(cursorCurrentPos);
-            }
-        }
+        [SerializeField] private float gamepadCursorSpeed = 2;
 
         
         private void OnEnable()
@@ -210,7 +206,7 @@ namespace GeometeryWars
         private void AdjustLevel()
         {
             //Debug.Log("<color=red>AdjustLevel</color>");
-            if(level == null) { Debug.LogError("Level Manager is Null!!"); return; }
+            if(level == null) { Debug.Log("Level Manager is Null!!"); return; }
 
             //add points from level to total points
             info.points += level.GetPoints();
@@ -243,7 +239,7 @@ namespace GeometeryWars
                         AdjustStats();
                         position = GamePosition.LEVEL;
                         //hide cursor in level
-                        Cursor.lockState = CursorLockMode.Locked;
+                        //Cursor.lockState = CursorLockMode.Locked;
                         Cursor.visible = false;
                         levelControl.IncrementLevel();
                         //setup map...

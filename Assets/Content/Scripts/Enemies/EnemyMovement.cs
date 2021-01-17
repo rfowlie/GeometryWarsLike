@@ -32,12 +32,13 @@ namespace GeometeryWars
                 return t.forward * speed * Time.deltaTime;
             }
             //using sin combine random directions and intensities to create a unique wobble
-            public static Vector3 Wobble(Transform transform, params WobbleInfo[] wobbles)
+            public static Vector3 Wobble(Transform transform, float offset, params WobbleInfo[] wobbles)
             {
                 Vector3 total = Vector3.zero;
+                offset += Time.time;
                 for(int i = 0; i < wobbles.Length; i++)
                 {
-                    total += transform.TransformDirection(wobbles[i].direction) * Mathf.Sin(Time.time * wobbles[i].speed) * wobbles[i].intensity;
+                    total += transform.TransformDirection(wobbles[i].direction) * Mathf.Sin(offset * wobbles[i].speed) * wobbles[i].intensity;
                 }
 
                 return total * Time.deltaTime;

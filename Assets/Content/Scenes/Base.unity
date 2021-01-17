@@ -443,7 +443,7 @@ MonoBehaviour:
     m_Bits: 16384
   map: {fileID: 0}
   position: 0
-  cursorSpeed: 1
+  gamepadCursorSpeed: 5
 --- !u!4 &1576775658
 Transform:
   m_ObjectHideFlags: 0

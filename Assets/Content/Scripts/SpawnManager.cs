@@ -6,10 +6,11 @@ using UnityEngine.SceneManagement;
 
 namespace GeometeryWars
 {
-    public class SpawnManager
+    public class SpawnManager 
     {
-        public SpawnManager(SO_LevelPattern levelPatterns, Transform map)
+        public SpawnManager(MonoBehaviour inst, SO_LevelPattern levelPatterns, Transform map)
         {
+            this.inst = inst;
             //get values from global variables...
             this.levelPatterns = levelPatterns;
             this.map = map;
@@ -24,7 +25,7 @@ namespace GeometeryWars
             levelIndex = 0;
         }
 
-
+        private MonoBehaviour inst;
         public int levelIndex = 0;
         public float spawnCount = 0f;
         bool isSpawn = true;
@@ -61,7 +62,7 @@ namespace GeometeryWars
                 //check time against current index
                 if (levelPatterns.spawnTimes[levelIndex] < timeFromZero)
                 {
-                    GameController.Instance.StartCoroutine(SpawnUnits(levelIndex, levelPatterns));                    
+                    inst.StartCoroutine(SpawnUnits(levelIndex, levelPatterns));                    
 
                     //prime next pattern, activate delay
                     levelIndex++;
@@ -78,16 +79,16 @@ namespace GeometeryWars
         //spawn units one on each frame... 
         IEnumerator SpawnUnits(int levelIndex, SO_LevelPattern levelPatterns)
         {
+            int length = levelPatterns.patterns[levelPatterns.patternIndex[levelIndex]].points.Length;
             //spawn pattern
-            for (int i = 0; i < levelPatterns.patterns[levelIndex].points.Length; i++)
-            {
-                int j = i;
+            for (int i = 0; i < length; i++)
+            {                
                 AEnemy temp = pools[levelPatterns.enemyTypeIndex[levelIndex]].Retrieve();
 
                 if(temp != null)
                 {
                     //get position
-                    temp.transform.position = levelPatterns.patterns[levelIndex].points[j];
+                    temp.transform.position = levelPatterns.patterns[levelPatterns.patternIndex[levelIndex]].points[i];
                     //point transform down towards map
                     temp.transform.rotation = Quaternion.FromToRotation(temp.transform.up, temp.transform.position - map.position) * temp.transform.rotation;
                 }

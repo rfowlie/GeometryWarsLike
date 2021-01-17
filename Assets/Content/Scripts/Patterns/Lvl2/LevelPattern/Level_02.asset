@@ -16,16 +16,20 @@ MonoBehaviour:
   endDelay: 3
   enemyPrefabs:
   - {fileID: 1097906414491954187, guid: e9a82c576d3dd1147b651923a946dcf3, type: 3}
+  - {fileID: 7729936662617949939, guid: 2c6ba2df7d5444c46ac1499843f36c61, type: 3}
+  - {fileID: 7970466687186825981, guid: a80574b72bff6b34ba9a2549de997427, type: 3}
   patterns:
   - {fileID: 11400000, guid: 005e9b203785a3b4aac6d8c207a3568a, type: 2}
   - {fileID: 11400000, guid: 7f276757ab81e38419c1ef745cfd5f5e, type: 2}
   - {fileID: 11400000, guid: c0b2171f0df826644b172075939dacd5, type: 2}
   - {fileID: 11400000, guid: 75a7309dfe05ad041a2a8660ac24fe9b, type: 2}
-  arraySize: 4
-  enemyTypeIndex: 00000000000000000000000000000000
-  patternIndex: 00000000010000000200000003000000
+  arraySize: 6
+  enemyTypeIndex: 000000000000000001000000010000000200000002000000
+  patternIndex: 000000000100000002000000030000000000000001000000
   spawnTimes:
   - 2
-  - 4
-  - 6
   - 8
+  - 15
+  - 15
+  - 18
+  - 21

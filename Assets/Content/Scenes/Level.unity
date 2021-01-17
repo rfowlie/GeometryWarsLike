@@ -2354,6 +2354,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3184436957529938550, guid: 5d32f03413211f3478491ab0559cbfa3, type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 3184436956887534922}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d32f03413211f3478491ab0559cbfa3, type: 3}
 --- !u!114 &3184436956887534921 stripped
@@ -2367,3 +2371,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc6b228b182b5d24db4564b8b3b48403, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!20 &3184436956887534922 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3184436955692342844, guid: 5d32f03413211f3478491ab0559cbfa3, type: 3}
+  m_PrefabInstance: {fileID: 3184436956887534920}
+  m_PrefabAsset: {fileID: 0}
