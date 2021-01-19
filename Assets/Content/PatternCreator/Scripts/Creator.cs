@@ -28,6 +28,7 @@ namespace PatternCreator
 
         public Transform map;
         [Space]
+        public bool isVisible = true;
         [Space]
         public SpawnShape spawnShape = SpawnShape.LINE;
         public Color gizmoColour = Color.white;
@@ -35,13 +36,27 @@ namespace PatternCreator
         public int amountOfPoints = 4;
         public float radius = 1f;
         [Range(0f, 360f)] public float angleOffset = 0f;
+        [Range(0f, 100f)] public float percentage = 100f;
+        //used to change raycast calc
+        public bool towardsMap = true;
 
+        private Vector3[] shapePoints;
+        //final values
         private Vector3[] points;
-        private List<Vector3> p = new List<Vector3>();
+        private Vector3[] normals;
+
+        private int length = 0;
+
         public Vector3[] CreatePoints()
         {
-            Vector3[] t = p.ToArray();
-            return t;
+            //int length = Mathf.RoundToInt(amountOfPoints * (percentage * 0.01f));
+            List<Vector3> temp = new List<Vector3>();            
+            for (int i = 0; i < length; i++)
+            {
+                if(points[i] != Vector3.zero) { temp.Add(points[i]); }
+            }
+
+            return temp.ToArray();
         }
 
         private void OnValidate()
@@ -57,26 +72,26 @@ namespace PatternCreator
 
 
         private delegate Vector3[] Del();
-        private Del del = null;
+        private Del Calculate = null;
         
         
         private void Configure()
         {
-            del = null;
+            Calculate = null;
 
             switch (spawnShape)
             {
                 case SpawnShape.LINE:
-                    del += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
+                    Calculate += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
                     break;
                 case SpawnShape.CIRCLE:
-                    del += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    Calculate += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 case SpawnShape.SQUARE:
-                    del += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    Calculate += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 case SpawnShape.TRIANGLE:
-                    del += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    Calculate += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 default:
                     Debug.LogError("DebugShape Doesn't Exist!!");
@@ -91,21 +106,23 @@ namespace PatternCreator
             //no map no calc
             if(map == null) { return; }
             transform.rotation = Quaternion.FromToRotation(transform.up, transform.position - map.position) * transform.rotation;
-            points = del();
-            p.Clear();
+            shapePoints = Calculate();
+            points = new Vector3[shapePoints.Length];
+            normals = new Vector3[shapePoints.Length];
 
             //determine if points are on map, add to list
             RaycastHit hit;
-            for (int i = 0; i < points.Length; i++)
+            float distanceToMap = (map.position - transform.position).magnitude;
+            for (int i = 0; i < shapePoints.Length; i++)
             {
-                points[i] += transform.position;
-                Vector3 dir = (map.position - points[i]).normalized;
-                //Debug.Log("DrawLines");
-                Debug.DrawLine(points[i], points[i] + dir, Color.yellow);
-                if (Physics.Raycast(points[i], dir, out hit, float.PositiveInfinity))
+                shapePoints[i] += transform.position;
+                //calculate raycast direction, depends on which bool is selected
+                Vector3 dir = towardsMap ? (map.position - shapePoints[i]).normalized : -transform.up;
+                Debug.DrawLine(shapePoints[i], shapePoints[i] + dir, Color.yellow);
+                if (Physics.Raycast(shapePoints[i], dir, out hit, distanceToMap))
                 {
-                    Debug.DrawLine(hit.point, hit.point + hit.normal, Color.red);
-                    p.Add(hit.point + hit.normal);
+                    points[i] = hit.point;
+                    normals[i] = hit.normal;
                 }
             }
         }
@@ -183,23 +200,29 @@ namespace PatternCreator
         private void OnDrawGizmos()
         {
             //draw current pattern
-            if (del == null) { Configure(); }
-            if (map != null)
+            if (Calculate == null) { Configure(); }
+            if (map != null && isVisible)
             {
                 Debug.DrawLine(transform.position, map.position, Color.cyan);
                 Execute();
 
                 Gizmos.color = gizmoColour;
-                for (int i = 0; i < p.Count; i++)
+                length = Mathf.RoundToInt(points.Length * (percentage * 0.01f));
+                for (int i = 0; i < length; i++)
                 {
-                    Gizmos.DrawSphere(p[i], 0.5f);
+                    if(points[i] != Vector3.zero)
+                    {
+                        Gizmos.color = gizmoColour;
+                        Gizmos.DrawSphere(points[i], 0.5f);
+                        Gizmos.color = Color.blue;
+                        Gizmos.DrawLine(points[i], points[i] + normals[i]);
+                    }
                 }
             }
 
-
             //draw all other patterns
             if (patterns.Count > 0 && isOn)
-            {
+            {                
                 for (int i = 0; i < patterns.Count; i++)
                 {                    
                     //skip if not toggled

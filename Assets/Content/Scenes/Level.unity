@@ -664,6 +664,7 @@ MonoBehaviour:
   pointsUI: {fileID: 43628884}
   playerHealthUI: {fileID: 1114176322}
   player: {fileID: 3184436956887534921}
+  levelTime: 30
   IJob: 0
 --- !u!4 &573556327
 Transform:
