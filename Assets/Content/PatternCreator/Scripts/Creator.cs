@@ -32,13 +32,13 @@ namespace PatternCreator
         [Space]
         public SpawnShape spawnShape = SpawnShape.LINE;
         public Color gizmoColour = Color.white;
-        private SpawnShape currentSpawnShape = SpawnShape.LINE;
+        private SpawnShape currentShape = SpawnShape.LINE;
         public int amountOfPoints = 4;
         public float radius = 1f;
         [Range(0f, 360f)] public float angleOffset = 0f;
         [Range(0f, 100f)] public float percentage = 100f;
         //used to change raycast calc
-        public bool towardsMap = true;
+        public bool towardsCenter = false;
 
         private Vector3[] shapePoints;
         //final values
@@ -49,7 +49,6 @@ namespace PatternCreator
 
         public Vector3[] CreatePoints()
         {
-            //int length = Mathf.RoundToInt(amountOfPoints * (percentage * 0.01f));
             List<Vector3> temp = new List<Vector3>();            
             for (int i = 0; i < length; i++)
             {
@@ -61,9 +60,9 @@ namespace PatternCreator
 
         private void OnValidate()
         {
-            if (spawnShape != currentSpawnShape)
+            if (spawnShape != currentShape)
             {
-                currentSpawnShape = spawnShape;
+                currentShape = spawnShape;
                 Configure();
             }
 
@@ -72,26 +71,26 @@ namespace PatternCreator
 
 
         private delegate Vector3[] Del();
-        private Del Calculate = null;
+        private Del CalculateStartingPoints = null;
         
         
         private void Configure()
         {
-            Calculate = null;
+            CalculateStartingPoints = null;
 
             switch (spawnShape)
             {
                 case SpawnShape.LINE:
-                    Calculate += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
+                    CalculateStartingPoints += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
                     break;
                 case SpawnShape.CIRCLE:
-                    Calculate += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    CalculateStartingPoints += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 case SpawnShape.SQUARE:
-                    Calculate += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    CalculateStartingPoints += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 case SpawnShape.TRIANGLE:
-                    Calculate += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+                    CalculateStartingPoints += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
                     break;
                 default:
                     Debug.LogError("DebugShape Doesn't Exist!!");
@@ -106,7 +105,7 @@ namespace PatternCreator
             //no map no calc
             if(map == null) { return; }
             transform.rotation = Quaternion.FromToRotation(transform.up, transform.position - map.position) * transform.rotation;
-            shapePoints = Calculate();
+            shapePoints = CalculateStartingPoints();
             points = new Vector3[shapePoints.Length];
             normals = new Vector3[shapePoints.Length];
 
@@ -117,7 +116,7 @@ namespace PatternCreator
             {
                 shapePoints[i] += transform.position;
                 //calculate raycast direction, depends on which bool is selected
-                Vector3 dir = towardsMap ? (map.position - shapePoints[i]).normalized : -transform.up;
+                Vector3 dir = towardsCenter ? (map.position - shapePoints[i]).normalized : -transform.up;
                 Debug.DrawLine(shapePoints[i], shapePoints[i] + dir, Color.yellow);
                 if (Physics.Raycast(shapePoints[i], dir, out hit, distanceToMap))
                 {
@@ -129,52 +128,57 @@ namespace PatternCreator
 
         //*****************************************
         [HideInInspector] public bool isOn = true;
-        [HideInInspector] [SerializeField] public List<Vector3[]> patterns = new List<Vector3[]>();
+        [HideInInspector] [SerializeField] public List<bool> toggles = new List<bool>();
         [HideInInspector] [SerializeField] public List<string> patternNames = new List<string>();
         [HideInInspector] [SerializeField] public List<Color> colors = new List<Color>();
-        [HideInInspector] [SerializeField] public List<bool> toggles = new List<bool>();
+        [HideInInspector] [SerializeField] public List<Vector3[]> patterns = new List<Vector3[]>();
         [HideInInspector] [SerializeField] public List<PatternInfo> info = new List<PatternInfo>();
 
-        //edit info
-        public struct PatternInfo
-        {
-            public PatternInfo(Vector3 position, Quaternion rotation, int amountOfPoints, float radius, float angleOffset, SpawnShape shape)
-            {
-                this.position = position;
-                this.rotation = rotation;
-                this.amountOfPoints = amountOfPoints;
-                this.radius = radius;
-                this.angleOffset = angleOffset;
-                this.shape = shape;
-            }
-
-            //creator position
-            public Vector3 position;
-            public Quaternion rotation;
-            public int amountOfPoints;
-            public float radius;
-            public float angleOffset;
-            public SpawnShape shape;
-        }
-
+        
         public PatternInfo CreateInfo()
         {
-            return new PatternInfo(transform.position, transform.rotation, amountOfPoints, radius, angleOffset, currentSpawnShape);
+            PatternInfo temp = new PatternInfo();
+            //set to relative position from map
+            temp.relativePosition = map.InverseTransformDirection(transform.position);
+            temp.rotation = transform.rotation;
+            temp.amountOfPoints = amountOfPoints;
+            temp.radius = radius;
+            temp.angleOffset = angleOffset;
+            temp.percentage = percentage;
+            temp.shape = currentShape;
+            temp.towardsCenter = towardsCenter;
+
+            return temp;
         }
 
-        public void SetInfo(PatternInfo pi)
+        public void SetInfo(PatternInfo info)
         {
-            transform.position = pi.position;
-            transform.rotation = pi.rotation;
-            
-            amountOfPoints = pi.amountOfPoints;
-            radius = pi.radius;
-            angleOffset = pi.angleOffset;
-            spawnShape = pi.shape;
+            transform.position = info.relativePosition;
+            transform.rotation = info.rotation;
+
+            amountOfPoints = info.amountOfPoints;
+            radius = info.radius;
+            angleOffset = info.angleOffset;
+            spawnShape = info.shape;
 
             Configure();
         }
 
+        //return all the info for each pattern selecte
+        public PatternInfo[] ReturnInfo()
+        {
+            List<PatternInfo> list = new List<PatternInfo>();
+            for (int i = 0; i < patterns.Count; i++)
+            {
+                //only get points from lists that have toggles 
+                if (toggles[i])
+                {
+                    list.Add(info[i]);
+                }
+            }
+
+            return list.ToArray();
+        }
 
         //convert all arrays in points list to one giant array
         public Vector3[] GetPoints()
@@ -200,7 +204,7 @@ namespace PatternCreator
         private void OnDrawGizmos()
         {
             //draw current pattern
-            if (Calculate == null) { Configure(); }
+            if (CalculateStartingPoints == null) { Configure(); }
             if (map != null && isVisible)
             {
                 Debug.DrawLine(transform.position, map.position, Color.cyan);
@@ -220,7 +224,7 @@ namespace PatternCreator
                 }
             }
 
-            //draw all other patterns
+            //draw stored patterns
             if (patterns.Count > 0 && isOn)
             {                
                 for (int i = 0; i < patterns.Count; i++)

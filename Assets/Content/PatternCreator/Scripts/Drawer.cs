@@ -9,8 +9,6 @@ namespace PatternCreator
     public class Drawer : MonoBehaviour
     {
         public bool isOn = true;
-        //public Color colour = Color.blue;
-        //public List<SO_PatternArray> patterns = new List<SO_PatternArray>();
 
         public int size = 1;
         public SO_PatternArray[] p;

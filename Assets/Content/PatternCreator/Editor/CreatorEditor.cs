@@ -135,6 +135,11 @@ namespace PatternCreator
                 else if(assetName == string.Empty) { Debug.LogError("AssetName undefined!"); }
                 else
                 {
+                    //new version where we store the info rather than the points
+                    SO_PatternInfoContainer container = new SO_PatternInfoContainer(o.ReturnInfo());
+                    AssetDatabase.CreateAsset(container, assetPath + "/C_" + assetName + ".asset");
+
+
                     SO_PatternArray temp = new SO_PatternArray(assetName, o.GetPoints());
                     AssetDatabase.CreateAsset(temp, assetPath + "/" + assetName + ".asset");
                     //remove name after creation, ensures another asset isn't created with same name

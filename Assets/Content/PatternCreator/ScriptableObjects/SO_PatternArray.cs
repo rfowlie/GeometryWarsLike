@@ -13,4 +13,6 @@ public class SO_PatternArray : ScriptableObject
 
     public string iD = "Empty";
     public Vector3[] points;
+    //
+    public Vector3 position;
 }

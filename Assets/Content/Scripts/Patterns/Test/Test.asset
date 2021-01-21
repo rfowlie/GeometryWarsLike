@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5717f5a22baaae842ac188e15f3eaaec, type: 3}
+  m_Name: Test
+  m_EditorClassIdentifier: 
+  iD: Test
+  points:
+  - {x: 0.82500017, y: 4.8619695, z: -0.8250001}
+  - {x: 0.82500017, y: 4.8619695, z: 0.8250001}
+  - {x: -0.82500017, y: 4.8619695, z: 0.8250001}
+  - {x: -0.82500017, y: 4.8619695, z: -0.8250001}
+  - {x: 0, y: 3.9924808, z: 3.01}
+  - {x: 2.3533127, y: 3.9924808, z: 1.8767045}
+  - {x: 2.934533, y: 3.9924808, z: -0.6697877}
+  - {x: 1.3059903, y: 3.9924798, z: -2.711916}
+  - {x: -1.3059895, y: 3.9924798, z: -2.7119167}
+  - {x: -2.9345336, y: 3.9924798, z: -0.669787}
+  - {x: -2.3533132, y: 3.9924798, z: 1.876704}
+  position: {x: 0, y: 0, z: 0}
