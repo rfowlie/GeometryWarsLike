@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GameLevelPatterns
   m_EditorClassIdentifier: 
   allPatterns:
-  - {fileID: 11400000, guid: aa26b6919e8c491459d679aa839b17f1, type: 2}
   - {fileID: 11400000, guid: fcff65296caf08447bbb720822c7bb75, type: 2}
+  - {fileID: 11400000, guid: aa26b6919e8c491459d679aa839b17f1, type: 2}

@@ -19,14 +19,10 @@ MonoBehaviour:
   - {fileID: 1097906414491954187, guid: e9a82c576d3dd1147b651923a946dcf3, type: 3}
   - {fileID: 713943655058967361, guid: 622fa4c135bf0fe408278d1a05aa26e2, type: 3}
   - {fileID: 5903638869596110956, guid: 4b225662f11f8e042890470e0410092f, type: 3}
-  patterns:
-  - {fileID: 11400000, guid: e4662e5c5e4d2ba4daa491fc81a4fbd1, type: 2}
-  - {fileID: 11400000, guid: ba93faa211cd19f42a7435896943bcb5, type: 2}
-  - {fileID: 11400000, guid: a9af913805ca0e24cb79b1511def1e02, type: 2}
-  - {fileID: 11400000, guid: 04aebeb1a2266af4f8e4ff387ff868e7, type: 2}
+  container: {fileID: 11400000, guid: 775bee3e29eed9d4c8539cc80163fe34, type: 2}
   arraySize: 4
   enemyTypeIndex: 00000000010000000200000003000000
-  patternIndex: 00000000010000000200000003000000
+  patternIndex: 00000000010000000000000001000000
   spawnTimes:
   - 2
   - 4

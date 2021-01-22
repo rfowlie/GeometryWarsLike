@@ -15,6 +15,7 @@ namespace GeometeryWars
     {
         //the map layer so raycasting for movement is correct
         public LayerMask mapLayer;
+        public float distanceFromSurface;
         public Transform body;
         //add slight delay to unit being active
         public bool isActive = false;
@@ -36,8 +37,10 @@ namespace GeometeryWars
 
         protected virtual void Start()
         {
-            mapLayer = GameController.Instance.GetMapLayer();
-            obstacleLayer = GameController.Instance.GetObstacleLayer();
+            GameController g = GameController.Instance;
+            mapLayer = g.GetMapLayer();
+            obstacleLayer = g.GetObstacleLayer();
+            distanceFromSurface = g.GetDistanceFromSurface();
 
             SetMovement();
             SetRotation();
@@ -107,11 +110,10 @@ namespace GeometeryWars
                 }
 
 
-                //RaycastHit hit;
+                //Move
                 if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity, mapLayer))
                 {
-                    //move
-                    transform.position = hit.point + hit.normal;
+                    transform.position = hit.point + hit.normal * distanceFromSurface;
                 }
 
                 //rotation

@@ -6,6 +6,7 @@ using UnityEngine;
 namespace PatternCreator
 {
     //calculate points in world space for shapes
+    public enum SpawnShape { CIRCLE, SQUARE, TRIANGLE }
     public static class Shapes
     {
         //only expose this???

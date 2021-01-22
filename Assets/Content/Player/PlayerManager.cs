@@ -18,7 +18,7 @@ namespace GeometeryWars
         [Header("Variables")]
         public Transform map;
         public LayerMask mapLayer, obstacleLayer;
-        [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
+        private float distanceFromSurface = 1f;
         public float obstacleDistance = 1f;
 
 
@@ -105,19 +105,22 @@ namespace GeometeryWars
         }
 
 
-        
 
-        //private InputAction_01 input;        
-        private void OnDisable()
+        private void Start()
         {
-            input.GamePlay.Disable();
-            Drop.TRIGGER -= DetermineDrop;
+            distanceFromSurface = GameController.Instance.GetDistanceFromSurface();
         }
+
 
         private void OnEnable()
         {
             //listen for drop
             Drop.TRIGGER += DetermineDrop;
+        }
+        private void OnDisable()
+        {
+            input.GamePlay.Disable();
+            Drop.TRIGGER -= DetermineDrop;
         }
 
         //put player input on player so when it gets destoyed so does the input 
@@ -202,11 +205,11 @@ namespace GeometeryWars
                 if (Physics.SphereCast(transform.position, 1f, velocity, out hitNext, obstacleDistance, obstacleLayer))
                 {
                     //obstacle hit...
-                    Debug.DrawRay(transform.position, hitNext.point - transform.position, Color.blue, 1f);
-                    Debug.DrawRay(hitNext.point, hitNext.normal, Color.green, 1f);
+                    //Debug.DrawRay(transform.position, hitNext.point - transform.position, Color.blue, 1f);
+                    //Debug.DrawRay(hitNext.point, hitNext.normal, Color.green, 1f);
                     Vector3 p = Vector3.Project(transform.position - hitNext.point, hitNext.normal);
                     p = ((hitNext.point - transform.position) + p).normalized;
-                    Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
+                    //Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
                     nextPos = transform.position + p * movementSpeed * Time.fixedDeltaTime;
                 }
 

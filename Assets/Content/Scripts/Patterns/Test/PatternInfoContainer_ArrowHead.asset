@@ -9,9 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 066c7ab73220d6a4992e5f5c56acec19, type: 3}
-  m_Name: Maps
+  m_Script: {fileID: 11500000, guid: d6b8e9c7d12bf164987f16f5fb9d32cc, type: 3}
+  m_Name: PatternInfoContainer_ArrowHead
   m_EditorClassIdentifier: 
-  allMaps:
-  - {fileID: 7952291835618041251, guid: 403ef8012e2e6094ebc43a9aeea9d891, type: 3}
-  - {fileID: 4757837540277941771, guid: c5983c3010b86e24abb6f3255b71c5b5, type: 3}

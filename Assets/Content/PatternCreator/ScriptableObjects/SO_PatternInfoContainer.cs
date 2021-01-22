@@ -13,7 +13,8 @@ namespace PatternCreator
             values = arr;
         }
         //still make accessible later
-        [SerializeField] public PatternInfo[] values;
+        private PatternInfo[] values;
+        public PatternInfo[] GetValues() { return values; }
         public int GetLength() { return values.Length; }
     }
 }

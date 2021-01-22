@@ -34,12 +34,14 @@ namespace GeometeryWars
 
         [Space]
         [Header("Global Variables")]
+        [SerializeField] private GameObject map;
+        public GameObject GetMap() { return map; }
         [SerializeField] private LayerMask mapLayer;
         public LayerMask GetMapLayer() { return mapLayer; }
         [SerializeField] private LayerMask obstacleLayer;
         public LayerMask GetObstacleLayer() { return obstacleLayer; }
-        [SerializeField] private GameObject map;
-        public GameObject GetMap() { return map; }
+        [SerializeField] private float distanceFromSurface = 1f;
+        public float GetDistanceFromSurface() { return distanceFromSurface; }
 
 
         //contains all the information for the current game

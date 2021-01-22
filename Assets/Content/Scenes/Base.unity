@@ -435,13 +435,14 @@ MonoBehaviour:
   upgrades: {fileID: 0}
   levelPatterns: {fileID: 11400000, guid: f8ea7d38d2ffc9446ba82ba0a220b329, type: 2}
   drops: {fileID: 11400000, guid: 106cd295ae9607a4da4990e2b4ebea3e, type: 2}
+  map: {fileID: 0}
   mapLayer:
     serializedVersion: 2
     m_Bits: 8192
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 16384
-  map: {fileID: 0}
+  distanceFromSurface: 1
   position: 0
   gamepadCursorSpeed: 5
 --- !u!4 &1576775658

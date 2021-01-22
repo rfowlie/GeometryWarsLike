@@ -25,10 +25,13 @@ namespace GeometeryWars
         private void Update()
         {
             count += Time.deltaTime;
-            if(count > 5f)
+            if(count > 3f)
             {
-                count -= 5f;
+                count -= 3f;
                 isDash = !isDash;
+
+                Movement = null;
+                Rotation = null;
                 if(isDash)
                 {
                     Movement = () => SurfaceMovement.Direction.Forward(transform, speedThrust);
@@ -36,7 +39,6 @@ namespace GeometeryWars
                 }
                 else
                 {
-                    Movement = null;
                     Rotation = () => SurfaceMovement.Rotation.FaceTarget(transform, target, hit);
                 }
             }

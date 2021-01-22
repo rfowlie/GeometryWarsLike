@@ -6,10 +6,6 @@ using System.Linq;
 
 namespace PatternCreator
 {
-    public enum SpawnShape { LINE, CIRCLE, SQUARE, TRIANGLE, STAR }
-
-    //visualize a set of points
-    //[RequireComponent(typeof(Drawer))]
     [System.Serializable]
     public class Creator : MonoBehaviour
     {
@@ -18,11 +14,11 @@ namespace PatternCreator
             //set creator to center of map
             transform.position = map.transform.position;
 
-            amountOfPoints = 1;
-            radius = 10;
+            amountOfPoints = 10;
+            radius = 5f;
             angleOffset = 0;
-            gizmoColour = Color.white;
-            spawnShape = SpawnShape.LINE;
+            gizmoColour = Color.red;
+            spawnShape = SpawnShape.CIRCLE;
             Configure();
         }
 
@@ -30,17 +26,15 @@ namespace PatternCreator
         [Space]
         public bool isVisible = true;
         [Space]
-        public SpawnShape spawnShape = SpawnShape.LINE;
+        public SpawnShape spawnShape = SpawnShape.CIRCLE;
+        private SpawnShape currentShape = SpawnShape.CIRCLE;
         public Color gizmoColour = Color.white;
-        private SpawnShape currentShape = SpawnShape.LINE;
         public int amountOfPoints = 4;
         public float radius = 1f;
         [Range(0f, 360f)] public float angleOffset = 0f;
         [Range(0f, 100f)] public float percentage = 100f;
         //used to change raycast calc
         public bool towardsCenter = false;
-
-        private Vector3[] shapePoints;
         //final values
         private Vector3[] points;
         private Vector3[] normals;
@@ -57,6 +51,8 @@ namespace PatternCreator
 
             return temp.ToArray();
         }
+
+        
 
         private void OnValidate()
         {
@@ -77,35 +73,37 @@ namespace PatternCreator
         private void Configure()
         {
             CalculateStartingPoints = null;
+            CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, transform.up, transform.forward, angleOffset);
 
-            switch (spawnShape)
-            {
-                case SpawnShape.LINE:
-                    CalculateStartingPoints += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
-                    break;
-                case SpawnShape.CIRCLE:
-                    CalculateStartingPoints += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-                    break;
-                case SpawnShape.SQUARE:
-                    CalculateStartingPoints += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-                    break;
-                case SpawnShape.TRIANGLE:
-                    CalculateStartingPoints += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-                    break;
-                default:
-                    Debug.LogError("DebugShape Doesn't Exist!!");
-                    break;
-            }
+            //switch (spawnShape)
+            //{
+            //    case SpawnShape.LINE:
+            //        CalculateStartingPoints += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
+            //        break;
+            //    case SpawnShape.CIRCLE:
+            //        CalculateStartingPoints += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+            //        break;
+            //    case SpawnShape.SQUARE:
+            //        CalculateStartingPoints += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+            //        break;
+            //    case SpawnShape.TRIANGLE:
+            //        CalculateStartingPoints += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+            //        break;
+            //    default:
+            //        Debug.LogError("DebugShape Doesn't Exist!!");
+            //        break;
+            //}
 
-            Execute();
+            Calculate();
         }
 
-        private void Execute()
+        
+        private void Calculate()
         {
             //no map no calc
             if(map == null) { return; }
             transform.rotation = Quaternion.FromToRotation(transform.up, transform.position - map.position) * transform.rotation;
-            shapePoints = CalculateStartingPoints();
+            Vector3[] shapePoints = CalculateStartingPoints();
             points = new Vector3[shapePoints.Length];
             normals = new Vector3[shapePoints.Length];
 
@@ -127,6 +125,7 @@ namespace PatternCreator
         }
 
         //*****************************************
+        //Stored values...
         [HideInInspector] public bool isOn = true;
         [HideInInspector] [SerializeField] public List<bool> toggles = new List<bool>();
         [HideInInspector] [SerializeField] public List<string> patternNames = new List<string>();
@@ -134,7 +133,70 @@ namespace PatternCreator
         [HideInInspector] [SerializeField] public List<Vector3[]> patterns = new List<Vector3[]>();
         [HideInInspector] [SerializeField] public List<PatternInfo> info = new List<PatternInfo>();
 
-        
+        //store new PatternInfo
+        public void Store()
+        {
+            //o.isOn = EditorGUILayout.Toggle("Display Stored Patterns", o.isOn);
+
+            patternNames.Add(string.Empty);
+            colors.Add(gizmoColour);
+            patterns.Add(CreatePoints());
+            toggles.Add(true);
+            //gets current setup for creator, saves the info for if editing later
+            info.Add(CreateInfo());
+
+            //change gizmo to different colour
+            gizmoColour = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1);
+        }
+
+        //set values identical to one of the stored values
+        public void Edit(int index)
+        {            
+            SetInfo(info[index]);
+            gizmoColour = colors[index];
+            patternNames.RemoveAt(index);
+            patterns.RemoveAt(index);
+            colors.RemoveAt(index);
+            toggles.RemoveAt(index);
+            info.RemoveAt(index);
+        }
+
+        //set values in creator to passed in patternInfo, used in Edit
+        public void SetInfo(PatternInfo info)
+        {
+            transform.position = info.relativePosition;
+            transform.rotation = info.rotation;
+
+            amountOfPoints = info.amountOfPoints;
+            radius = info.radius;
+            angleOffset = info.angleOffset;
+            spawnShape = info.shape;
+
+            Configure();
+        }
+
+        //remove stored at index
+        public void RemoveStored(int index)
+        {
+            patternNames.RemoveAt(index);
+            patterns.RemoveAt(index);
+            colors.RemoveAt(index);
+            toggles.RemoveAt(index);
+            info.RemoveAt(index);
+        }
+
+        //clear all stored
+        public void ClearStored()
+        {
+            //clear all lists
+            patternNames.Clear();
+            colors.Clear();
+            patterns.Clear();
+            toggles.Clear();
+            info.Clear();
+        }
+
+        //returns patternInfo based upon current values in creator
         public PatternInfo CreateInfo()
         {
             PatternInfo temp = new PatternInfo();
@@ -151,21 +213,9 @@ namespace PatternCreator
             return temp;
         }
 
-        public void SetInfo(PatternInfo info)
-        {
-            transform.position = info.relativePosition;
-            transform.rotation = info.rotation;
-
-            amountOfPoints = info.amountOfPoints;
-            radius = info.radius;
-            angleOffset = info.angleOffset;
-            spawnShape = info.shape;
-
-            Configure();
-        }
 
         //return all the info for each pattern selecte
-        public PatternInfo[] ReturnInfo()
+        public PatternInfo[] GetAllPatternInfo()
         {
             List<PatternInfo> list = new List<PatternInfo>();
             for (int i = 0; i < patterns.Count; i++)
@@ -181,7 +231,7 @@ namespace PatternCreator
         }
 
         //convert all arrays in points list to one giant array
-        public Vector3[] GetPoints()
+        public Vector3[] GetAllPoints()
         {
             List<Vector3> t = new List<Vector3>();
             for (int i = 0; i < patterns.Count; i++)
@@ -200,6 +250,8 @@ namespace PatternCreator
         }
 
 
+
+
         //Debug Draw
         private void OnDrawGizmos()
         {
@@ -208,7 +260,8 @@ namespace PatternCreator
             if (map != null && isVisible)
             {
                 Debug.DrawLine(transform.position, map.position, Color.cyan);
-                Execute();
+                //hate this...
+                Calculate();
 
                 Gizmos.color = gizmoColour;
                 length = Mathf.RoundToInt(points.Length * (percentage * 0.01f));
@@ -216,10 +269,12 @@ namespace PatternCreator
                 {
                     if(points[i] != Vector3.zero)
                     {
+                        //draw sphere
                         Gizmos.color = gizmoColour;
                         Gizmos.DrawSphere(points[i], 0.5f);
+                        //draw normal
                         Gizmos.color = Color.blue;
-                        Gizmos.DrawLine(points[i], points[i] + normals[i]);
+                        Gizmos.DrawLine(points[i], points[i] + normals[i] * 2);
                     }
                 }
             }

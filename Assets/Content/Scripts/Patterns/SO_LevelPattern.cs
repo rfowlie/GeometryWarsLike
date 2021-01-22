@@ -34,7 +34,9 @@ namespace GeometeryWars
         [Space]
         [Header("Info")]
         public AEnemy[] enemyPrefabs;
-        public SO_PatternArray[] patterns;
+        //public SO_PatternArray[] patterns;
+        [Space]
+        public PatternCreator.SO_PatternInfoContainer container;
         [Space]
         [Space]
         [Header("Spawns")]

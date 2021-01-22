@@ -36,16 +36,7 @@ namespace PatternCreator
             if (GUILayout.Button("Store"))
             {
                 o.isOn = EditorGUILayout.Toggle("Display Stored Patterns", o.isOn);
-
-                o.patternNames.Add(string.Empty);
-                o.colors.Add(o.gizmoColour);
-                o.patterns.Add(o.CreatePoints());
-                o.toggles.Add(true);
-                //gets current setup for creator, saves the info for if editing later
-                o.info.Add(o.CreateInfo());
-                                
-                //change gizmo to different colour
-                o.gizmoColour = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1);                
+                o.Store();
             }
 
             //create style
@@ -86,28 +77,13 @@ namespace PatternCreator
                 o.colors[i] = EditorGUILayout.ColorField(o.colors[i], GUILayout.MaxWidth(80));
                 if (GUILayout.Button("Edit", GUILayout.MaxWidth(100)))
                 {
-                    //return back to creator for editing...
-                    //save here but disable??? or should just remove?
-                    //for now just remove and set creator to the info settings...
-                    o.SetInfo(o.info[i]);
-                    //colour is seperate...
-                    o.gizmoColour = o.colors[i];
-
-                    o.patternNames.RemoveAt(i);
-                    o.patterns.RemoveAt(i);
-                    o.colors.RemoveAt(i);
-                    o.toggles.RemoveAt(i);
-                    o.info.RemoveAt(i);
+                    o.Edit(i);
                 }
                 if (GUILayout.Button("Remove", GUILayout.MaxWidth(100)))
                 {
                     if (o.patterns.Count > 0)
                     {
-                        o.patternNames.RemoveAt(i);
-                        o.patterns.RemoveAt(i);
-                        o.colors.RemoveAt(i);
-                        o.toggles.RemoveAt(i);
-                        o.info.RemoveAt(i);
+                        o.RemoveStored(i);
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -116,12 +92,7 @@ namespace PatternCreator
             EditorGUILayout.Space(5f);
             if (GUILayout.Button("Clear"))
             {
-                //clear all lists
-                o.patternNames.Clear();
-                o.colors.Clear();
-                o.patterns.Clear();
-                o.toggles.Clear();
-                o.info.Clear();
+                o.ClearStored();
             }
 
             EditorGUILayout.Space(30f);
@@ -129,19 +100,16 @@ namespace PatternCreator
             folder = EditorGUILayout.ObjectField("Folder", folder, typeof(Object));
             assetName = EditorGUILayout.TextField("Asset Name", assetName);
             assetPath = AssetDatabase.GetAssetPath(folder);
-            if (GUILayout.Button("Create"))
+            if (GUILayout.Button("Save"))
             {
                 if(assetPath == null) { Debug.LogError("Asset folder undefined!"); }
                 else if(assetName == string.Empty) { Debug.LogError("AssetName undefined!"); }
                 else
                 {
                     //new version where we store the info rather than the points
-                    SO_PatternInfoContainer container = new SO_PatternInfoContainer(o.ReturnInfo());
-                    AssetDatabase.CreateAsset(container, assetPath + "/C_" + assetName + ".asset");
+                    SO_PatternInfoContainer container = new SO_PatternInfoContainer(o.GetAllPatternInfo());
+                    AssetDatabase.CreateAsset(container, assetPath + "/PatternInfoContainer_" + assetName + ".asset");
 
-
-                    SO_PatternArray temp = new SO_PatternArray(assetName, o.GetPoints());
-                    AssetDatabase.CreateAsset(temp, assetPath + "/" + assetName + ".asset");
                     //remove name after creation, ensures another asset isn't created with same name
                     assetName = string.Empty;
                 }
