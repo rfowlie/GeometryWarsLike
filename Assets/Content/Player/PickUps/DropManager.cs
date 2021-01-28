@@ -20,7 +20,7 @@ namespace GeometeryWars
         private bool isDrop()
         {
             //change to compare against player drop rate level...
-            return Random.Range(0f, 1f) > 0.5f;
+            return Random.Range(0f, 1f) > 0.8f;
         }
         private void CreateDrop(EnemyInfo e)
         {

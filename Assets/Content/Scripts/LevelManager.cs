@@ -16,6 +16,7 @@ namespace GeometeryWars
         [SerializeField] public RectTransform playerHealthUI;
         [Header("Player")]
         [SerializeField] private PlayerManager player;
+        [SerializeField] private int levelTime = 30;
 
         //components
         private TimeManager timer;
@@ -35,10 +36,10 @@ namespace GeometeryWars
         public void Setup(SO_LevelPattern levelPattern, Transform map, SO_Drops allDrops, GameStateInfo info)
         {
             //setup components
-            timer = new TimeManager(timerUI, 45);
+            timer = new TimeManager(timerUI, levelTime);
             points = new PointsManager(pointsUI);
 
-            spawn = new SpawnManager(levelPattern, map);
+            spawn = new SpawnManager(this, levelPattern, map);
             enemy = new EnemyManager(spawn);
             drop = new DropManager(allDrops, info.levelDropRate);
 

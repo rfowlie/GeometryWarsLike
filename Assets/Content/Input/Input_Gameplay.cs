@@ -41,6 +41,22 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""a026e47c-f2ba-47a8-9fa8-cbaa2d6e1752"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""AimMouse"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""0adbb42b-44b0-4211-9a8b-f67812af5cbc"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -123,17 +139,6 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""467dcec6-62d7-42d6-8e9b-c9d2abc5c2d0"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""6ee2d51e-ff35-4715-bc8c-630951388d3c"",
                     ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
@@ -153,6 +158,28 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d9865b92-b435-49f6-bbec-7a3960a96147"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbc56747-466b-4217-ae16-afc2fcb8e6b8"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AimMouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +191,8 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
         m_GamePlay_Move = m_GamePlay.FindAction("Move", throwIfNotFound: true);
         m_GamePlay_Aim = m_GamePlay.FindAction("Aim", throwIfNotFound: true);
         m_GamePlay_Fire = m_GamePlay.FindAction("Fire", throwIfNotFound: true);
+        m_GamePlay_Exit = m_GamePlay.FindAction("Exit", throwIfNotFound: true);
+        m_GamePlay_AimMouse = m_GamePlay.FindAction("AimMouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -216,6 +245,8 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
     private readonly InputAction m_GamePlay_Move;
     private readonly InputAction m_GamePlay_Aim;
     private readonly InputAction m_GamePlay_Fire;
+    private readonly InputAction m_GamePlay_Exit;
+    private readonly InputAction m_GamePlay_AimMouse;
     public struct GamePlayActions
     {
         private @Input_Gameplay m_Wrapper;
@@ -223,6 +254,8 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
         public InputAction @Move => m_Wrapper.m_GamePlay_Move;
         public InputAction @Aim => m_Wrapper.m_GamePlay_Aim;
         public InputAction @Fire => m_Wrapper.m_GamePlay_Fire;
+        public InputAction @Exit => m_Wrapper.m_GamePlay_Exit;
+        public InputAction @AimMouse => m_Wrapper.m_GamePlay_AimMouse;
         public InputActionMap Get() { return m_Wrapper.m_GamePlay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -241,6 +274,12 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
                 @Fire.started -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnFire;
                 @Fire.performed -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnFire;
                 @Fire.canceled -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnFire;
+                @Exit.started -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnExit;
+                @Exit.performed -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnExit;
+                @Exit.canceled -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnExit;
+                @AimMouse.started -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnAimMouse;
+                @AimMouse.performed -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnAimMouse;
+                @AimMouse.canceled -= m_Wrapper.m_GamePlayActionsCallbackInterface.OnAimMouse;
             }
             m_Wrapper.m_GamePlayActionsCallbackInterface = instance;
             if (instance != null)
@@ -254,6 +293,12 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
                 @Fire.started += instance.OnFire;
                 @Fire.performed += instance.OnFire;
                 @Fire.canceled += instance.OnFire;
+                @Exit.started += instance.OnExit;
+                @Exit.performed += instance.OnExit;
+                @Exit.canceled += instance.OnExit;
+                @AimMouse.started += instance.OnAimMouse;
+                @AimMouse.performed += instance.OnAimMouse;
+                @AimMouse.canceled += instance.OnAimMouse;
             }
         }
     }
@@ -263,5 +308,7 @@ public class @Input_Gameplay : IInputActionCollection, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnExit(InputAction.CallbackContext context);
+        void OnAimMouse(InputAction.CallbackContext context);
     }
 }

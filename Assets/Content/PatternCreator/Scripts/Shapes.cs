@@ -6,11 +6,29 @@ using UnityEngine;
 namespace PatternCreator
 {
     //calculate points in world space for shapes
+    public enum SpawnShape { CIRCLE, SQUARE, TRIANGLE }
     public static class Shapes
     {
+        //only expose this???
+        public static Vector3[] GetShape(SpawnShape shape, int amountOfPoints, float radius, Vector3 rotationAxis, Vector3 spawnAxis, float angleOffset = 0f)
+        {
+            switch(shape)
+            {
+                case SpawnShape.CIRCLE:
+                    return Circle(amountOfPoints, radius, rotationAxis, spawnAxis, angleOffset);
+                case SpawnShape.SQUARE:
+                    return Square(amountOfPoints, radius, rotationAxis, spawnAxis, angleOffset);
+                case SpawnShape.TRIANGLE:
+                    return Triangle(amountOfPoints, radius, rotationAxis, spawnAxis, angleOffset);
+            }
+
+            return null;
+        }
+
         public static Vector3[] Triangle(int amountOfPoints, float radius, Vector3 rotationAxis, Vector3 spawnAxis, float angleOffset = 0f)
         {
-            if (amountOfPoints <= 0) { return new Vector3[0]; }
+            if (amountOfPoints <= 2) { return new Vector3[0]; }
+            amountOfPoints /= 3;
             List<Vector3> points = new List<Vector3>();
             //create 3 lines and adjust
             Vector3 centroid = Vector3.zero;
@@ -58,7 +76,8 @@ namespace PatternCreator
 
         public static Vector3[] Square(int amountOfPoints, float radius, Vector3 rotationAxis, Vector3 spawnAxis, float angleOffset = 0f)
         {
-            if (amountOfPoints <= 0) { return new Vector3[0]; }
+            if (amountOfPoints <= 3) { return new Vector3[0]; }
+            amountOfPoints /= 4;
             List<Vector3> points = new List<Vector3>();
             //create 4 lines and adjust points
             Vector3[] temp;
@@ -113,6 +132,7 @@ namespace PatternCreator
             return points;
         }
 
+        //odd one out
         public static Vector3[] Line(int amountOfPoints, Vector3 direction, float length)
         {
             if (amountOfPoints <= 0) { return new Vector3[0]; }
@@ -127,5 +147,4 @@ namespace PatternCreator
             return points;
         }
     }
-
 }

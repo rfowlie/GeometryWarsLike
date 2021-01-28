@@ -6,15 +6,17 @@ namespace GeometeryWars
 {
     public class Bullet_Surface : Poolable
     {
-        [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
+        private float distanceFromSurface = 1f;
         public float speed = 5f;
         public float lifetime = 3f;
         private float count = 0f;
         private LayerMask mapLayer;
 
+        
         private void Start()
         {
             mapLayer = GameController.Instance.GetMapLayer();
+            distanceFromSurface = GameController.Instance.GetDistanceFromSurface();
         }
 
         private void Update()
@@ -44,8 +46,14 @@ namespace GeometeryWars
             }
         }
 
+        
         private void OnTriggerEnter(Collider other)
-        {
+        {            
+            if(other.gameObject.tag == "Enemy")
+            {
+                other.GetComponent<AEnemy>().CallEvent();
+            }
+
             gameObject.SetActive(false);
         }
     }

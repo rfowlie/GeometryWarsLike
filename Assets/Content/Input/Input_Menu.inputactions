@@ -55,17 +55,6 @@
                     "action": "Cursor",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "eb6975bd-3eca-4fd6-969e-b59ef5b397c4",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Cursor",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

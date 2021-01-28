@@ -18,7 +18,7 @@ namespace GeometeryWars
         [Header("Variables")]
         public Transform map;
         public LayerMask mapLayer, obstacleLayer;
-        [Range(0.1f, 10f)] public float distanceFromSurface = 1f;
+        private float distanceFromSurface = 1f;
         public float obstacleDistance = 1f;
 
 
@@ -36,19 +36,41 @@ namespace GeometeryWars
         
 
         public event Action DEATH;
+
+        //shift to health component...
+        private Coroutine c = null;
+        IEnumerator HealthUpdate()
+        {
+            while(healthUI.localScale.y > healthPercentage)
+            {
+                healthUI.localScale -= new Vector3(0f, Time.deltaTime, 0f);
+                yield return null;
+            }
+
+            c = null;
+        }
+        public float healthPercentage = 0f;
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Enemy")
             {
+                other.gameObject.SetActive(false);
                 Debug.Log("<color=blue>Lost Life</color>");
                 //health version
                 //FOR now...
-                healthCurrent -= other.GetComponent<AEnemy>().damage;
-                healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
-
-                if(healthCurrent < 0)
+                healthCurrent -= other.GetComponent<AEnemy>().GetDamage();
+                healthPercentage = (float)healthCurrent / (float)healthMax;
+                if (c == null)
                 {
-                    //death
+                    c = StartCoroutine(HealthUpdate());
+                }
+                //healthUI.localScale = new Vector3(1f, (float)healthCurrent / (float)healthMax, 1f);
+
+                if(healthCurrent <= 0)
+                {
+                    //fix things
+                    StopCoroutine(c);
+                    c = null;
                     DEATH();
                 }
             }
@@ -83,19 +105,22 @@ namespace GeometeryWars
         }
 
 
-        
 
-        //private InputAction_01 input;        
-        private void OnDisable()
+        private void Start()
         {
-            input.GamePlay.Disable();
-            Drop.TRIGGER -= DetermineDrop;
+            distanceFromSurface = GameController.Instance.GetDistanceFromSurface();
         }
+
 
         private void OnEnable()
         {
             //listen for drop
             Drop.TRIGGER += DetermineDrop;
+        }
+        private void OnDisable()
+        {
+            input.GamePlay.Disable();
+            Drop.TRIGGER -= DetermineDrop;
         }
 
         //put player input on player so when it gets destoyed so does the input 
@@ -115,7 +140,13 @@ namespace GeometeryWars
             bullet.Setup();
 
             //NEW INPUT SYSTEM
-            input = new Input_Gameplay();            
+            input = new Input_Gameplay();
+
+            input.GamePlay.Exit.performed += (ctx) =>
+            {
+                //temporary so player can exit level
+                DEATH();
+            };
             
             input.GamePlay.Move.performed += (ctx) =>
             {
@@ -125,6 +156,13 @@ namespace GeometeryWars
             {
                 local = (transform.forward * ctx.ReadValue<Vector2>().y + transform.right * ctx.ReadValue<Vector2>().x).normalized;
                 //Debug.Log($"<color==green>Hello World!!</color>");
+            };
+            input.GamePlay.AimMouse.performed += (ctx) =>
+            {
+                Debug.Log($"<color=white>{ctx.ReadValue<Vector2>()}</color>");
+                Vector2 dir = (ctx.ReadValue<Vector2>() - new Vector2(Screen.width / 2f, Screen.height / 2f)).normalized;
+                local = (transform.forward * dir.y + transform.right * dir.x).normalized;
+
             };
             input.GamePlay.Fire.started += (ctx) =>
             {
@@ -155,9 +193,6 @@ namespace GeometeryWars
             }
         }
 
-        //get resolution...
-        private Vector3 screenSize = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);        
-       
 
         public void Move()
         {
@@ -170,11 +205,11 @@ namespace GeometeryWars
                 if (Physics.SphereCast(transform.position, 1f, velocity, out hitNext, obstacleDistance, obstacleLayer))
                 {
                     //obstacle hit...
-                    Debug.DrawRay(transform.position, hitNext.point - transform.position, Color.blue, 1f);
-                    Debug.DrawRay(hitNext.point, hitNext.normal, Color.green, 1f);
+                    //Debug.DrawRay(transform.position, hitNext.point - transform.position, Color.blue, 1f);
+                    //Debug.DrawRay(hitNext.point, hitNext.normal, Color.green, 1f);
                     Vector3 p = Vector3.Project(transform.position - hitNext.point, hitNext.normal);
                     p = ((hitNext.point - transform.position) + p).normalized;
-                    Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
+                    //Debug.DrawRay(transform.position, p * 3f, Color.yellow, 1f);
                     nextPos = transform.position + p * movementSpeed * Time.fixedDeltaTime;
                 }
 

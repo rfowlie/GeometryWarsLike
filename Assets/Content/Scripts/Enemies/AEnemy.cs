@@ -15,6 +15,7 @@ namespace GeometeryWars
     {
         //the map layer so raycasting for movement is correct
         public LayerMask mapLayer;
+        public float distanceFromSurface;
         public Transform body;
         //add slight delay to unit being active
         public bool isActive = false;
@@ -27,7 +28,8 @@ namespace GeometeryWars
 
         [Tooltip("The amount of points recieved for destroying this enemy")]
         public int value = 100;
-        public int damage = 25;
+        protected int damage = 10;
+        public int GetDamage() { return damage; }
 
         //notify listeners that this was destroyed
         public static event Action<EnemyInfo> SHOT;
@@ -35,8 +37,10 @@ namespace GeometeryWars
 
         protected virtual void Start()
         {
-            mapLayer = GameController.Instance.GetMapLayer();
-            obstacleLayer = GameController.Instance.GetObstacleLayer();
+            GameController g = GameController.Instance;
+            mapLayer = g.GetMapLayer();
+            obstacleLayer = g.GetObstacleLayer();
+            distanceFromSurface = g.GetDistanceFromSurface();
 
             SetMovement();
             SetRotation();
@@ -106,11 +110,10 @@ namespace GeometeryWars
                 }
 
 
-                //RaycastHit hit;
+                //Move
                 if (Physics.Raycast(nextPos, -transform.up, out hit, float.PositiveInfinity, mapLayer))
                 {
-                    //move
-                    transform.position = hit.point + hit.normal;
+                    transform.position = hit.point + hit.normal * distanceFromSurface;
                 }
 
                 //rotation
@@ -124,17 +127,22 @@ namespace GeometeryWars
             }
         }
         
-
-        protected virtual void OnTriggerEnter(Collider other)
+        public void CallEvent()
         {
-            //increase player score
-            if(other.gameObject.tag == "Bullet")
-            {
-                EnemyInfo e = new EnemyInfo(value, transform.position, transform.up);
-                SHOT(e);
-            }
-
+            EnemyInfo e = new EnemyInfo(value, transform.position, transform.up);
+            SHOT(e);
             gameObject.SetActive(false);
+        }
+        protected virtual void OnTriggerEnter(Collider other)
+        {            
+            ////increase player score
+            //if(other.gameObject.tag == "Bullet")
+            //{
+            //    EnemyInfo e = new EnemyInfo(value, transform.position, transform.up);
+            //    SHOT(e);
+            //}
+
+            //gameObject.SetActive(false);
         }
     }
 
