@@ -75,6 +75,8 @@ public class ArrayEX : ArrayList
     }
 
 
+
+    //KEEP
     //remove indexes in array, return new resized array
     public static T[] RemoveAndResize<T>(T[] arr, params int[] indexesToRemove)
     {
@@ -91,38 +93,11 @@ public class ArrayEX : ArrayList
         }
 
         return list.ToArray();
-    }
+    }    
 
-    //takes an array, removes elements at specific spots, shifts other elements and resizes the array
-    public static T[] RemoveAndShift<T>(T[] arr, params int[] indexToRemove)
-    {
-        //create new array of length original - elements to remove
-        T[] newArr = new T[arr.Length - indexToRemove.Length];
-
-        //replace all elements into smaller array, skipping indexs listed in remove list
-        for (int i = 0, o = 0; o < arr.Length; i++, o++)
-        {
-            //check that index value isn't the same as one to remove
-            for (int j = 0; j < indexToRemove.Length; j++)
-            {
-                if (o == indexToRemove[j])
-                {
-                    //move to next element and restart check
-                    o++;
-                    j = 0;
-                }
-            }
-
-            //if this index isn't one to remove, add to new arr
-            Array.Copy(arr, o, newArr, i, 1);
-        }
-
-        return newArr;
-    }
-
-
+    //KEEP
     //ALT to system.Array.Resize because this will instantiate the array if not instantiated...
-    public static T[] Resize<T>(T[] arr, int newSize, T defaultValue = default)
+    public static T[] Grow<T>(T[] arr, int newSize, T defaultValue = default)
     {
         T[] temp = new T[newSize];
         for (int i = 0; i < temp.Length; i++)
@@ -141,25 +116,4 @@ public class ArrayEX : ArrayList
 
         return temp;
     } 
-
-    //remove at index
-    public static T[] Remove<T>(T[] arr, int index)
-    {
-        if (index < 0 || index > arr.Length - 1)
-        {
-            Debug.LogError("Index was outside the range of the passed in array");
-            return arr;
-        }
-
-        List<T> t = new List<T>();
-        for (int i = 0; i < arr.Length; i++)
-        {
-            if (i != index)
-            {
-                t.Add(arr[i]);
-            }
-        }
-
-        return t.ToArray();
-    }
 }

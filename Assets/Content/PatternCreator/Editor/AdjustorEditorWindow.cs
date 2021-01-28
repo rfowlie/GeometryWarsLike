@@ -29,7 +29,7 @@ public class AdjustorEditorWindow : EditorWindow
        
         if(GUILayout.Button("Load"))
         {
-            points = adjustor.LoadContainerALT(map, container);
+            //points = adjustor.CalculateAll(map, container);
         }
 
         if (points != null)

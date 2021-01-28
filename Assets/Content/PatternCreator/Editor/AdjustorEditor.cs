@@ -17,18 +17,8 @@ namespace PatternCreator
         }
 
         public override void OnInspectorGUI()
-        {
-            if(GUILayout.Button("Clear"))
-            {
-                o.points = null;
-            }
-            if(GUILayout.Button("Load"))
-            {
-                o.LoadContainer();
-            }
-
+        {            
             base.OnInspectorGUI();
-
         }
     }
 }

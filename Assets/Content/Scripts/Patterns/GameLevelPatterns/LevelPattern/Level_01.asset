@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44126ab1fca3db54eaf07543a4ece5db, type: 3}
+  m_Name: Level_01
+  m_EditorClassIdentifier: 
+  startDelay: 0
+  endDelay: 2
+  enemyPrefabs:
+  - {fileID: 4659450228159320402, guid: db0a4194f697d394da131b271eb0f2ee, type: 3}
+  - {fileID: 1097906414491954187, guid: e9a82c576d3dd1147b651923a946dcf3, type: 3}
+  - {fileID: 713943655058967361, guid: 622fa4c135bf0fe408278d1a05aa26e2, type: 3}
+  - {fileID: 5903638869596110956, guid: 4b225662f11f8e042890470e0410092f, type: 3}
+  container: {fileID: 11400000, guid: 24fb1cd704ebed24b9ced415e20b0c95, type: 2}
+  arraySize: 4
+  enemyTypeIndex: 00000000010000000200000003000000
+  patternIndex: 00000000010000000200000003000000
+  spawnTimes:
+  - 2
+  - 4
+  - 6
+  - 8

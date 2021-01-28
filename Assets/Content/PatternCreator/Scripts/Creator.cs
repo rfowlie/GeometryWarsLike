@@ -74,26 +74,6 @@ namespace PatternCreator
         {
             CalculateStartingPoints = null;
             CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-
-            //switch (spawnShape)
-            //{
-            //    case SpawnShape.LINE:
-            //        CalculateStartingPoints += () => Shapes.Line(amountOfPoints, Quaternion.AngleAxis(angleOffset, transform.up) * transform.forward, radius);
-            //        break;
-            //    case SpawnShape.CIRCLE:
-            //        CalculateStartingPoints += () => Shapes.Circle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-            //        break;
-            //    case SpawnShape.SQUARE:
-            //        CalculateStartingPoints += () => Shapes.Square(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-            //        break;
-            //    case SpawnShape.TRIANGLE:
-            //        CalculateStartingPoints += () => Shapes.Triangle(amountOfPoints, radius, transform.up, transform.forward, angleOffset);
-            //        break;
-            //    default:
-            //        Debug.LogError("DebugShape Doesn't Exist!!");
-            //        break;
-            //}
-
             Calculate();
         }
 
@@ -165,7 +145,7 @@ namespace PatternCreator
         public void SetInfo(PatternInfo info)
         {
             transform.position = info.relativePosition;
-            transform.rotation = info.rotation;
+            //transform.rotation = info.rotation;
 
             amountOfPoints = info.amountOfPoints;
             radius = info.radius;
@@ -202,7 +182,7 @@ namespace PatternCreator
             PatternInfo temp = new PatternInfo();
             //set to relative position from map
             temp.relativePosition = map.InverseTransformDirection(transform.position);
-            temp.rotation = transform.rotation;
+            //temp.rotation = transform.rotation;
             temp.amountOfPoints = amountOfPoints;
             temp.radius = radius;
             temp.angleOffset = angleOffset;

@@ -107,7 +107,8 @@ namespace PatternCreator
                 else
                 {
                     //new version where we store the info rather than the points
-                    SO_PatternInfoContainer container = new SO_PatternInfoContainer(o.GetAllPatternInfo());
+                    SO_PatternInfoContainer container = new SO_PatternInfoContainer();
+                    container.values = o.GetAllPatternInfo();
                     AssetDatabase.CreateAsset(container, assetPath + "/PatternInfoContainer_" + assetName + ".asset");
 
                     //remove name after creation, ensures another asset isn't created with same name

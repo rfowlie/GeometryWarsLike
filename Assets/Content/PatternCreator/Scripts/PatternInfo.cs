@@ -13,14 +13,30 @@ namespace PatternCreator
     [System.Serializable]
     public struct PatternInfo
     {
+        public PatternInfo(string name, Vector3 relativePosition)
+        {
+            this.name = name;
+            this.relativePosition = relativePosition;
+            rotation = Vector3.zero;
+            amountOfPoints = 12;
+            radius = 3;
+            angleOffset = 0;
+            percentage = 100;
+            shape = SpawnShape.CIRCLE;
+            towardsCenter = false;
+        }
+
+        //looks better???
+        public string name;
+
         //creator position
         public Vector3 relativePosition;
-        public Quaternion rotation;
+        public Vector3 rotation;
 
         public int amountOfPoints;
         public float radius;
-        public float angleOffset;
-        public float percentage;
+        [Range(0, 360)] public float angleOffset;
+        [Range(0,100)] public float percentage;
         public SpawnShape shape;
 
         public bool towardsCenter;

@@ -14,15 +14,15 @@ namespace GeometeryWars
             if (arraySize < 0) { arraySize = 0; }
             if (patternIndex.Length != arraySize)
             {
-                patternIndex = ArrayEX.Resize(patternIndex, arraySize);
+                patternIndex = ArrayEX.Grow(patternIndex, arraySize);
             }
             if (spawnTimes.Length != arraySize)
             {
-                spawnTimes = ArrayEX.Resize(spawnTimes, arraySize);
+                spawnTimes = ArrayEX.Grow(spawnTimes, arraySize);
             }
             if (enemyTypeIndex.Length != arraySize)
             {
-                enemyTypeIndex = ArrayEX.Resize(enemyTypeIndex, arraySize);
+                enemyTypeIndex = ArrayEX.Grow(enemyTypeIndex, arraySize);
             }
         }
 

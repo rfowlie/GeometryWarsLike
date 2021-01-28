@@ -82,15 +82,14 @@ namespace GeometeryWars
 
             //calculate points from PatternInfo
             PatternCreator.PatternInfo p = levelPatterns.container.GetValues()[levelPatterns.patternIndex[levelIndex]];
-            Transform temp = new GameObject("PatternObject").transform;
-            //place this in correct position
-            temp.transform.position = map.TransformPoint(p.relativePosition);
-            temp.transform.rotation = p.rotation * temp.transform.rotation;
 
             //calculate points for each pattern info
             Vector3[] points = new Vector3[0];
             Vector3[] normals = new Vector3[0];
-            List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(p.shape, p.amountOfPoints, p.radius, temp.transform.up, temp.transform.forward, p.angleOffset));
+            Vector3 direction = map.position - map.TransformDirection(p.relativePosition);
+            List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(
+                p.shape, p.amountOfPoints, p.radius, direction, p.rotation, p.angleOffset));
+
             int lengthWithPercent = Mathf.RoundToInt(list.Count * (p.percentage * 0.01f));
             //to properly place points from surface after raycast
             float distanceFromSurface = GameController.Instance.GetDistanceFromSurface();
@@ -103,14 +102,15 @@ namespace GeometeryWars
                 normals = new Vector3[points.Length];
                 //raycast onto map for exact points
                 RaycastHit hit;
-                float distanceToMap = (map.position - temp.transform.position).magnitude;
+                Vector3 position = map.TransformDirection(p.relativePosition);
+                float distanceToMap = direction.magnitude;
                 for (int k = 0; k < points.Length; k++)
                 {
-                    points[k] += temp.transform.position;
+                    points[k] += position;
                     //calculate raycast direction, depends on which bool is selected
                     //Vector3 dir = towardsCenter ? (map.position - shapePoints[i]).normalized : -transform.up;
-                    Debug.DrawLine(points[k], points[k] + -temp.transform.up, Color.yellow);
-                    if (Physics.Raycast(points[k], -temp.transform.up, out hit, distanceToMap))
+                    //Debug.DrawLine(points[k], points[k] + -transform.transform.up, Color.yellow);
+                    if (Physics.Raycast(points[k], direction, out hit, distanceToMap))
                     {
                         points[k] = hit.point + hit.normal * distanceFromSurface;
                         //needed for rotation
@@ -120,7 +120,7 @@ namespace GeometeryWars
             }
 
             
-            //spawn pattern
+            //spawn objects
             for (int i = 0; i < points.Length; i++)
             {                
                 AEnemy o = pools[levelPatterns.enemyTypeIndex[levelIndex]].Retrieve();

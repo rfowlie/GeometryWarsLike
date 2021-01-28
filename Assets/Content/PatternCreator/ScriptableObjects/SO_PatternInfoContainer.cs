@@ -8,13 +8,18 @@ namespace PatternCreator
     [CreateAssetMenu(fileName = "PatternInfoContainer", menuName = "PatternInfoContainer")]
     public class SO_PatternInfoContainer : ScriptableObject
     {
-        public SO_PatternInfoContainer(PatternInfo[] arr)
-        {
-            values = arr;
-        }
         //still make accessible later
-        private PatternInfo[] values;
+        [SerializeField] public PatternInfo[] values;
+
+        public void AddPatternInfo(PatternInfo p)
+        {
+            values = ArrayEX.Grow(values, values.Length + 1, p);
+        }
+        public void RemovePatternInfo(int index)
+        {
+            values = ArrayEX.RemoveAndResize(values, new int[] { index });
+        }
         public PatternInfo[] GetValues() { return values; }
-        public int GetLength() { return values.Length; }
+        public int GetLength() { if (values == null) { return 0; } else { return values.Length; } }
     }
 }
