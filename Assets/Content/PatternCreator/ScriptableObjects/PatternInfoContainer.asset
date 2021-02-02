@@ -12,4 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b8e9c7d12bf164987f16f5fb9d32cc, type: 3}
   m_Name: PatternInfoContainer
   m_EditorClassIdentifier: 
-  values: []
+  values:
+  - name: Outer
+    relativePosition: {x: -34.48, y: 15.500004, z: 21.34}
+    rotation: {x: 0.28529847, y: 0.59070057, z: -0.75476986}
+    amountOfPoints: 60
+    radius: 7.04
+    angleOffset: 93
+    percentage: 73
+    shape: 90
+    towardsCenter: 0
+  - name: Middle
+    relativePosition: {x: -34.480003, y: 15.500006, z: 21.340002}
+    rotation: {x: 0.28529847, y: 0.59070057, z: -0.7547699}
+    amountOfPoints: 39
+    radius: 4.43
+    angleOffset: 0
+    percentage: 80
+    shape: 90
+    towardsCenter: 0
+  - name: Inner
+    relativePosition: {x: -42.86918, y: -6.833685, z: -0.223979}
+    rotation: {x: 0.30360797, y: 0.93408436, z: -0.18790594}
+    amountOfPoints: 22
+    radius: 1.97
+    angleOffset: 273
+    percentage: 74
+    shape: 90
+    towardsCenter: 0
