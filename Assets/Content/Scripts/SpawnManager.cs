@@ -87,7 +87,22 @@ namespace GeometeryWars
             Vector3[] points = new Vector3[0];
             Vector3[] normals = new Vector3[0];
             Vector3 direction = map.position - map.TransformDirection(p.relativePosition);
-            List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(p.shape, p.fillerPoints, p.radius, p.angleOffset));
+            List<Vector3> list;
+            //call correct shape function
+            switch(p.shape)
+            {
+                case SpawnShape.CIRCLE:
+                    list = new List<Vector3>(Shapes.Circle(p.radius, p.angleOffset, p.fillerAmount));
+                    break;
+                case SpawnShape.STAR:
+                    list = new List<Vector3>(Shapes.Star(p.radius, p.radius / 2f, p.fillerAmount));
+                    break;
+                default:
+                    list = new List<Vector3>(Shapes.Simple(p.shape, p.radius, p.angleOffset, p.fillerAmount));
+                    break;
+
+            }
+            //List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(p.shape, p.fillerAmount, p.radius, p.angleOffset));
             //setup rotation
             Vector3 spawnAxis = Quaternion.AngleAxis(p.angleOffset, direction) * p.rotation;
             Quaternion rot = Quaternion.LookRotation(direction, spawnAxis);

@@ -73,7 +73,7 @@ namespace PatternCreator
         private void Configure()
         {
             CalculateStartingPoints = null;
-            CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, angleOffset);
+            //CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, angleOffset);
             Calculate();
         }
 
@@ -148,7 +148,7 @@ namespace PatternCreator
             transform.position = info.relativePosition;
             //transform.rotation = info.rotation;
 
-            amountOfPoints = info.fillerPoints;
+            amountOfPoints = info.fillerAmount;
             radius = info.radius;
             angleOffset = info.angleOffset;
             spawnShape = info.shape;
@@ -184,7 +184,7 @@ namespace PatternCreator
             //set to relative position from map
             temp.relativePosition = map.InverseTransformDirection(transform.position);
             //temp.rotation = transform.rotation;
-            temp.fillerPoints = amountOfPoints;
+            temp.fillerAmount = amountOfPoints;
             temp.radius = radius;
             temp.angleOffset = angleOffset;
             temp.viewPercentage = percentage;

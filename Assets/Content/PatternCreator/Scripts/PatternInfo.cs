@@ -20,7 +20,9 @@ namespace PatternCreator
             rotation = Vector3.zero;
             shape = SpawnShape.TRIANGLE;
             radius = 3;
-            fillerPoints = 2;
+            radiusSecond = 2;
+            fillerAmount = 2;
+            circlePoints = 10;
             angleOffset = 0;
             viewPercentage = 100;
             towardsCenter = false;
@@ -35,7 +37,9 @@ namespace PatternCreator
 
         public SpawnShape shape;
         public float radius;
-        public int fillerPoints;
+        public float radiusSecond;
+        public int fillerAmount;
+        public int circlePoints;
         [Range(0, 360)] public float angleOffset;
         [Range(0,100)] public float viewPercentage;
 

@@ -10,7 +10,6 @@ namespace PatternCreator
     {
         private Adjustor o;
 
-
         private void OnEnable()
         {
             o = (Adjustor)target;
@@ -18,21 +17,75 @@ namespace PatternCreator
 
         public override void OnInspectorGUI()
         {
-            //base.OnInspectorGUI();
+            switch(o.currentInfo.shape)
+            {
+                case SpawnShape.CIRCLE:
+                    Circle();
+                    break;
+                case SpawnShape.STAR:
+                    Star();
+                    break;
+                case SpawnShape.X:
+                    Cross();
+                    break;
+                case SpawnShape.CheckMark:
+                    CheckMark();
+                    break;
+                default:
+                    DefaultView();
+                    break;
+            }
+
+            EditorUtility.SetDirty(o);
+        }
+
+        //create unique layouts for certain shapes
+        private void DefaultView()
+        {
             o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
             o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
             o.currentInfo.radius = EditorGUILayout.FloatField("Radius", o.currentInfo.radius);
-            if(o.currentInfo.shape == SpawnShape.CIRCLE)
-            {
-                o.currentInfo.fillerPoints = EditorGUILayout.IntField("Total Points", o.currentInfo.fillerPoints);
-            }
-            else
-            {
-                o.currentInfo.fillerPoints = EditorGUILayout.IntField("FillerPoints", o.currentInfo.fillerPoints);
-            }
+            o.currentInfo.fillerAmount = EditorGUILayout.IntField("FillerAmount", o.currentInfo.fillerAmount);
             o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
             o.currentInfo.viewPercentage = EditorGUILayout.Slider("ViewPercentage", o.currentInfo.viewPercentage, 0f, 100f);
-            EditorUtility.SetDirty(o);
+        }
+        private void Circle()
+        {
+            o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
+            o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
+            o.currentInfo.radius = EditorGUILayout.FloatField("Radius", o.currentInfo.radius);
+            o.currentInfo.circlePoints = EditorGUILayout.IntField("Total Points", o.currentInfo.circlePoints);
+            o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
+            o.currentInfo.viewPercentage = EditorGUILayout.Slider("ViewPercentage", o.currentInfo.viewPercentage, 0f, 100f);
+        }
+        private void Star()
+        {
+            o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
+            o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
+            o.currentInfo.radius = EditorGUILayout.FloatField("Radius", o.currentInfo.radius);
+            o.currentInfo.radiusSecond = EditorGUILayout.FloatField("Radius", o.currentInfo.radiusSecond);
+            o.currentInfo.fillerAmount = EditorGUILayout.IntField("FillerAmount", o.currentInfo.fillerAmount);
+            o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
+            o.currentInfo.viewPercentage = EditorGUILayout.Slider("ViewPercentage", o.currentInfo.viewPercentage, 0f, 100f);
+        }
+        private void Cross()
+        {
+            o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
+            o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
+            o.currentInfo.radius = EditorGUILayout.FloatField("Radius", o.currentInfo.radius);
+            o.currentInfo.fillerAmount = EditorGUILayout.IntField("FillerAmount", o.currentInfo.fillerAmount);
+            o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
+        }
+
+        private void CheckMark()
+        {
+            o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
+            o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
+            o.currentInfo.radius = EditorGUILayout.FloatField("Radius left", o.currentInfo.radius);
+            o.currentInfo.radiusSecond = EditorGUILayout.FloatField("Radius Right", o.currentInfo.radiusSecond);
+            o.currentInfo.fillerAmount = EditorGUILayout.IntField("FillerAmount", o.currentInfo.fillerAmount);
+            o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
+            //o.currentInfo.viewPercentage = EditorGUILayout.Slider("ViewPercentage", o.currentInfo.viewPercentage, 0f, 100f);
         }
     }
 }

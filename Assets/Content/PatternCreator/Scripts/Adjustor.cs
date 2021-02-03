@@ -48,7 +48,8 @@ namespace PatternCreator
             currentInfo.rotation = transform.up;
 
             //calculate points for each pattern info
-            List<Vector3> list = new List<Vector3>(Shapes.GetShape(p.shape, p.fillerPoints, p.radius, p.angleOffset));
+            List<Vector3> list = new List<Vector3>(PatternHelper.CreatePattern(p));
+
             //setup rotation
             Vector3 spawnAxis = Quaternion.AngleAxis(p.angleOffset, map.position - transform.position) * transform.up;
             Quaternion rot = Quaternion.LookRotation(map.position - transform.position, spawnAxis);

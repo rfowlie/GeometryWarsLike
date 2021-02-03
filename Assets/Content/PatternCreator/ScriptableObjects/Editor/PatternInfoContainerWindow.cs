@@ -25,10 +25,10 @@ public class PatternInfoContainerWindow : EditorWindow
         return false;
     }
 
-    private void OnEnable()
-    {
+    //private void OnEnable()
+    //{
         
-    }
+    //}
     private void OnDisable()
     {
         //ensure all changes are grabbed
@@ -38,11 +38,7 @@ public class PatternInfoContainerWindow : EditorWindow
             o.values[selection_Buttons] = adj.currentInfo;
         }
 
-        ////set all changes
-        //SerializedObject obj = new SerializedObject(o);
-        //obj.ApplyModifiedProperties();
-
-            //remove pointer when inactive
+        //remove pointer when inactive
         if (pointer != null)
         {
             DestroyImmediate(pointer);
@@ -60,7 +56,7 @@ public class PatternInfoContainerWindow : EditorWindow
     //window vars
     private static PatternInfoContainerWindow window;
     private static SO_PatternInfoContainer o;
-    private Transform map = null;
+    private static Transform map = null;
     private GameObject pointer;
     private Adjustor adj;
 
@@ -172,7 +168,7 @@ public class PatternInfoContainerWindow : EditorWindow
                     }
 
                     //move pointer to relative position or element selected
-                    if (map != null)
+                    if (map != null && pointer != null)
                     {
                         pointer.transform.position = map.TransformDirection(o.values[selection_Buttons].relativePosition);
                     }
@@ -225,7 +221,7 @@ public class PatternInfoContainerWindow : EditorWindow
     {
         o.values[i].name = EditorGUILayout.TextField("Name", o.values[i].name);
         o.values[i].relativePosition = EditorGUILayout.Vector3Field("Relative Position", o.values[i].relativePosition);
-        o.values[i].fillerPoints = EditorGUILayout.IntField("Amount of Points", o.values[i].fillerPoints);
+        o.values[i].fillerAmount = EditorGUILayout.IntField("Amount of Points", o.values[i].fillerAmount);
         o.values[i].radius = EditorGUILayout.FloatField("Radius", o.values[i].radius);
         o.values[i].viewPercentage = EditorGUILayout.Slider("View Percentage", o.values[i].viewPercentage, 0f, 100f);
         o.values[i].shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.values[i].shape);
