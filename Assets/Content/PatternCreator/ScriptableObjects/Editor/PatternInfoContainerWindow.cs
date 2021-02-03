@@ -189,7 +189,7 @@ public class PatternInfoContainerWindow : EditorWindow
         if (selection_Buttons >= 0)
         {
             //info of elements
-            GUILayout.BeginArea(new Rect(200, 30f, 400, 300));
+            GUILayout.BeginArea(new Rect(200, 30f, 320, 300));
             scrollPosition_Info = EditorGUILayout.BeginScrollView(scrollPosition_Info);
             EditorGUILayout.BeginVertical("box");
             o = DrawInfo(o, selection_Buttons);
@@ -225,9 +225,9 @@ public class PatternInfoContainerWindow : EditorWindow
     {
         o.values[i].name = EditorGUILayout.TextField("Name", o.values[i].name);
         o.values[i].relativePosition = EditorGUILayout.Vector3Field("Relative Position", o.values[i].relativePosition);
-        o.values[i].amountOfPoints = EditorGUILayout.IntField("Amount of Points", o.values[i].amountOfPoints);
+        o.values[i].fillerPoints = EditorGUILayout.IntField("Amount of Points", o.values[i].fillerPoints);
         o.values[i].radius = EditorGUILayout.FloatField("Radius", o.values[i].radius);
-        o.values[i].percentage = EditorGUILayout.Slider("View Percentage", o.values[i].percentage, 0f, 100f);
+        o.values[i].viewPercentage = EditorGUILayout.Slider("View Percentage", o.values[i].viewPercentage, 0f, 100f);
         o.values[i].shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.values[i].shape);
         o.values[i].towardsCenter = EditorGUILayout.Toggle("Aim Towards Center", o.values[i].towardsCenter);
         return o;

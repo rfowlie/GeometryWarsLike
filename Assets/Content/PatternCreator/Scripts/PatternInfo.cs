@@ -18,11 +18,11 @@ namespace PatternCreator
             this.name = name;
             this.relativePosition = relativePosition;
             rotation = Vector3.zero;
-            amountOfPoints = 12;
+            shape = SpawnShape.TRIANGLE;
             radius = 3;
+            fillerPoints = 2;
             angleOffset = 0;
-            percentage = 100;
-            shape = SpawnShape.CIRCLE;
+            viewPercentage = 100;
             towardsCenter = false;
         }
 
@@ -33,11 +33,11 @@ namespace PatternCreator
         public Vector3 relativePosition;
         public Vector3 rotation;
 
-        public int amountOfPoints;
-        public float radius;
-        [Range(0, 360)] public float angleOffset;
-        [Range(0,100)] public float percentage;
         public SpawnShape shape;
+        public float radius;
+        public int fillerPoints;
+        [Range(0, 360)] public float angleOffset;
+        [Range(0,100)] public float viewPercentage;
 
         public bool towardsCenter;
     }
