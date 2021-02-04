@@ -62,8 +62,8 @@ namespace PatternCreator
         {
             o.currentInfo.name = EditorGUILayout.TextField("Name", o.currentInfo.name);
             o.currentInfo.shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.currentInfo.shape);
-            o.currentInfo.radius = EditorGUILayout.FloatField("Radius", o.currentInfo.radius);
-            o.currentInfo.radiusSecond = EditorGUILayout.FloatField("Radius", o.currentInfo.radiusSecond);
+            o.currentInfo.radius = EditorGUILayout.FloatField("Radius Outer", o.currentInfo.radius);
+            o.currentInfo.radiusSecond = EditorGUILayout.FloatField("Radius Inner", o.currentInfo.radiusSecond);
             o.currentInfo.fillerAmount = EditorGUILayout.IntField("FillerAmount", o.currentInfo.fillerAmount);
             o.currentInfo.angleOffset = EditorGUILayout.Slider("AngleOffset", o.currentInfo.angleOffset, 0f, 360f);
             o.currentInfo.viewPercentage = EditorGUILayout.Slider("ViewPercentage", o.currentInfo.viewPercentage, 0f, 100f);

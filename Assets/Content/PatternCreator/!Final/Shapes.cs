@@ -13,8 +13,7 @@ public static class Shapes
     //all basic shapes can be created with this
     public static Vector3[] Simple(SpawnShape shape, float radius, float angleOffset = 0f, int fillerAmount = 0)
     {
-        float radians = Mathf.Deg2Rad * (360f / (int)shape);
-        Vector3[] keyPoints = KeyPoints(radians, radius, angleOffset);
+        Vector3[] keyPoints = PrimaryPoints((int)shape, radius, angleOffset);
 
         //add filler
         return Filler(keyPoints, fillerAmount);
@@ -23,26 +22,24 @@ public static class Shapes
     //circle is a special case, rotation dependant on amount of points
     public static Vector3[] Circle(float radius, float angleOffset, int amountOfPoints)
     {
-        float radians = Mathf.Deg2Rad * 360f / amountOfPoints;
-        return KeyPoints(radians, radius, angleOffset);
+        return PrimaryPoints(amountOfPoints, radius, angleOffset);
     }
 
     //odd or unique shapes
     public static Vector3[] Star(float outerRadius, float innerRadius, int fillerAmount)
     {
-
         //a star is two pentagons rotated 180 from each other...
-        Vector3[] o = Simple(SpawnShape.PENTAGON, outerRadius);
-        Vector3[] i = Simple(SpawnShape.PENTAGON, innerRadius, 37.5f);
-        Vector3[] keyPoints = new Vector3[o.Length + i.Length];
-        for (int x = 0, count = 0; x < 5; x++, count += 2)
+        Vector3[] a = Simple(SpawnShape.PENTAGON, outerRadius);
+        Vector3[] b = Simple(SpawnShape.PENTAGON, innerRadius, 36f);
+        List<Vector3> keyPoints = new List<Vector3>();
+        for (int i = 0; i < 5; i++)
         {
-            keyPoints[count] = o[x];
-            keyPoints[count + 1] = i[x];
+            keyPoints.Add(a[i]);
+            keyPoints.Add(b[i]);
         }
 
         //add filler points
-        return Filler(keyPoints, fillerAmount);           
+        return Filler(keyPoints.ToArray(), fillerAmount);           
     }
 
     public static Vector3[] Cross(float radius, float angleOffset = 0f, int fillerAmount = 0)
@@ -70,7 +67,7 @@ public static class Shapes
         {
             for (int i = 0; i < 4; i++)
             {
-                points.Add(RotateAroundOriginXY(line[j], Mathf.Deg2Rad * (angleOffset + (i * 90))));
+                points.Add(RotationMatrixXY(line[j], Mathf.Deg2Rad * (angleOffset + (i * 90))));
             }
         }
 
@@ -80,9 +77,9 @@ public static class Shapes
     public static Vector3[] CheckMark(float radius, float radius2, float angleOffset = 0f, int fillerAmount = 0)
     {
         Vector3[] keyPoints = new Vector3[3];
-        keyPoints[0] = RotateAroundOriginXY(Vector3.up * radius2, Mathf.Deg2Rad * (angleOffset + 45));
+        keyPoints[0] = RotationMatrixXY(Vector3.up * radius2, Mathf.Deg2Rad * (angleOffset + 45));
         keyPoints[1] = Vector3.zero;
-        keyPoints[2] = RotateAroundOriginXY(Vector3.up * radius, Mathf.Deg2Rad * (angleOffset - 45));
+        keyPoints[2] = RotationMatrixXY(Vector3.up * radius, Mathf.Deg2Rad * (angleOffset - 45));
 
         return Filler(keyPoints, fillerAmount, false);
     }
@@ -91,30 +88,23 @@ public static class Shapes
 
     //UTILS
     //**************
-    public static Vector3[] KeyPoints(float radians, float radius, float angleOffset)
+    public static Vector3[] PrimaryPoints(int numberOfPoints, float radius, float angleOffset)
     {
         radius = radius <= 0 ? 0.1f : radius;
+        float radians = Mathf.Deg2Rad * (360f / numberOfPoints);
         List<Vector3> keyPoints = new List<Vector3>();
-        //rotate starting point by offset around origin
-        keyPoints.Add(RotateAroundOriginXY(Vector3.right * radius, Mathf.Deg2Rad * angleOffset));
-        while (true)
+        for (int i = 0; i < numberOfPoints; i++)
         {
-            Vector3 p = Shapes.RotateAroundOriginXY(keyPoints[keyPoints.Count - 1], radians);
-            if (p != keyPoints[0])
-            {
-                keyPoints.Add(p);
-            }
-            else
-            {
-                break;
-            }
+            keyPoints.Add(RotationMatrixXY(Vector3.right * radius, (i * radians) + Mathf.Deg2Rad * angleOffset));
         }
 
         return keyPoints.ToArray();
     }
-    public static Vector3 RotateAroundOriginXY(Vector3 point, float radians)
+    public static Vector3 RotationMatrixXY(Vector3 point, float radians)
     {
-        return new Vector3(point.x * Mathf.Cos(radians) - point.y * Mathf.Sin(radians), point.x * Mathf.Sin(radians) + point.y * Mathf.Cos(radians), 0f);
+        return new Vector3(point.x * Mathf.Cos(radians) - point.y * Mathf.Sin(radians),
+                           point.x * Mathf.Sin(radians) + point.y * Mathf.Cos(radians),
+                           0f);
     }
     public static Vector3[] CalculateFillerPoints(Vector3 start, Vector3 end, int amount)
     {        
@@ -126,6 +116,8 @@ public static class Shapes
 
         return temp;
     }
+
+    //return list of points including both keyPoints and calculated filler points
     public static Vector3[] Filler(Vector3[] keyPoints, int fillerAmount, bool loop = true)
     {
         //check and also don't run if not needed
