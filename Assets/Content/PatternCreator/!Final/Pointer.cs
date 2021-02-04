@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PatternCreator
 {
     //used by the custom window store points values and to create new patterns...
-    public class Adjustor : MonoBehaviour
+    public class Pointer : MonoBehaviour
     {
         public void Setup(Transform map)
         {

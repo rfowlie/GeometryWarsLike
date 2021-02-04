@@ -13,11 +13,11 @@ public class AdjustorEditorWindow : EditorWindow
         window = GetWindow<AdjustorEditorWindow>("Adjustor Window");
 
         GameObject temp = new GameObject("ADJUSTOR");
-        adjustor = temp.AddComponent<PatternCreator.Adjustor>();
+        adjustor = temp.AddComponent<PatternCreator.Pointer>();
     }
 
     static AdjustorEditorWindow window;
-    private static PatternCreator.Adjustor adjustor;
+    private static PatternCreator.Pointer adjustor;
     private PatternCreator.SO_PatternInfoContainer container;
     private Transform map;
     private Vector3[][] points;

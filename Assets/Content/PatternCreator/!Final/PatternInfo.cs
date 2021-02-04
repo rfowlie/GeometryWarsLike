@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 
 namespace PatternCreator
 {
     //Gather all relevant information for spawning the pattern that DOESN'T include actually calculating the points
-    //TODO: probably don't need quaternion as vector will be map position - patternInfo position
-
 
     [System.Serializable]
     public struct PatternInfo

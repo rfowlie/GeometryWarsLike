@@ -2,45 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//hides Shapes API from pattern creator process
-public static class PatternHelper
-{
-    //takes in patterInfo and calls all relevant shape calls
-    public static Vector3[] CreatePattern(PatternCreator.PatternInfo p)
-    {
-        switch (p.shape)
-        {
-            case SpawnShape.CIRCLE:
-                return Shapes.Circle(p.radius, p.angleOffset, p.circlePoints);
-            case SpawnShape.STAR:
-                return Shapes.Star(p.radius, p.radiusSecond, p.fillerAmount);
-            case SpawnShape.X:
-                return Shapes.Cross(p.radius, p.angleOffset, p.fillerAmount);
-            case SpawnShape.CheckMark:
-                return Shapes.CheckMark(p.radius, p.radiusSecond, p.angleOffset, p.fillerAmount);
-            default:
-                return Shapes.Simple(p.shape, p.radius, p.angleOffset, p.fillerAmount);
-        }
-    }
-}
+
 
 //store the required angles with each shape for calculating the points using rotations
-public enum SpawnShape { TRIANGLE = 120, SQUARE = 90, PENTAGON = 72, HEXAGON = 60, OCTAGON = 45, DECAGON = 36,
+public enum SpawnShape { TRIANGLE = 3, SQUARE = 4, PENTAGON = 5, HEXAGON = 6, OCTAGON = 8, DECAGON = 10,
                          CIRCLE, STAR, X, CheckMark }
-
 
 public static class Shapes
 {
     //all basic shapes can be created with this
     public static Vector3[] Simple(SpawnShape shape, float radius, float angleOffset = 0f, int fillerAmount = 0)
     {
-        float radians = Mathf.Deg2Rad * (int)shape;
+        float radians = Mathf.Deg2Rad * (360f / (int)shape);
         Vector3[] keyPoints = KeyPoints(radians, radius, angleOffset);
 
         //add filler
         return Filler(keyPoints, fillerAmount);
     }
-    //circle is a special case
+
+    //circle is a special case, rotation dependant on amount of points
     public static Vector3[] Circle(float radius, float angleOffset, int amountOfPoints)
     {
         float radians = Mathf.Deg2Rad * 360f / amountOfPoints;

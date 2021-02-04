@@ -5,14 +5,14 @@ using UnityEditor;
 
 namespace PatternCreator
 {
-    [CustomEditor(typeof(Adjustor))]
-    public class AdjustorEditor : Editor
+    [CustomEditor(typeof(Pointer))]
+    public class PointerEditor : Editor
     {
-        private Adjustor o;
+        private Pointer o;
 
         private void OnEnable()
         {
-            o = (Adjustor)target;
+            o = (Pointer)target;
         }
 
         public override void OnInspectorGUI()

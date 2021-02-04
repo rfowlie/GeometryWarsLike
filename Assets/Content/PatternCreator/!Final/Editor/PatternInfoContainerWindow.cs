@@ -25,10 +25,7 @@ public class PatternInfoContainerWindow : EditorWindow
         return false;
     }
 
-    //private void OnEnable()
-    //{
-        
-    //}
+
     private void OnDisable()
     {
         //ensure all changes are grabbed
@@ -58,7 +55,7 @@ public class PatternInfoContainerWindow : EditorWindow
     private static SO_PatternInfoContainer o;
     private static Transform map = null;
     private GameObject pointer;
-    private Adjustor adj;
+    private Pointer adj;
 
     //control vars
     private Vector2 scrollPosition_Buttons = Vector2.zero;
@@ -113,7 +110,7 @@ public class PatternInfoContainerWindow : EditorWindow
                 if (map != null && pointer == null)
                 {
                     pointer = new GameObject("Pointer");
-                    adj = pointer.AddComponent<Adjustor>();
+                    adj = pointer.AddComponent<Pointer>();
                     adj.Setup(map);
                     adj.CalculateAll(o);
                     //set pointer as selected gameobject
