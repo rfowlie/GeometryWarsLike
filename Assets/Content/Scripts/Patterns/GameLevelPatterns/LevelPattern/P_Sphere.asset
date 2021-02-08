@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6b8e9c7d12bf164987f16f5fb9d32cc, type: 3}
+  m_Name: P_Sphere
+  m_EditorClassIdentifier: 
+  values:
+  - name: TriangleHookTop
+    relativePosition: {x: -32.02, y: 14.41, z: 1.31}
+    rotation: {x: 0.4097603, y: 0.91203916, z: -0.01676409}
+    shape: 3
+    radius: 5.4
+    radiusSecond: 2
+    fillerAmount: 6
+    circlePoints: 10
+    angleOffset: 0
+    viewPercentage: 79
+    towardsCenter: 0
+  - name: TriangleHookBottom
+    relativePosition: {x: -22.26, y: -1.77, z: 1.65}
+    rotation: {x: -0.07883288, y: 0.9968707, z: 0.005843416}
+    shape: 3
+    radius: 5.49
+    radiusSecond: 2
+    fillerAmount: 6
+    circlePoints: 10
+    angleOffset: 93
+    viewPercentage: 86
+    towardsCenter: 0
+  - name: Smile
+    relativePosition: {x: 20.1, y: -1.77, z: 11.8}
+    rotation: {x: 0.06530116, y: 0.9971289, z: 0.038336}
+    shape: 6
+    radius: 6.93
+    radiusSecond: 2
+    fillerAmount: 4
+    circlePoints: 10
+    angleOffset: 75
+    viewPercentage: 70
+    towardsCenter: 0
+  - name: Eye Left
+    relativePosition: {x: 11.75, y: 5.84, z: 2.9}
+    rotation: {x: -0.42192978, y: 0.9006281, z: -0.104135826}
+    shape: 11
+    radius: 1.45
+    radiusSecond: 2
+    fillerAmount: 2
+    circlePoints: 8
+    angleOffset: 0
+    viewPercentage: 100
+    towardsCenter: 0
+  - name: EyeRight
+    relativePosition: {x: 8.35, y: 5.84, z: 8.98}
+    rotation: {x: -0.29279792, y: 0.90283674, z: -0.31488925}
+    shape: 11
+    radius: 1.56
+    radiusSecond: 2
+    fillerAmount: 2
+    circlePoints: 8
+    angleOffset: 0
+    viewPercentage: 100
+    towardsCenter: 0
+  - name: BigStar
+    relativePosition: {x: 6.3, y: 5.84, z: -24.53}
+    rotation: {x: -0.05589427, y: 0.97442895, z: 0.21763277}
+    shape: 12
+    radius: 7.31
+    radiusSecond: 3.15
+    fillerAmount: 3
+    circlePoints: 10
+    angleOffset: 109
+    viewPercentage: 100
+    towardsCenter: 0
+  - name: StarInner
+    relativePosition: {x: 6.3, y: 5.84, z: -24.53}
+    rotation: {x: -0.05589427, y: 0.97442895, z: 0.21763277}
+    shape: 12
+    radius: 6.24
+    radiusSecond: 1.38
+    fillerAmount: 4
+    circlePoints: 10
+    angleOffset: 0
+    viewPercentage: 100
+    towardsCenter: 0
+  - name: Treasure
+    relativePosition: {x: 0, y: 23.6, z: 0}
+    rotation: {x: 0, y: -0.00000011920929, z: 1.0000001}
+    shape: 13
+    radius: 5.61
+    radiusSecond: 2
+    fillerAmount: 3
+    circlePoints: 10
+    angleOffset: 202
+    viewPercentage: 100
+    towardsCenter: 0
