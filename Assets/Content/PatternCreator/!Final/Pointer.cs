@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PatternCreator
 {
     //used by the custom window store points values and to create new patterns...
-    public class Adjustor : MonoBehaviour
+    public class Pointer : MonoBehaviour
     {
         public void Setup(Transform map)
         {
@@ -48,20 +48,28 @@ namespace PatternCreator
             currentInfo.rotation = transform.up;
 
             //calculate points for each pattern info
-            List<Vector3> list = new List<Vector3>(Shapes.GetShape(p.shape, p.amountOfPoints, p.radius, map.position - transform.position, transform.up, p.angleOffset));
-            transform.rotation = Quaternion.identity;
-            int lengthWithPercent = Mathf.RoundToInt(list.Count * (p.percentage * 0.01f));
-            if(lengthWithPercent > 0)
+            List<Vector3> list = new List<Vector3>(PatternHelper.CreatePattern(p));
+
+            //setup rotation
+            Vector3 spawnAxis = Quaternion.AngleAxis(p.angleOffset, map.position - transform.position) * transform.up;
+            Quaternion rot = Quaternion.LookRotation(map.position - transform.position, spawnAxis);
+            //apply rotation to points
+            for (int i = 0; i < list.Count; i++)
             {
-                //store proper amount of points based on percentage
-                int remove = list.Count - lengthWithPercent;
-                list.RemoveRange(lengthWithPercent - 1, remove);
-                return list.ToArray();
+                list[i] = rot * list[i];
             }
-            else
+            //reset rotation of transform
+            transform.rotation = Quaternion.identity;
+            int numberToHide = Mathf.RoundToInt(list.Count * (1 - (p.viewPercentage * 0.01f)));
+            if(numberToHide > 0)
             {
-                return new Vector3[] { };
-            }            
+                for (int i = 0; i < numberToHide; i++)
+                {
+                    list.RemoveAt(list.Count - 1);
+                }
+            }
+
+            return list.ToArray();
         }
         private Vector3[] RaycastOnMap(Vector3[] points)
         {

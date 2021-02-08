@@ -1,14 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 
 namespace PatternCreator
 {
     //Gather all relevant information for spawning the pattern that DOESN'T include actually calculating the points
-    //TODO: probably don't need quaternion as vector will be map position - patternInfo position
-
 
     [System.Serializable]
     public struct PatternInfo
@@ -18,11 +13,13 @@ namespace PatternCreator
             this.name = name;
             this.relativePosition = relativePosition;
             rotation = Vector3.zero;
-            amountOfPoints = 12;
+            shape = SpawnShape.TRIANGLE;
             radius = 3;
+            radiusSecond = 2;
+            fillerAmount = 2;
+            circlePoints = 10;
             angleOffset = 0;
-            percentage = 100;
-            shape = SpawnShape.CIRCLE;
+            viewPercentage = 100;
             towardsCenter = false;
         }
 
@@ -33,11 +30,13 @@ namespace PatternCreator
         public Vector3 relativePosition;
         public Vector3 rotation;
 
-        public int amountOfPoints;
-        public float radius;
-        [Range(0, 360)] public float angleOffset;
-        [Range(0,100)] public float percentage;
         public SpawnShape shape;
+        public float radius;
+        public float radiusSecond;
+        public int fillerAmount;
+        public int circlePoints;
+        [Range(0, 360)] public float angleOffset;
+        [Range(0,100)] public float viewPercentage;
 
         public bool towardsCenter;
     }

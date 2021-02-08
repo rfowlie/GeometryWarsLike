@@ -87,10 +87,33 @@ namespace GeometeryWars
             Vector3[] points = new Vector3[0];
             Vector3[] normals = new Vector3[0];
             Vector3 direction = map.position - map.TransformDirection(p.relativePosition);
-            List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(
-                p.shape, p.amountOfPoints, p.radius, direction, p.rotation, p.angleOffset));
+            List<Vector3> list;
+            //call correct shape function
+            switch(p.shape)
+            {
+                case SpawnShape.CIRCLE:
+                    list = new List<Vector3>(Shapes.Circle(p.radius, p.angleOffset, p.fillerAmount));
+                    break;
+                case SpawnShape.STAR:
+                    list = new List<Vector3>(Shapes.Star(p.radius, p.radius / 2f, p.fillerAmount));
+                    break;
+                default:
+                    list = new List<Vector3>(Shapes.Simple(p.shape, p.radius, p.angleOffset, p.fillerAmount));
+                    break;
 
-            int lengthWithPercent = Mathf.RoundToInt(list.Count * (p.percentage * 0.01f));
+            }
+            //List<Vector3> list = new List<Vector3>(PatternCreator.Shapes.GetShape(p.shape, p.fillerAmount, p.radius, p.angleOffset));
+            //setup rotation
+            Vector3 spawnAxis = Quaternion.AngleAxis(p.angleOffset, direction) * p.rotation;
+            Quaternion rot = Quaternion.LookRotation(direction, spawnAxis);
+            //apply rotation to points
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i] = rot * list[i];
+            }
+
+
+            int lengthWithPercent = Mathf.RoundToInt(list.Count * (p.viewPercentage * 0.01f));
             //to properly place points from surface after raycast
             float distanceFromSurface = GameController.Instance.GetDistanceFromSurface();
             //store proper amount of points based on percentage

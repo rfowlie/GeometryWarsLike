@@ -25,10 +25,7 @@ public class PatternInfoContainerWindow : EditorWindow
         return false;
     }
 
-    private void OnEnable()
-    {
-        
-    }
+
     private void OnDisable()
     {
         //ensure all changes are grabbed
@@ -37,7 +34,8 @@ public class PatternInfoContainerWindow : EditorWindow
             //retrieve adjustor changes
             o.values[selection_Buttons] = adj.currentInfo;
         }
-            //remove pointer when inactive
+
+        //remove pointer when inactive
         if (pointer != null)
         {
             DestroyImmediate(pointer);
@@ -47,15 +45,17 @@ public class PatternInfoContainerWindow : EditorWindow
     public static void OpenWindow(SO_PatternInfoContainer so)
     {
         o = so;
-        window = GetWindow<PatternInfoContainerWindow>("Edit Window");        
+        window = GetWindow<PatternInfoContainerWindow>("Edit Window");
+        //window.maxSize = new Vector2(450, 300);      
+        //window.minSize = new Vector2(450, 300);      
     }
 
     //window vars
     private static PatternInfoContainerWindow window;
     private static SO_PatternInfoContainer o;
-    private Transform map = null;
+    private static Transform map = null;
     private GameObject pointer;
-    private Adjustor adj;
+    private Pointer adj;
 
     //control vars
     private Vector2 scrollPosition_Buttons = Vector2.zero;
@@ -70,55 +70,63 @@ public class PatternInfoContainerWindow : EditorWindow
         EditorGUILayout.BeginHorizontal("box");
         map = (Transform)EditorGUILayout.ObjectField("Map", map, typeof(Transform));
         GUILayout.Space(15);       
-        if(GUILayout.Button("Display"))
+        
+        if(map != null && pointer != null)
         {
-            //display initial values in SO
-            if(map != null && pointer == null)
+            if (GUILayout.Button("Create"))
             {
-                pointer = new GameObject("Pointer");
-                adj = pointer.AddComponent<Adjustor>();
-                adj.Setup(map);
-                adj.CalculateAll(o);
-                //set pointer as selected gameobject
-                Selection.activeGameObject = pointer;
-
-                if(selection_Buttons >= 0)
+                //Add element to array, ensure to give default name
+                if (o.values == null)
                 {
+                    o.values = new PatternInfo[0];
+                }
+
+                o.AddPatternInfo(new PatternInfo($"Pattern {o.values.Length}", map.InverseTransformDirection(pointer.transform.position)));
+
+                if (adj != null)
+                {
+                    if (selection_Buttons >= 0)
+                    {
+                        //retrieve adjustor changes
+                        o.values[selection_Buttons] = adj.currentInfo;
+                    }
+
+                    selection_Buttons = o.values.Length - 1;
+                    //update adjustor selection
+                    adj.AddPattern(o.values[selection_Buttons]);
                     adj.SetSelection(o.values[selection_Buttons], selection_Buttons);
                 }
-
-                Debug.Log("<color=red>Display</color>");
-            }
-        }
-        if (GUILayout.Button("Create"))
-        {
-            //Add element to array, ensure to give default name
-            if(o.values == null)
-            {
-                o.values = new PatternInfo[0];
-            }
-
-            o.AddPatternInfo(new PatternInfo($"Pattern {o.values.Length}", map.InverseTransformDirection(pointer.transform.position)));
-
-            if(adj != null)
-            {
-                if(selection_Buttons >= 0)
+                else
                 {
-                    //retrieve adjustor changes
-                    o.values[selection_Buttons] = adj.currentInfo;
+                    selection_Buttons = o.values.Length - 1;
                 }
-
-                selection_Buttons = o.values.Length - 1;
-                //update adjustor selection
-                adj.AddPattern(o.values[selection_Buttons]);
-                adj.SetSelection(o.values[selection_Buttons], selection_Buttons);
             }
-            else
-            {
-                selection_Buttons = o.values.Length - 1;
-            }
-
         }
+        else
+        {
+            if (GUILayout.Button("Display"))
+            {
+                //display initial values in SO
+                if (map != null && pointer == null)
+                {
+                    pointer = new GameObject("Pointer");
+                    adj = pointer.AddComponent<Pointer>();
+                    adj.Setup(map);
+                    adj.CalculateAll(o);
+                    //set pointer as selected gameobject
+                    Selection.activeGameObject = pointer;
+
+                    if (selection_Buttons >= 0)
+                    {
+                        adj.SetSelection(o.values[selection_Buttons], selection_Buttons);
+                    }
+
+                    Debug.Log("<color=red>Display</color>");
+                }
+            }
+        }
+
+        
         EditorGUILayout.EndHorizontal();
         EditorGUILayout.EndVertical();
         GUILayout.EndArea();
@@ -157,7 +165,7 @@ public class PatternInfoContainerWindow : EditorWindow
                     }
 
                     //move pointer to relative position or element selected
-                    if (map != null)
+                    if (map != null && pointer != null)
                     {
                         pointer.transform.position = map.TransformDirection(o.values[selection_Buttons].relativePosition);
                     }
@@ -166,13 +174,15 @@ public class PatternInfoContainerWindow : EditorWindow
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndScrollView();
             GUILayout.EndArea();
+
+            //save changes
         }
 
 
         if (selection_Buttons >= 0)
         {
             //info of elements
-            GUILayout.BeginArea(new Rect(200, 30f, 400, 300));
+            GUILayout.BeginArea(new Rect(200, 30f, 320, 300));
             scrollPosition_Info = EditorGUILayout.BeginScrollView(scrollPosition_Info);
             EditorGUILayout.BeginVertical("box");
             o = DrawInfo(o, selection_Buttons);
@@ -208,9 +218,9 @@ public class PatternInfoContainerWindow : EditorWindow
     {
         o.values[i].name = EditorGUILayout.TextField("Name", o.values[i].name);
         o.values[i].relativePosition = EditorGUILayout.Vector3Field("Relative Position", o.values[i].relativePosition);
-        o.values[i].amountOfPoints = EditorGUILayout.IntField("Amount of Points", o.values[i].amountOfPoints);
+        o.values[i].fillerAmount = EditorGUILayout.IntField("Amount of Points", o.values[i].fillerAmount);
         o.values[i].radius = EditorGUILayout.FloatField("Radius", o.values[i].radius);
-        o.values[i].percentage = EditorGUILayout.Slider("View Percentage", o.values[i].percentage, 0f, 100f);
+        o.values[i].viewPercentage = EditorGUILayout.Slider("View Percentage", o.values[i].viewPercentage, 0f, 100f);
         o.values[i].shape = (SpawnShape)EditorGUILayout.EnumPopup("Shape", o.values[i].shape);
         o.values[i].towardsCenter = EditorGUILayout.Toggle("Aim Towards Center", o.values[i].towardsCenter);
         return o;

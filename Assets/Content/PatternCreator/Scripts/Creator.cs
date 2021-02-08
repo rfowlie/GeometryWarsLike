@@ -18,7 +18,7 @@ namespace PatternCreator
             radius = 5f;
             angleOffset = 0;
             gizmoColour = Color.red;
-            spawnShape = SpawnShape.CIRCLE;
+            spawnShape = SpawnShape.TRIANGLE;
             Configure();
         }
 
@@ -26,8 +26,8 @@ namespace PatternCreator
         [Space]
         public bool isVisible = true;
         [Space]
-        public SpawnShape spawnShape = SpawnShape.CIRCLE;
-        private SpawnShape currentShape = SpawnShape.CIRCLE;
+        public SpawnShape spawnShape = SpawnShape.TRIANGLE;
+        private SpawnShape currentShape = SpawnShape.TRIANGLE;
         public Color gizmoColour = Color.white;
         public int amountOfPoints = 4;
         public float radius = 1f;
@@ -73,7 +73,7 @@ namespace PatternCreator
         private void Configure()
         {
             CalculateStartingPoints = null;
-            CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, transform.up, transform.forward, angleOffset);
+            //CalculateStartingPoints += () => Shapes.GetShape(spawnShape, amountOfPoints, radius, angleOffset);
             Calculate();
         }
 
@@ -84,6 +84,7 @@ namespace PatternCreator
             if(map == null) { return; }
             transform.rotation = Quaternion.FromToRotation(transform.up, transform.position - map.position) * transform.rotation;
             Vector3[] shapePoints = CalculateStartingPoints();
+
             points = new Vector3[shapePoints.Length];
             normals = new Vector3[shapePoints.Length];
 
@@ -147,7 +148,7 @@ namespace PatternCreator
             transform.position = info.relativePosition;
             //transform.rotation = info.rotation;
 
-            amountOfPoints = info.amountOfPoints;
+            amountOfPoints = info.fillerAmount;
             radius = info.radius;
             angleOffset = info.angleOffset;
             spawnShape = info.shape;
@@ -183,10 +184,10 @@ namespace PatternCreator
             //set to relative position from map
             temp.relativePosition = map.InverseTransformDirection(transform.position);
             //temp.rotation = transform.rotation;
-            temp.amountOfPoints = amountOfPoints;
+            temp.fillerAmount = amountOfPoints;
             temp.radius = radius;
             temp.angleOffset = angleOffset;
-            temp.percentage = percentage;
+            temp.viewPercentage = percentage;
             temp.shape = currentShape;
             temp.towardsCenter = towardsCenter;
 
